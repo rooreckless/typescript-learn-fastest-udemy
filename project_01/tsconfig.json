@@ -7,7 +7,7 @@
 
     // Environment Settings
     // See also https://aka.ms/tsconfig/module
-    "module": "nodenext",
+    "module": "commonjs", //moduleにcommonjsを入れておくと、Node.jsで動作する(比較的バックエンド用か)https://zenn.dev/hayato94087/articles/97c66f7675cd01
     "target": "esnext",
     "types": [],
     // For nodejs:
@@ -24,7 +24,8 @@
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true,
 
-    // Style Options
+    // Style Options (以下のコメントアウトされているオプションは個別に有効化できるが、
+    // strictオプションを有効化するとまとめて有効化される)
     // "noImplicitReturns": true,
     // "noImplicitOverride": true,
     // "noUnusedLocals": true,
@@ -39,7 +40,9 @@
     "isolatedModules": true,
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
-    "skipLibCheck": true,
+    "skipLibCheck": true,    // 外部ライブラリの型定義ファイルのチェックをスキップする(外部ライブラリの型定義ファイルにエラーがあっても無視する)
+    "esModuleInterop": true, // 外部ライブラリを使用する場合、記法がちがっても(=外部ライブラリがstrictに従っていなくても)動作するようにする。
+    "forceConsistentCasingInFileNames": true //ファイル名の大文字小文字を厳密にチェックする
   },
   "include": ["src/**/*"], //コンパイルする対象のファイルの指定の仕方。src内の全ファイルを対象にする
   "exclude": ["node_modules", "dist"], //コンパイル対象ではないファイルの指定の仕方(project01内のこのディレクトリのファイルはコンパイルから除外される)
