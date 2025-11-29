@@ -2,8 +2,8 @@
   // Visit https://aka.ms/tsconfig to read more about this file
   "compilerOptions": {
     // File Layout
-    // "rootDir": "./src",
-    // "outDir": "./dist",
+    "rootDir": "./src", // コンパイルするソースファイルがあるディレクトリ
+    "outDir": "./dist", // コンパイル後の出力先ディレクトリ
 
     // Environment Settings
     // See also https://aka.ms/tsconfig/module
@@ -40,5 +40,7 @@
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
     "skipLibCheck": true,
-  }
+  },
+  "include": ["src/**/*"], //コンパイルする対象のファイルの指定の仕方。src内の全ファイルを対象にする
+  "exclude": ["node_modules", "dist"], //コンパイル対象ではないファイルの指定の仕方(project01内のこのディレクトリのファイルはコンパイルから除外される)
 }
