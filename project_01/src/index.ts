@@ -71,8 +71,10 @@ console.log(Number.isFinite(resultInf2)); // <- false = -InfinityでもInfinity�
 // -> 型注釈だけでは、Number型であることは指定できても、計算した結果、NaNやInfinityになることまでは型注釈で防げないから
 //   -> なので、計算結果がNaNやInfinityになっていないかをチェックする関数が必要になる
 
+console.log("---------------------");
+
 //---------------------------------------
-console.log("---------------------")
+
 // -- 配列の型注釈 1. []を使う方法
 
 let names: string[] = ["太郎", "花子", "次郎"];
@@ -99,7 +101,7 @@ for (let i = 0; i < flags.length; i++){
     console.log("flags elem type=" + typeof flags[i]); // <- 配列の各要素の型はbooleanであることがわかる
 }
 
-console.log("---------------------")
+console.log("---------------------");
 
 // -- 配列の型注釈 2. ジェネリクスを使う方法
 
@@ -114,7 +116,7 @@ console.log(typeof ages2);
 console.log(flags2);
 console.log(typeof flags2);
 
-console.log("---------------------")
+console.log("---------------------");
 //---------------------------------------
 // -- オブジェクトの型注釈 --
 
@@ -143,3 +145,36 @@ let user2: {
 };
 
 console.log("user2=",user2);
+
+
+console.log("---------------------");
+
+//---------------------------------------
+// Any型
+
+let value: any = "test";
+console.log("value=", value);
+value = 123;
+console.log("value=", value);
+value = true;
+console.log("value=", value);
+value= {};
+console.log("value=", value);
+
+// ↑エラーにならない。つまり、any型なvalueには、どんな型の値でも代入できる。
+
+// any型の危険性の例
+let userAny: any  = {name: "太郎", age: 30};
+console.log("userAny=", userAny);
+console.log("userAny=", userAny.aaaaaa);
+// ↑ userAnyはany型なので、存在しないプロパティaaaaaaにアクセスしてもエラーにならず、undefinedになっている。
+// console.log("userAny=", userAny.aaaaaa.toUpperCase());
+// ↑ もっと危険なのが↑ 上記のようにundefinedに対してさらにメソッドを呼び出そうとすると、ランタイムエラーになる。
+// ランタイムエラー = 実行時エラーなので、「tscでのコンパイル時には気付けない」ことになる。userAnyがany型だから
+
+// Any型を使う状況
+// 1. 型がわからない外部ライブラリを使うとき
+// 2. とりあえず型注釈を後回しにしたいとき(開発初期段階や、JsからTsへの移行を段階的に行う場合)
+// 3. それ以外は基本的にany型は使わないことを推奨
+
+console.log("---------------------");
