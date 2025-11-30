@@ -274,3 +274,33 @@ greetArrow("花子");
 
 // void型は「関数が何も値を返さない」ことを示す型注釈として使います。
 // void型の関数は、return文を使わないか、もしくはreturn; のように値を返さない形で使います。
+
+//---------------------------------------
+// デフォルト引数
+console.log("---デフォルト引数------------------");
+
+
+function greet2(name: string, age: number = 20): void {
+    console.log(`こんにちは、${name}さん！ (${age}歳)`);
+}
+
+greet2("次郎");
+greet2("三郎", 25);
+
+
+
+//---------------------------------------
+// オプション引数 = あってもなくても良い引数で,typescript独自のもの
+console.log("---オプション引数------------------");
+
+function greet3(name: string, age?: number): void {
+    if (age !== undefined){
+        // ageが渡された場合の処理
+        console.log(`こんにちは、${name}さん！ (${age}歳)`);
+    }else {
+        console.log(`こんにちは、${name}さん！`);
+    }
+}
+
+greet3("四郎");
+greet3("五郎", 28);
