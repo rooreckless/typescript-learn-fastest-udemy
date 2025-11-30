@@ -42,3 +42,31 @@ console.log(result2);
 
 
 //---------------------------------------
+// --NaNとInifityの扱いと型注釈の限界と対処方法--
+console.log("---------------------")
+
+// NaN(Not a Number = 数字として扱えないものになってしまっている状態)の例
+
+let resultNaN1 :number = 0/0;
+console.log(resultNaN1); // <- NaN
+// console.log(resultNaN1 === NaN); // <- trueにならず常にFalseのエラーになる NaNはNaN同士で比較できないisNaNが必要
+console.log(Number.isNaN(resultNaN1)); // <- true
+
+let resultNaN2 :number = parseInt("こんにちは");
+console.log(resultNaN2); // <-  NaN
+
+
+// Infinitity(無限大の例)
+let resultInf1 :number = 1/0;
+console.log(resultInf1); // <- Infinity
+
+console.log(resultInf1 === Infinity); // <- true
+console.log(Number.isFinite(resultInf1)); // <- false = Infinityであるということ
+
+let resultInf2 :number = -1/0;
+console.log(resultInf2); // <- -Infinity
+console.log(Number.isFinite(resultInf2)); // <- false = -InfinityでもInfinityであるということ
+
+// なぜNaNとInfinityのチェック関数までまなんだのか
+// -> 型注釈だけでは、Number型であることは指定できても、計算した結果、NaNやInfinityになることまでは型注釈で防げないから
+//   -> なので、計算結果がNaNやInfinityになっていないかをチェックする関数が必要になる
