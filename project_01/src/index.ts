@@ -70,3 +70,46 @@ console.log(Number.isFinite(resultInf2)); // <- false = -InfinityでもInfinity�
 // なぜNaNとInfinityのチェック関数までまなんだのか
 // -> 型注釈だけでは、Number型であることは指定できても、計算した結果、NaNやInfinityになることまでは型注釈で防げないから
 //   -> なので、計算結果がNaNやInfinityになっていないかをチェックする関数が必要になる
+
+//---------------------------------------
+console.log("---------------------")
+// -- 配列の型注釈 1. []を使う方法
+
+let names: string[] = ["太郎", "花子", "次郎"];
+let ages: number[] = [20, 25, 30];
+let flags: boolean[] = [true, false, true];
+
+// 配列の中身を確認する例
+console.log(names);
+console.log(typeof names); // typeof演算子は配列に対しては"object"を返すので、これだけだと配列かどうかわからない
+console.log(Array.isArray(names)); // <- 配列かどうかを判定するにはArray.isArray()を使う
+names.forEach(elem => {
+    console.log("names elem type=" + typeof elem); // <- 配列の各要素の型はstringであることがわかる
+});
+
+console.log(ages);
+console.log(Array.isArray(ages)); // <- 配列かどうかを判定するにはArray.isArray()を使う
+for (const elem of ages){
+    console.log("ages elem type=" + typeof elem); // <- 配列の各要素の型はnumberであることがわかる
+}
+console.log(typeof ages);
+console.log(flags);
+console.log(typeof flags);
+for (let i = 0; i < flags.length; i++){
+    console.log("flags elem type=" + typeof flags[i]); // <- 配列の各要素の型はbooleanであることがわかる
+}
+
+console.log("---------------------")
+
+// -- 配列の型注釈 2. ジェネリクスを使う方法
+
+let names2: Array<string> = ["一郎", "二郎", "三郎"]; // そもそもジェネリクスとは<>で囲まれた部分のこと
+let ages2: Array<number> = [22, 28, 35];
+let flags2: Array<boolean> = [false, true, false];
+
+console.log(names2);
+console.log(typeof names2);
+console.log(ages2);
+console.log(typeof ages2);
+console.log(flags2);
+console.log(typeof flags2);
