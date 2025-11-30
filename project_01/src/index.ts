@@ -232,3 +232,45 @@ console.log(rabbit instanceof Rabbit); // <- true
 console.log(rabbit instanceof String); // <- false
 console.log(rabbit instanceof Object); // <- true
 console.log(rabbit instanceof Error); // <- false
+
+//--------------------------------------
+// unknown型
+console.log("---unknown型------------------");
+let valueUnknown1: unknown = "test";
+console.log("valueUnknown=", valueUnknown1);
+valueUnknown1 = 123;
+console.log("valueUnknown=", valueUnknown1);
+
+let valueUnknown2: unknown = "test";
+console.log("valueUnknown2=", valueUnknown2);
+//以下だとエラーになる(これがAny型との違い)
+// console.log("valueUnknown2 toUpperCase=", valueUnknown2.toUpperCase());
+// ↑ コンパイル段階でエラーで気付ける <- any型だと実行してみないとエラーにならない
+
+//型ガードを使った操作なら、可能
+if (typeof valueUnknown2 === "string"){
+    console.log("valueUnknown2 toUpperCase=", valueUnknown2.toUpperCase());
+}
+
+// unknown型の使いどころ
+// 1. 外部ライブラリや外部APIなどから取得した値の型が不明で、any型よりも安全に使いたい場合
+// 2. 関数の引数や戻り値の型が不明な場合、any型よりも安全に使いたい場合
+
+//---------------------------------------
+// 関数の戻り値の型で使うvoid型
+console.log("---unknown型------------------");
+
+function greet(name: string): void {
+    console.log("こんにちは、" + name + "さん！");
+}
+
+greet("太郎");
+
+const greetArrow = (name: string): void => {
+    console.log("やあ、" + name + "さん！");
+};
+
+greetArrow("花子");
+
+// void型は「関数が何も値を返さない」ことを示す型注釈として使います。
+// void型の関数は、return文を使わないか、もしくはreturn; のように値を返さない形で使います。
