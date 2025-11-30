@@ -113,3 +113,33 @@ console.log(ages2);
 console.log(typeof ages2);
 console.log(flags2);
 console.log(typeof flags2);
+
+console.log("---------------------")
+//---------------------------------------
+// -- オブジェクトの型注釈 --
+
+// jsでのオブジェクトは以下のような形でした
+
+// let userJS = {name: "太郎", age: 30};
+
+// tsでのオブジェクトの型注釈は以下のように書きます
+// プロパティnameはstring型、ageはnumber型であることを指定
+let user: {name: string, age: number} = {
+    name: "太郎",
+    age:30
+};
+
+console.log("user=",user);
+
+// オブジェクトのネストも可能
+// user2オブジェクトの「addressプロパティがオブジェクト」である例
+let user2: { 
+    name: string, age: number,
+    address: {city: string, zipCode:string}
+} = {
+    name: "太郎",
+    age:30,
+    address: {city: "東京", zipCode: "000-0000"}
+};
+
+console.log("user2=",user2);
