@@ -333,3 +333,36 @@ function processId(id: string | number):string{
 
 console.log(processId("abc123")); // <- "ABC123"
 console.log(processId(456789));   // <- "456789"
+
+//---------------------------------------
+// Literal型 = 「文字通りの」「そのままの」の意味で、「値そのものが型になる
+
+console.log("---Literal型------------------");
+
+let size: "small";
+size = "small"; // <- OK
+console.log("size=", size);
+// size = "medium"; // <- エラーになる "small"型でないから
+// size = "large";  // <- エラーになる "small"型でないから
+
+// Literal型の応用例 = Union型と組み合わせて使う
+console.log("---Literal型の応用例 = Union型と組み合わせて使う------------------");
+let size2: "small" | "medium" | "large";
+size2 = "small";    // <- OK
+console.log("size2=", size2);
+size2 = "medium";   // <- OK
+console.log("size2=", size2);
+size2 = "large";    // <- OK
+console.log("size2=", size2);
+// size2 = "extra-large"; // <- エラーになる "small" | "medium" | "large"型でないから
+
+let httpStatus: 200 | 404 | 500;
+httpStatus = 200;
+console.log("httpStatus=", httpStatus);
+httpStatus = 404;
+console.log("httpStatus=", httpStatus);
+httpStatus = 500;
+console.log("httpStatus=", httpStatus);
+// httpStatus = 403; // <- エラーになる 200 | 404 | 500型でないから
+
+// Literal型を使うときは、「特定の値だけを許容したい」場合に便利です。
