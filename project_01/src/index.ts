@@ -304,3 +304,32 @@ function greet3(name: string, age?: number): void {
 
 greet3("四郎");
 greet3("五郎", 28);
+
+
+//---------------------------------------
+// Union型　A型or B型の意味
+console.log("---Union型------------------");
+
+let input: string | number;
+
+input = "hello";
+console.log("input=", input);
+
+input = 42;
+console.log("input=", input);
+
+// input = true; // <- エラーになる string型かnumber型でないから
+
+
+// Union型な引数を使った関数の例 = 型ガードで処理を分ける
+console.log("---Union型な引数を使った関数 と 型ガード------------------");
+function processId(id: string | number):string{
+    if (typeof id === "string"){
+        return id.toUpperCase(); // idがstring型の場合でないとtoUpperCaseは使えないので、typeofで型を保証させた。
+    } else {
+        return id.toString();   // idがnumber型の場合でないとtoStringは使えないので、typeofで型を保証させた。
+    }
+}
+
+console.log(processId("abc123")); // <- "ABC123"
+console.log(processId(456789));   // <- "456789"
