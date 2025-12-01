@@ -147,3 +147,49 @@ console.log(user_readonly1);
 // なので、constで宣言したオブジェクトでも、そのプロパティの変更は可能(↑のnameプロパティのように)
 // もちろん、const自体は再代入禁止だから、user_readonly1 = { id: 2, name: "Eve" } // <- これは再代入なのでエラーになる
 // 一方、readonlyはオブジェクトのプロパティの変更を禁止するキーワード
+
+//-------------------------------------------------
+// -- ネストしたインターフェース
+console.log("---ネストしたインターフェース------------------");
+
+interface Product { // <- 商品を表すインターフェース
+    id: number;
+    name: string;
+    price: number;
+
+}
+
+interface OrderItem {  // <- 注文アイテムを表すインターフェース
+    product: Product; // <- ネストしたインターフェース = productプロパティはProductインターフェースに従うオブジェクト
+    quantity: number;
+}
+
+const orderItem1: OrderItem ={
+    product: {
+        id: 1,
+        name: "ノートPC",
+        price: 98000,
+    },
+    quantity: 2
+}
+
+console.log("orderItem1=",orderItem1);
+
+// OrderItemインターフェースをさらにネスト、しかも配列にして使う例
+
+interface Order{   // <- 注文を表すインターフェース
+    id: number;
+    customerName: string;
+    items: OrderItem[]; // <- OrderItemインターフェースの配列
+}
+
+const order1: Order = {
+    id: 1001,
+    customerName: "Emma",
+    items: [
+        {product: {id: 1, name: "ノートPC", price: 98000}, quantity: 1},
+        {product: {id: 2, name: "マウス", price: 2500}, quantity: 2}
+    ],
+}
+
+console.log("order1=", order1);
