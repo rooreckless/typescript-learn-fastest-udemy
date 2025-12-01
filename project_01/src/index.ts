@@ -419,3 +419,55 @@ userTuple[1] = 30;     // <- OK
 // userTuple[1] = "四郎"; // <- エラーになる number型でないから
 // userTuple[2] = true;   // <- エラーになる userTupleは「要素数が2つで固定」されているから
 console.log("userTuple=", userTuple);
+
+
+//---------------------------------------
+// Enum型 = Enumeration: 列挙型 = いくつかの定数に名前をつけて、まとめて扱う(=グループ化して扱う)ための型
+// 「数値Enum」と「文字列Enum」がある
+console.log("---Enum型------------------");
+
+console.log("---数値Enum------------------");
+
+enum Gender {
+    // 数値Enumのメンバに値を指定しなかった場合、0から始まるインクリメントな値になる
+    Male,   // <- 0
+    Female, // <- 1
+    Other   // <- 2
+}
+
+let userGender0: Gender = Gender.Male;
+console.log("userGender0=", userGender0); // <- 0
+let userGender1: Gender = Gender.Female;
+console.log("userGender1=", userGender1); // <- 1
+
+enum HttpStatus{
+    // 数値Enumのメンバに値を指定することも可能
+    OK = 200,
+    NotFound = 404,
+    InternalServerError = 500
+}
+
+console.log("HttpStatus.OK=",HttpStatus.OK);                   // <- 200
+let statusOK: HttpStatus = HttpStatus.OK;
+console.log("statusOK=", statusOK);             // <- 同じく200。HttpStatus型変数を用意しなくても使える
+console.log("HttpStatus.NotFound=", HttpStatus.NotFound);             // <- 404
+console.log("HttpStatus.InternalServerError=", HttpStatus.InternalServerError);  // <- 500
+
+console.log("---文字列Enum------------------");
+
+enum GenderStringEnum {
+    Male = "male",
+    Female = "female",
+    Other = "other"
+}
+
+console.log("GenderStringEnum.Male=", GenderStringEnum.Male);
+
+
+// Enum型により、文字列や数値などのマジックナンバー(=ソースコード中に直接、「開発者でなければ意味がわからないような定数」を書くこと)を防ぎ、意味のある名前で定数を管理できる。
+// 例えば、車のタイヤの数は4,自転車のタイヤの数は2だが、それを動作させるソースコード中に直接書くのではなく、Enum型にして「enum Car {tires = 4}」などとした方がいい。
+
+// Enum型の使い所
+// 1. 関数の引数や戻り値で、特定の定数の集合だけを許容したい場合
+// 2. 状態管理で、特定の状態の集合だけを許容したい場合(<- HTTPステータスコードは200とか404とか500とかだけであり、1000などはないから。)
+// 3. 可読性を向上させるために、定数に意味のある名前をつけたい場合
