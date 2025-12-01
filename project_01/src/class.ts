@@ -187,3 +187,29 @@ const adminUser_withProtected = new AdminUser_withAccessModifiers_protected("Mik
 // console.log(adminUser_withProtected.name); // コンパイルエラー: protectedなので「クラスの外から」アクセス不可
 console.log(adminUser_withProtected.displayAdminInfo()); // 管理者: Mika, 年齢: 55, 役割: SuperAdmin
 
+//------------------------------------
+
+// -- readonly修飾子 typescript独自の仕組み ---
+console.log("---readonly修飾子---------------");
+
+class User_withReadonly{
+    public readonly id: number; // readonly修飾子付きプロパティ
+    public name: string;
+
+    constructor(id: number, name: string){
+        this.id = id;
+        this.name = name;
+    }
+
+    // constractor(public readonly id: number, public name: string){
+    //     // this.id と this.name は自動的に定義される
+    //
+}
+
+const user_withReadonly = new User_withReadonly(1, "Satoshi");
+console.log("user_withReadonly.id=", user_withReadonly.id); // user_withReadonly.id= 1
+
+// user_withReadonly.id = 2; // コンパイルエラー: readonlyプロパティは「クラスの外から」変更不可
+
+user_withReadonly.name = "Satoshi Nakamoto"; // nameプロパティはreadonlyではないので変更可能
+console.log("user_withReadonly.name=", user_withReadonly.name); // user_withReadonly.name= Satoshi Nakamoto
