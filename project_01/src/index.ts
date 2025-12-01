@@ -395,3 +395,27 @@ console.log("---asキーワードを使うときの実際的な例---ただし�
 // asキーワードを使うときの注意点
 // asキーワードを使うときは、「本当にその型である」ことを、開発者が自分で保証する必要があります。
 // 間違った型を指定すると、ランタイムエラーの原因になる可能性があります。
+
+
+
+//---------------------------------------
+// Tuple型 = 順序のある要素の組、配列と違うのは「要素数は固定で型が決まっているが、要素ごとに違う型のものをいれてもいい」こと
+
+// 配列との違いはこちら : https://zenn.dev/uepon/articles/b9c799516ed155
+// https://qiita.com/araarara/items/bea09ecf1ed646f14e88
+console.log("---Tuple型------------------");
+
+let namesArray: string[] = ["太郎", "花子"];
+console.log("namesArray=", namesArray);
+
+let userTuple: [string, number] = ["次郎", 25];
+console.log("userTuple=", userTuple);
+
+// Tuple型でも変更できる(PythonだとTupleは変更できないが、TsのTuple型は変更できる)
+
+userTuple[0] = "三郎"; // <- OK
+userTuple[1] = 30;     // <- OK
+// userTuple[0] = 100;   // <- エラーになる userTupleの0番目は「string型」で宣言されているのに、string型でないから
+// userTuple[1] = "四郎"; // <- エラーになる number型でないから
+// userTuple[2] = true;   // <- エラーになる userTupleは「要素数が2つで固定」されているから
+console.log("userTuple=", userTuple);
