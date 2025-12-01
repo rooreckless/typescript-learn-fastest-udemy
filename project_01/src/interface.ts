@@ -193,3 +193,124 @@ const order1: Order = {
 }
 
 console.log("order1=", order1);
+
+// -------------------------------------------------
+// -- 型エイリアス
+console.log("---型エイリアス------------------");
+
+// 型エイリアス = 型に別名をつける機能
+type UserAlias = {
+    id: number;
+    name: string;
+    email: string;
+
+};
+
+const user_alias1: UserAlias = {
+    id: 1,
+    name: "Frank",
+    email: "frank@example.com"
+};
+
+console.log(user_alias1)
+
+// 別の型エイリアス
+type StatusAlias = "loading" | "success" | "error";
+function checkStatus(status: StatusAlias): void {
+    console.log(`現在のステータス: ${status}`);
+}
+checkStatus("loading");
+checkStatus("success");
+// checkStatus("complete"); // <- コンパイルエラー: 'complete'はStatusAlias型に含まれていない
+
+
+//-------------------------------------------------
+// -- 型エイリアスで、関数の型を定義する
+
+console.log("---型エイリアスで関数の型を定義する------------------");
+
+type CalculatorAlias = (x: number, y: number) => number;
+
+const addAlias: CalculatorAlias = (x,y) => {
+    return x + y;
+};
+
+console.log(addAlias(10,15)); // 25
+
+// --型エイリアスでもcallback関数を定義してみる(以前インターフェースでやったことと同じようなことをしてみる)
+
+type EventHandlerAlias = (message: string) => void;
+
+function ProcessAlias(input: string, handler: EventHandlerAlias): void {
+    handler(`処理完了: ${input}`);
+}
+
+const loggerAlias: EventHandlerAlias = (message) => {
+    console.log(message);
+};
+
+ProcessAlias("テストデータ", loggerAlias); // <- コンソールに「処理完了: テストデータ」と表示される
+
+// -------------------------------------------------
+// -- 型エイリアスの有効な活用方法 = プリミティブ型に意味のある名前をつけること
+console.log("---型エイリアスの有効な活用方法--プリミティブ型に意味のある名前をつけること----------------");
+
+type UserID = number; // <- UserIDという型エイリアスをnumber型に対して定義
+
+type User_useful_Alias = {
+    // id: number; // <- これでも動作はするけど、ただのnumber型なので意味がわかりにくい。
+    id: UserID; // <- UserID型を使ってidプロパティを定義
+    name: string;
+}
+
+const user_useful_alias1: User_useful_Alias = {
+    id: 1,
+    name: "Grace"
+};
+
+const user_useful_alias2: User_useful_Alias = {
+    id: 2,
+    name: "Hank"
+};
+
+console.log(user_useful_alias1);
+console.log(user_useful_alias2);
+
+// ↑のように型エイリアスを使うことで、idプロパティがただのnumber型ではなく「UserIDであること」が明示され、コードの可読性と意味が向上する。
+
+// ↓型エイリアスUser_useful_Aliasの配列型として定義し、内容はuser_useful_alias1とuser_useful_alias2を持つ配列
+const users_useful_alias: User_useful_Alias[] = [user_useful_alias1, user_useful_alias2];
+
+function getUserByUserId(id: UserID): User_useful_Alias | null {
+    // 引数idはUserID型。(number型ではなくUserID型とすることで、意味がわかりやすい。)
+    // これと一致するidプロパティを持つUser_useful_Aliasオブジェクトを配列から探して返す関数
+    return users_useful_alias.find(user => user.id === id) || null;
+}
+
+console.log(getUserByUserId(1)); // <- user_useful_alias1オブジェクトを返す
+console.log(getUserByUserId(3)); // <- nullを返す(存在しないidのため)
+
+// -- 型エイリアスの有効な活用方法 = 複雑な型定義を整理するのに使える(入れ子を多用したり、ユニオン型を多用した型を整理するのに使う)
+console.log("---型エイリアスの有効な活用方法--複雑な型定義を整理するのに使える----------------");
+
+type Language = "JavaScript" | "TypeScript" | "Python" | "Java"; // <- リテラル型とユニオン型を組み合わせた型エイリアス(Enumみたいに。)
+type AppId = number; // ↑で使った、「プリミティブ型(number)に意味のある名前をつける」例
+
+type ProductApp = {
+    readonly id: AppId;
+    name: string;
+    preferences:{ 
+        language: Language; // <- preferencesプロパティはネストしたオブジェクトで、そのlanguageプロパティは型エイリアスLanguageに従う
+                            // <- つまり、"JavaScript" | "TypeScript" | "Python" | "Java"のいずれかの文字列である必要がある
+    }
+}
+
+const app1: ProductApp = {
+    id: 101,
+    name: "Code Editor",
+    preferences: {
+        language: "TypeScript"
+    }
+};
+
+console.log(app1);
