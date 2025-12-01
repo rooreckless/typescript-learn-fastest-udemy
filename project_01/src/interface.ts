@@ -122,3 +122,28 @@ const simpleLogger: Logger = (message, level) => {
 
 simpleLogger("システムが起動しました"); // level引数を省略した場合
 simpleLogger("ユーザーがログインしました", "INFO"); // level引数を指定した場合
+
+//-------------------------------------------------
+// --インターフェースで使えるリードオンリーキーワード--
+console.log("---インターフェースで使えるリードオンリーキーワード------------------");
+
+interface User_Readonly{
+    readonly id: number; // <- idプロパティは読み取り専用(readonly)
+    name: string;
+}
+
+const user_readonly1: User_Readonly = {
+    id: 1,
+    name: "David"
+}
+
+user_readonly1.name = "Daniel"; // nameプロパティは変更可能
+console.log(user_readonly1);
+
+// user_readonly1.id = 2; // <- コンパイルエラー: 'id'は読み取り専用プロパティです
+
+// 【念の為】constとreadonlyの違い
+// constは変数自体の再代入を禁止するキーワード
+// なので、constで宣言したオブジェクトでも、そのプロパティの変更は可能(↑のnameプロパティのように)
+// もちろん、const自体は再代入禁止だから、user_readonly1 = { id: 2, name: "Eve" } // <- これは再代入なのでエラーになる
+// 一方、readonlyはオブジェクトのプロパティの変更を禁止するキーワード
