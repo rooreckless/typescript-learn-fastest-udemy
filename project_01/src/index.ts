@@ -366,3 +366,32 @@ console.log("httpStatus=", httpStatus);
 // httpStatus = 403; // <- エラーになる 200 | 404 | 500型でないから
 
 // Literal型を使うときは、「特定の値だけを許容したい」場合に便利です。
+
+
+//---------------------------------------
+// asキーワード で型の強制指定 as:「断言」「主張」
+
+console.log("---asキーワード------------------");
+
+let valueAny: any = "hello world"; //valueAnyはany型 = 文字列以外にもできてしまう
+let valueLength: number = valueAny.length; // <- エラーにならないが、any型なのでlengthプロパティがあるかどうかわからない
+// let valueLength: number = (valueAny as string).length; // valueAnyはstring型として扱うことを宣言した
+// なので、lengthプロパティが確実にあるうえでアクセスする
+
+console.log("valueLength=", valueLength);
+
+// asキーワードを使うときの実際的な例
+console.log("---asキーワードを使うときの実際的な例---ただし全部コメントアウトになっています。---------------");
+// // 問題がある例
+// const btn = document.getElementById("submit");
+// btn.disabled = true; // <- コンパイルエラーになる getElementByIdはHTMLElement|null型を返す可能性があるから
+
+// // ↑の問題を解決するにはasキーワードで、「btnがHTMLButtonElement型である」と断定してやればいい
+// const btn = document.getElementById("submit") as HTMLButtonElement;
+// btn.disabled = true; // <- btnはHTMLButtonElement型として扱うことを宣言したので、disabledプロパティにアクセスできる
+
+// console.log("btn disabled=", btn.disabled);
+
+// asキーワードを使うときの注意点
+// asキーワードを使うときは、「本当にその型である」ことを、開発者が自分で保証する必要があります。
+// 間違った型を指定すると、ランタイムエラーの原因になる可能性があります。
