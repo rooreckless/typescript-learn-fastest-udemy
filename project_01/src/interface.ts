@@ -71,3 +71,54 @@ Process("てすとでーた", logger); // <- コンソールに「処理完了: 
 // ↑の流れの中でProcessがhandler引数の関数を実行する際、
 // 「事前に関数インターフェースを作成し、それに従った関数を渡す」ようにしないと実行できない。(handlerにあらゆる型の引数を渡していいことにはできないから。)
 // だから、loggerはEventHandlerインターフェースに従わせた。
+
+
+//-------------------------------------------------
+// -- オプショナルプロパティとインターフェース--
+console.log("---オプショナルプロパティとインターフェース------------------");
+
+interface User_Optional {
+    // オブジェクトインターフェース
+    name: string;
+    age?: number; // <- ageプロパティはオプショナル(あってもなくても良い)
+    email?: string; // <- emailプロパティもオプショナル(あってもなくても良い)
+}
+
+const user_optional1: User_Optional= {
+    name: "Bob",
+    // ageとemailはオプショナルなので、省略可能
+}
+console.log(user_optional1);
+console.log(user_optional1.email); // <- 存在しない可能性があるのでundefinedになる可能性がある
+
+const user_optional2: User_Optional= {
+    name: "Charlie",
+    age: 25,
+    // ageとemailはオプショナルなので、省略可能
+}
+
+console.log(user_optional2);
+
+// --オプショナルプロパティなインターフェースを使う場合---
+// オプショナルプロパティは存在しない可能性があるので、アクセスする際には型ガードなどで存在チェックを行うのが一般的
+// オプショナルプロパティを使う状況
+// 1. ユーザー情報の一部が未提供の場合
+// 2. APIからのレスポンスで一部のデータが欠落している場合
+// 3. フォームの情報で一部が未入力でも許容されるケース 
+
+// 関数インターフェースでもオプショナルプロパティ(というかオプショナル引数)を使ってみる
+console.log("---関数インターフェースでオプショナル引数------------------");
+interface Logger {
+    (message: string, level?: string): void; // level引数はオプショナル
+}
+
+const simpleLogger: Logger = (message, level) => {
+    if(level){
+        console.log(`[${level}] ${message}`);
+    } else {
+        console.log(message);
+    }
+}
+
+simpleLogger("システムが起動しました"); // level引数を省略した場合
+simpleLogger("ユーザーがログインしました", "INFO"); // level引数を指定した場合
