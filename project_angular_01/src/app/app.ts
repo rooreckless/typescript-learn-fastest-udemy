@@ -16,12 +16,14 @@ import {Component} from '@angular/core';
 
 @Component({
   selector: 'app-root',
+  // templateを変えると、localhost:4200にアクセスしたときの表示が変わる
   template: `
-    Hello
+    Hello Universe
   `,
+  // styleを変えると、localhost:4200にアクセスしたときの文字色が変わる
   styles: `
     :host {
-      color: blue;
+      color: #a144db;
     }
   `,
 })
