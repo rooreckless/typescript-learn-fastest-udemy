@@ -18,8 +18,9 @@ import {User} from './user';
 // ルートコンポーネントではuserコンポーネントを使用するがそれだけ
 @Component({
   selector: 'app-root',
+  // Userコンポーネントにnameプロパティを渡す
   template: `
-    <app-user />
+    <app-user name="Simran"/>
   `,
   imports: [User],
 })
