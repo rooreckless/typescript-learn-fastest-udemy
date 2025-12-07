@@ -15,9 +15,11 @@
 import {Component} from '@angular/core';
 
 @Component({
+  
   selector: 'app-root',
-  template: `
-    <section>
+  // テンプレートのsection部分にマウスオーバーで秘密のメッセージを表示する
+  template: `  
+    <section (mouseover)="showSecretMessage()">
       There's a secret message for you, hover to reveal 👀
       {{ message }}
     </section>
@@ -25,8 +27,10 @@ import {Component} from '@angular/core';
 })
 export class App {
   message = '';
-
-  showSecretMessage() {}
+  // ただの関数だが、テンプレートのイベントにバインドさせて、イベントハンドラとする
+  showSecretMessage() {
+    this.message = 'Angular is awesome! 🚀';
+  }
 }
 
 
