@@ -16,26 +16,19 @@ import {Component} from '@angular/core';
 
 @Component({
   selector: 'app-root',
-  styleUrls: ['app.css'],
-  // テンプレートのdivタグのcontentEditable属性にバインドしてみる
-  // trueが入ると編集可能で描画される
-  // さらに追加で、spanタグのstyle属性のcolorプロパティにバインドしてみる = プロパティの文字列で色を変えられる
   template: `
-    <div [contentEditable]="isEditable">
-    <span [style.color] = "colorString">
-      aaa
-    </span>
-    
-    </div>
+    <section>
+      There's a secret message for you, hover to reveal 👀
+      {{ message }}
+    </section>
   `,
 })
 export class App {
-  // boolean型プロパティを定義
-  isEditable: boolean = false;
+  message = '';
 
-  // string型プロパティを定義
-  colorString: string = '#00ff00';
+  showSecretMessage() {}
 }
+
 
 
 
