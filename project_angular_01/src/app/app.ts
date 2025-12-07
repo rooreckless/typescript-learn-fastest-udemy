@@ -16,23 +16,12 @@ import {Component} from '@angular/core';
 
 @Component({
   selector: 'app-root',
-  // テンプレート内で@for文を使い、users配列の要素ごとに描画する
-  // track句で各要素の一意な識別子を指定する(trackの指定は必須)
+  styleUrls: ['app.css'],
   template: `
-  usersリスト: <br>
-  @for(user of users; track user.id){
-    <div>user.id = {{user.id}}: user.name = {{user.name}}</div>
-  }
+    <div contentEditable="false"></div>
   `,
 })
-export class App {
-  // 配列(中がオブジェクト)なプロパティusersを定義
-  users:Array<{id:number,name:string}> = [
-    {id:0,name:'山田太郎'},
-    {id:1,name:'鈴木花子'},
-    {id:2,name:'佐藤次郎'},
-    {id:3,name:'田中三郎'},
-  ];
-}
+export class App {}
+
 
 
