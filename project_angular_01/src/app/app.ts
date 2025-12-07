@@ -13,15 +13,21 @@
 
 
 import {Component} from '@angular/core';
-import {User} from './user';
+import {Child} from './child';
 
-// ルートコンポーネントではuserコンポーネントを使用するがそれだけ
 @Component({
   selector: 'app-root',
-  // Userコンポーネントにnameプロパティを渡す
   template: `
-    <app-user name="Simran"/>
+    <app-child />
+    <p>🐢 all the way down {{ items.length }}</p>
   `,
-  imports: [User],
+  imports: [Child],
 })
-export class App {}
+export class App {
+  items = new Array();
+
+  addItem(item: string) {
+    this.items.push(item);
+  }
+}
+
