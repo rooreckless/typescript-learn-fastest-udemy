@@ -16,9 +16,9 @@ import {Component} from '@angular/core';
 
 @Component({
   selector: 'app-root',
-  // templateを変えると、localhost:4200にアクセスしたときの表示が変わる
+  // templateで、プロパティを表示させることができる
   template: `
-    Hello Universe
+    Hello {{ city }}
   `,
   // styleを変えると、localhost:4200にアクセスしたときの文字色が変わる
   styles: `
