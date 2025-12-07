@@ -17,11 +17,18 @@ import {Component} from '@angular/core';
 @Component({
   selector: 'app-root',
   styleUrls: ['app.css'],
+  // テンプレートのdivタグのcontentEditable属性にバインドしてみる
+  // trueが入ると編集可能で描画される
   template: `
-    <div contentEditable="false"></div>
+    <div [contentEditable]="isEditable">
+    aaa
+    </div>
   `,
 })
-export class App {}
+export class App {
+  // boolean型プロパティを定義
+  isEditable: boolean = false;
+}
 
 
 
