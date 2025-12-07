@@ -29,9 +29,13 @@ export class User {
 @Component({
   selector: 'app-root',
   // app-rootセレクタのテンプレートは必ず描画される
+  // ↑のapp-userセレクタのテンプレートも描画されるようにしてみる
   template: `
-  abc`
-  ,
-  imports: [],
+    abc<br>
+    <app-user></app-user>
+  `,
+  // export されているUserコンポーネントをここでimportして使う
+  // そのうえでapp-userセレクタをテンプレートに記述する
+  imports: [User],
 })
 export class App {}
