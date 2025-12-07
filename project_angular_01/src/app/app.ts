@@ -13,29 +13,28 @@
 
 
 import {Component} from '@angular/core';
+import {Child} from './child';
 
 @Component({
+  // 親コンポーネントでは、addItemEventを受け取ったら、addItemメソッドを呼び出す
+  // items配列の長さの描画と、items配列内要素を繰り返し表示する
+  // = 子コンポーネントのボタンが押されると、子コンポーネントからイベントで'🐢'が送信され、
+  // 親コンポーネントのitems配列に追加されて描画に利用される
   selector: 'app-root',
-  styleUrls: ['app.css'],
-  // テンプレートのdivタグのcontentEditable属性にバインドしてみる
-  // trueが入ると編集可能で描画される
-  // さらに追加で、spanタグのstyle属性のcolorプロパティにバインドしてみる = プロパティの文字列で色を変えられる
   template: `
-    <div [contentEditable]="isEditable">
-    <span [style.color] = "colorString">
-      aaa
-    </span>
-    
-    </div>
+    <app-child (addItemEvent)="addItem($event)" />
+    <p>🐢 all the way down {{ items.length }}</p>
+    <span>@for(item of items; track item){{{item}}}</span>
   `,
+  imports: [Child],
 })
 export class App {
-  // boolean型プロパティを定義
-  isEditable: boolean = false;
+  items = new Array();
 
-  // string型プロパティを定義
-  colorString: string = '#00ff00';
+  // addItemEventで受け取ったときに実行されるメソッド
+  // addItemメソッドは、受け取った文字列をitems配列に追加する
+  addItem(item: string) {
+    this.items.push(item);
+  }
 }
-
-
 
