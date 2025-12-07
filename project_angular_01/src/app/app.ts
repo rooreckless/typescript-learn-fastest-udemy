@@ -15,40 +15,27 @@
 import {Component} from '@angular/core';
 
 @Component({
-  selector: 'app-user',
+  selector: 'app-root',
+  styleUrls: ['app.css'],
+  // テンプレートのdivタグのcontentEditable属性にバインドしてみる
+  // trueが入ると編集可能で描画される
+  // さらに追加で、spanタグのstyle属性のcolorプロパティにバインドしてみる = プロパティの文字列で色を変えられる
   template: `
-    Username: {{ username }}
-  `,
-  styles: `
-    :host {
-      color: red;
-    }
+    <div [contentEditable]="isEditable">
+    <span [style.color] = "colorString">
+      aaa
+    </span>
+    
+    </div>
   `,
 })
-export class User {
-  username = 'youngTech';
+export class App {
+  // boolean型プロパティを定義
+  isEditable: boolean = false;
+
+  // string型プロパティを定義
+  colorString: string = '#00ff00';
 }
 
-// ---コンポーネントの1つめapp-user↑と2つめapp-root↓---
 
-@Component({
-  selector: 'app-root',
-  // app-rootセレクタのテンプレートは必ず描画される
-  // ↑のapp-userセレクタのテンプレートも描画されるようにしてみる
-  template: `
-    abc<br>
-    <section class="user-section">
-      <app-user></app-user>
-    </section>
-    
-  `,
-  // export されているUserコンポーネントをここでimportして使う
-  // そのうえでapp-userセレクタをテンプレートに記述する
-  imports: [User],
-  styles: `
-    .user-section {
-      border: 4px dashed blue;
-    }
-  `,
-})
-export class App {}
+
