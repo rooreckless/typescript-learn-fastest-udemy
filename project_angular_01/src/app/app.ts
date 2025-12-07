@@ -19,6 +19,11 @@ import {Component} from '@angular/core';
   template: `
     Username: {{ username }}
   `,
+  styles: `
+    :host {
+      color: red;
+    }
+  `,
 })
 export class User {
   username = 'youngTech';
@@ -32,10 +37,18 @@ export class User {
   // ↑のapp-userセレクタのテンプレートも描画されるようにしてみる
   template: `
     abc<br>
-    <app-user></app-user>
+    <section class="user-section">
+      <app-user></app-user>
+    </section>
+    
   `,
   // export されているUserコンポーネントをここでimportして使う
   // そのうえでapp-userセレクタをテンプレートに記述する
   imports: [User],
+  styles: `
+    .user-section {
+      border: 4px dashed blue;
+    }
+  `,
 })
 export class App {}
