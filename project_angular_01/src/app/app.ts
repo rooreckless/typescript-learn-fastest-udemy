@@ -16,9 +16,9 @@ import {Component} from '@angular/core';
 
 @Component({
   selector: 'app-root',
-  // templateで、プロパティを表示させることができる
+  // templateで、プロパティを表示させることができる({}で計算もでき、number型プロパティの計算もできる)
   template: `
-    Hello {{ city }}
+    Hello {{ city }}, {{1 + 1}}, {{value*3}}
   `,
   // styleを変えると、localhost:4200にアクセスしたときの文字色が変わる
   styles: `
@@ -30,4 +30,6 @@ import {Component} from '@angular/core';
 export class App {
   // cityプロパティをコンポーネントクラスに追加(string型に型定義)
   city: string = 'San Francisco';
+  // valueプロパティをコンポーネントクラスに追加(number型に型定義)
+  value: number = 100;
 }
