@@ -28,6 +28,6 @@ import {Component} from '@angular/core';
   `,
 })
 export class App {
-  // cityプロパティをコンポーネントクラスに追加(string型に推論させた)
-  city = 'San Francisco';
+  // cityプロパティをコンポーネントクラスに追加(string型に型定義)
+  city: string = 'San Francisco';
 }
