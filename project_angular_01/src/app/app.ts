@@ -17,11 +17,15 @@ import {Comments} from './comments';
 
 @Component({
   selector: 'app-root',
+  // 親コンポーネントのtemplate内で子コンポーネントを使うが、
+  // それのロードを遅延させるため@deferでラップする
   template: `
     <div>
       <h1>How I feel about Angular</h1>
       <article></article>
-      <comments />
+      @defer {
+        <comments />
+      }
     </div>
   `,
   // 子コンポーネントcommentsを使うためにimportsに追加
