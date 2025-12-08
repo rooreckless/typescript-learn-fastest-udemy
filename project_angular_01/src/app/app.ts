@@ -25,6 +25,8 @@ import {Comments} from './comments';
       <article></article>
       @defer {
         <comments />
+      } @placeholder {
+        <p>今後のコメント</p>
       }
     </div>
   `,
