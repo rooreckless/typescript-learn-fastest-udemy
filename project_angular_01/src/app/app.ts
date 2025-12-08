@@ -19,6 +19,11 @@ import {Comments} from './comments';
   selector: 'app-root',
   // 親コンポーネントのtemplate内で子コンポーネントを使うが、
   // それのロードを遅延させるため@deferでラップする
+  // ---
+  // @placeholderは@defer部分がロードされるまでの間に表示しておく内容を指定する
+  // ---
+  // @loadingは@defer部分がロードされるまでの間に表示しておく内容を指定する（Angular v18以降で利用可能）
+  // minimumオプションで最低表示時間を指定できる
   template: `
     <div>
       <h1>How I feel about Angular</h1>
@@ -27,6 +32,8 @@ import {Comments} from './comments';
         <comments />
       } @placeholder {
         <p>今後のコメント</p>
+      } @loading (minimum 2s) {
+        <p>コメントをロードしています...</p>
       }
     </div>
   `,
