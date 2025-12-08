@@ -24,11 +24,13 @@ import {Comments} from './comments';
   // ---
   // @loadingは@defer部分がロードされるまでの間に表示しておく内容を指定する（Angular v18以降で利用可能）
   // minimumオプションで最低表示時間を指定できる
+  // ---
+  // @defer部分がロードされるきっかけを(on hover)=マウスオーバーに設定
   template: `
     <div>
       <h1>How I feel about Angular</h1>
       <article></article>
-      @defer (on viewport){
+      @defer (on hover){
         <comments />
       } @placeholder {
         <p>今後のコメント</p>
