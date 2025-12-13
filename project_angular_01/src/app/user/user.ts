@@ -10,7 +10,7 @@ import {FormsModule} from '@angular/forms';
     <p>{{ username }}'s favorite framework: {{ favoriteFramework }}</p>
     <label for="framework">
       好きなフレームワーク:
-      <input id="framework" type="text" />
+      <input id="framework" type="text" [(ngModel)]="favoriteFramework" />
     </label>
   `,
   // 上でインポートしたら、@Componentsのimportsにも追加する
