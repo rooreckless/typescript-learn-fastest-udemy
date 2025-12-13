@@ -20,8 +20,10 @@ import { ReactiveFormsModule, FormControl, FormGroup  } from '@angular/forms';
 @Component({
   selector: 'app-root',
   // フォームタグには、formGroup属性についてはプロパティバインディングを使い、profileFormフォームグループをバインドしている。
+  // buttonタグ自体に(click)イベントで実行関数を指定してもいいが、
+  // 今回はformタグの(ngSubmit)イベントでonSubmit()関数を指定している。(結果は一緒)
   template: `
-    <form [formGroup]="profileForm">
+    <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
       <label>
         Name
         <input type="text" formControlName="name" />
@@ -30,7 +32,7 @@ import { ReactiveFormsModule, FormControl, FormGroup  } from '@angular/forms';
         Email
         <input type="email" formControlName="email" />
       </label>
-      <button type="submit" (click)="onSubmit()">Submit</button>
+      <button type="submit">Submit</button>
     </form>
     <hr/>
     <h2>Profile Form</h2>
