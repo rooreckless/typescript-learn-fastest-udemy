@@ -13,15 +13,13 @@
 
 
 import {Component} from '@angular/core';
-// 子コンポーネントuserをインポート
-import {User} from './user';
+
 @Component({
   selector: 'app-root',
   template: `
-    <app-user></app-user>
+    <h1>Welcome to Angular!</h1>
   `,
-  // 子コンポーネントUserを使うためにimportsに追加
-  imports: [User],
+  imports: [],
 })
 export class App {}
 
