@@ -32,7 +32,7 @@ import {RouterOutlet,RouterLink} from '@angular/router';
   `,
   //ルーティングを有効化するため↑でインポートしたRouterOutletをimportsに追加
   //これで、template内で<router-outlet>が使えるようになる
-  // 【追加】さらにRouterLinkの追加インポートにも対応
+  // 【追加】さらにRouterLinkの追加インポートにも対応 
   imports: [RouterOutlet,RouterLink],
 })
 export class App {}
