@@ -7,7 +7,10 @@ import {Component} from '@angular/core';
   template: `
     <div>Username: {{ username }}</div>
     <p>{{ username }}'s favorite framework: {{ favoriteFramework }}</p>
-    <label for="framework">Favorite Framework:</label>
+    <label for="framework">
+      好きなフレームワーク:
+      <input id="framework" type="text" />
+    </label>
   `,
 })
 export class User {
