@@ -13,27 +13,24 @@
 
 
 import {Component} from '@angular/core';
-//ルーティングを有効化するためインポート
-//  【追加】さらに、RouteLinkもインポート
-import {RouterOutlet,RouterLink} from '@angular/router';
+
 
 @Component({
   selector: 'app-root',
-  // router-outletをtemplateで使い、navタグで簡単なナビゲーションを追加
-  //  【追加】さらに、RouterLinkディレクティブを使ってリンクを設定し、aタグのhref属性をrouterLink属性に変更
   template: `
-    <h1>Welcome to Angular!</h1>
-    <nav>
-      <a routerLink="/">Home routeLink</a>
-      |
-      <a routerLink="/user">User routeLink</a>
-    </nav>
-    <router-outlet />
+    <form>
+      <label>
+        Name
+        <input type="text" formControlName="name" />
+      </label>
+      <label>
+        Email
+        <input type="email" formControlName="email" />
+      </label>
+      <button type="submit">Submit</button>
+    </form>
   `,
-  //ルーティングを有効化するため↑でインポートしたRouterOutletをimportsに追加
-  //これで、template内で<router-outlet>が使えるようになる
-  // 【追加】さらにRouterLinkの追加インポートにも対応 
-  imports: [RouterOutlet,RouterLink],
+  imports: [],
 })
 export class App {}
 
