@@ -1,7 +1,8 @@
 
 import {Component} from '@angular/core';
-// favotiteFrameworkプロパティを追加し、それをpタグとしてtemplateに表示するように変更
-// また、labelタグも追加しているが、input要素は追加していない。
+// FormsModuleをインポート
+import {FormsModule} from '@angular/forms';
+
 @Component({
   selector: 'app-user',
   template: `
@@ -12,6 +13,8 @@ import {Component} from '@angular/core';
       <input id="framework" type="text" />
     </label>
   `,
+  // 上でインポートしたら、@Componentsのimportsにも追加する
+  imports: [FormsModule],
 })
 export class User {
   username = 'youngTech';
