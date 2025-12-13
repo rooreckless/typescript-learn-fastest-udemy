@@ -13,7 +13,7 @@
 
 
 import {Component} from '@angular/core';
-//ルーティングを有効化するためインポート
+//ルーティングを有効化するためインポート　
 import {RouterOutlet} from '@angular/router';
 
 @Component({
