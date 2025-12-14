@@ -21,7 +21,7 @@ import { ReactiveFormsModule, FormControl, FormGroup  } from '@angular/forms';
   selector: 'app-root',
   // フォームタグには、formGroup属性についてはプロパティバインディングを使い、profileFormフォームグループをバインドしている。
   // buttonタグ自体に(click)イベントで実行関数を指定してもいいが、
-  // 今回はformタグの(ngSubmit)イベントでonSubmit()関数を指定している。(結果は一緒)
+  // 今回はformタグの(ngSubmit)イベントでonSubmit()関数を指定している。(結果は一緒) 
   template: `
     <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
       <label>
