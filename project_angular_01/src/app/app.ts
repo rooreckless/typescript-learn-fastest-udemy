@@ -13,27 +13,45 @@
 
 
 import {Component} from '@angular/core';
-//ルーティングを有効化するためインポート
-//  【追加】さらに、RouteLinkもインポート
-import {RouterOutlet,RouterLink} from '@angular/router';
-
+//リアクティブフォームモジュールたちをインポート
+import { ReactiveFormsModule, FormControl, FormGroup  } from '@angular/forms';
+//formタグの中は、label内でinputな点は一緒だが、inputで双方向バインディングしていない。
+//formControlNameディレクティブを使って、フォームコントロールとinput要素を関連付けている。
 @Component({
   selector: 'app-root',
-  // router-outletをtemplateで使い、navタグで簡単なナビゲーションを追加
-  //  【追加】さらに、RouterLinkディレクティブを使ってリンクを設定し、aタグのhref属性をrouterLink属性に変更
+  // フォームタグには、formGroup属性についてはプロパティバインディングを使い、profileFormフォームグループをバインドしている。
+  // buttonタグ自体に(click)イベントで実行関数を指定してもいいが、
+  // 今回はformタグの(ngSubmit)イベントでonSubmit()関数を指定している。(結果は一緒)
   template: `
-    <h1>Welcome to Angular!</h1>
-    <nav>
-      <a routerLink="/">Home routeLink</a>
-      |
-      <a routerLink="/user">User routeLink</a>
-    </nav>
-    <router-outlet />
+    <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+      <label>
+        Name
+        <input type="text" formControlName="name" />
+      </label>
+      <label>
+        Email
+        <input type="email" formControlName="email" />
+      </label>
+      <button type="submit">Submit</button>
+    </form>
+    <hr/>
+    <h2>Profile Form</h2>
+    <p>Name: {{ profileForm.value.name }}</p>
+    <p>Email: {{ profileForm.value.email }}</p>
   `,
-  //ルーティングを有効化するため↑でインポートしたRouterOutletをimportsに追加
-  //これで、template内で<router-outlet>が使えるようになる
-  // 【追加】さらにRouterLinkの追加インポートにも対応 
-  imports: [RouterOutlet,RouterLink],
+  // ↑フォームに入力さらた値は、formGroup属性にバインドされた変数.value.プロパティ名で取得できる。
+  imports: [ReactiveFormsModule],
 })
-export class App {}
+export class App {
+  //フォームグループを作成し、inputタグのformControlNameのnameとemailのフォームコントロールを追加
+  profileForm = new FormGroup({
+    // 以下はフォームタグ内のinputタグで使われているformControlNameと一致させる必要がある。
+    name: new FormControl(''),
+    email: new FormControl(''),
+  });
+
+  onSubmit() {
+    alert(this.profileForm.value.name + "--" + this.profileForm.value.email);
+  }
+}
 
