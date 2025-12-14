@@ -14,7 +14,8 @@
 
 import {Component} from '@angular/core';
 //リアクティブフォームモジュールたちをインポート
-import { ReactiveFormsModule, FormControl, FormGroup  } from '@angular/forms';
+// 【追加】Validatorsもインポート
+import { ReactiveFormsModule, FormControl, FormGroup,Validators } from '@angular/forms';
 //formタグの中は、label内でinputな点は一緒だが、inputで双方向バインディングしていない。
 //formControlNameディレクティブを使って、フォームコントロールとinput要素を関連付けている。
 @Component({
@@ -46,8 +47,10 @@ export class App {
   //フォームグループを作成し、inputタグのformControlNameのnameとemailのフォームコントロールを追加
   profileForm = new FormGroup({
     // 以下はフォームタグ内のinputタグで使われているformControlNameと一致させる必要がある。
-    name: new FormControl(''),
-    email: new FormControl(''),
+    // 【追加】FormControlにValidators.requiredを追加して、必須入力にする。
+    // 【追加】さらに、email入力箇所については、Validators.emailも追加して、メールアドレス形式のバリデーションを行うようにすることもできる。
+    name: new FormControl('', Validators.required),
+    email: new FormControl('', [Validators.required, Validators.email]),
   });
 
   onSubmit() {
