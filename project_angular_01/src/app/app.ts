@@ -33,7 +33,7 @@ import { ReactiveFormsModule, FormControl, FormGroup,Validators } from '@angular
         Email
         <input type="email" formControlName="email" />
       </label>
-      <button type="submit">Submit</button>
+      <button type="submit" [disabled]="!profileForm.valid">Submit</button>
     </form>
     <hr/>
     <h2>Profile Form</h2>
@@ -41,6 +41,7 @@ import { ReactiveFormsModule, FormControl, FormGroup,Validators } from '@angular
     <p>Email: {{ profileForm.value.email }}</p>
   `,
   // ↑フォームに入力さらた値は、formGroup属性にバインドされた変数.value.プロパティ名で取得できる。
+  // ↑【追加】buttonタグに[disabled]属性を追加し、フォーム全体のバリデーション状態がvalidでない場合はボタンを無効化するようにした。
   imports: [ReactiveFormsModule],
 })
 export class App {
