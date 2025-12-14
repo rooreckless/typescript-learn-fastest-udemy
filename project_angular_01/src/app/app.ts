@@ -39,6 +39,19 @@ import { ReactiveFormsModule, FormControl, FormGroup,Validators } from '@angular
     <h2>Profile Form</h2>
     <p>Name: {{ profileForm.value.name }}</p>
     <p>Email: {{ profileForm.value.email }}</p>
+    <hr>
+    <p>フォーム全体のバリデーション状態を確認したい場合</p>
+    @if(!profileForm.valid){
+      <p style="color:red;">フォームに不備があります。すべての必須項目を正しく入力してください。</p>
+      }
+    <p >
+      フォームの状態: {{ profileForm.status }}
+    </p>
+
+    <hr/>
+    <p>inputの個々の要素にバリデーションチェックをかけたい場合</p>
+    @if(profileForm.controls.name.touched && profileForm.controls.name.errors?.['required']){
+      <p style="color:red;">Nameは必須入力です。</p>}
   `,
   // ↑フォームに入力さらた値は、formGroup属性にバインドされた変数.value.プロパティ名で取得できる。
   // ↑【追加】buttonタグに[disabled]属性を追加し、フォーム全体のバリデーション状態がvalidでない場合はボタンを無効化するようにした。
