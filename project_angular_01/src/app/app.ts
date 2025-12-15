@@ -72,6 +72,13 @@ import { ReactiveFormsModule, FormControl, FormGroup,Validators } from '@angular
         <li style="color:red;">Emailの形式が正しくありません。</li>
       </ul>
       }
+    <hr/>
+    <h3>【余談】inputのemail要素についてのみ「emailとして受けられる文字かのバリデーションチェック」の結果をゲッタープロパティでやる場合</h3>
+    @if(hasEmailFormatError){
+      <ul>
+        <li style="color:red;">Emailの形式が正しくありません。</li>
+      </ul>
+      }
     
   `,
   // ↑フォームに入力さらた値は、formGroup属性にバインドされた変数.value.プロパティ名で取得できる。
@@ -87,6 +94,11 @@ export class App {
     name: new FormControl('', Validators.required),
     email: new FormControl('', [Validators.required, Validators.email]),
   });
+  
+  // 【余談】emailの形式バリデーションエラーをチェックするゲッタープロパティ
+  get hasEmailFormatError(): boolean {
+    return this.profileForm.controls.email.errors?.['email'] ?? false;
+  }
   
   onSubmit() {
     alert(this.profileForm.value.name + "--" + this.profileForm.value.email);
