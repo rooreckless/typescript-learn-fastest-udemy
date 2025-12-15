@@ -44,14 +44,35 @@ import { ReactiveFormsModule, FormControl, FormGroup,Validators } from '@angular
     @if(!profileForm.valid){
       <p style="color:red;">フォームに不備があります。すべての必須項目を正しく入力してください。</p>
       }
+    <hr/>
+
     <p >
       フォームの状態: {{ profileForm.status }}
     </p>
 
     <hr/>
-    <p>inputの個々の要素にバリデーションチェックをかけたい場合</p>
+    <h3>inputの個々の要素(=nameのみ)にバリデーションチェック結果を表示してみる場合</h3>
     @if(profileForm.controls.name.touched && profileForm.controls.name.errors?.['required']){
-      <p style="color:red;">Nameは必須入力です。</p>}
+      <ul>
+        <li style="color:red;">Nameは必須入力です。</li>
+      </ul>
+      }
+    <hr/>
+    
+    <h3>inputのemail要素についてのみ「必須入力バリデーションチェック」の結果を表示してみる場合</h3>
+    @if(profileForm.controls.email.touched && profileForm.controls.email.errors?.['required']){
+      <ul>  
+        <li style="color:red;">Emailは必須入力です。</li>
+      </ul>
+      }
+
+    <h3>inputのemail要素についてのみ「emailとして受けられる文字かのバリデーションチェック」の結果を表示してみる場合</h3>
+    @if(profileForm.controls.email.errors?.['email']){
+      <ul>
+        <li style="color:red;">Emailの形式が正しくありません。</li>
+      </ul>
+      }
+    
   `,
   // ↑フォームに入力さらた値は、formGroup属性にバインドされた変数.value.プロパティ名で取得できる。
   // ↑【追加】buttonタグに[disabled]属性を追加し、フォーム全体のバリデーション状態がvalidでない場合はボタンを無効化するようにした。
@@ -66,7 +87,7 @@ export class App {
     name: new FormControl('', Validators.required),
     email: new FormControl('', [Validators.required, Validators.email]),
   });
-
+  
   onSubmit() {
     alert(this.profileForm.value.name + "--" + this.profileForm.value.email);
   }
