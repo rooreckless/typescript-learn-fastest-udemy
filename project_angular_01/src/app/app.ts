@@ -14,6 +14,8 @@
 import {Component} from '@angular/core';
 // パイプを使うためにimport
 import { UpperCasePipe } from '@angular/common';
+// いろんなパイプを使うため追加import
+import {DecimalPipe, DatePipe, CurrencyPipe} from '@angular/common';
 
 // テンプレートでパイプを使う例
 @Component({
@@ -27,13 +29,17 @@ import { UpperCasePipe } from '@angular/common';
       <li>Date  {{ birthday }}</li>
       <li>Currency  {{ cost }}</li>
   </ul>
+  <hr>
   <ul>
-      <li>Number with "decimal" {{ num }}</li>
-      <li>Date with "date" {{ birthday }}</li>
-      <li>Currency with "currency" {{ cost }}</li>
+      <li>Number with "decimal" {{ num | number:"3.2-2" }}<br>
+      ↑ DecimalPipeのnumberに"3.2-2"を引数として渡したうえで、変数numを変換している</li>
+      <li>Date with "date" {{ birthday | date: 'medium' }}<br>
+      ↑ DatePipeのdateに'medium'を引数として渡したうえで、変数birthdayを変換している</li>
+      <li>Currency with "currency" {{ cost | currency}}<br>
+      ↑ CurrencyPipeのcurrencyを使って、変数costを変換している</li>
   </ul>
   `,
-  imports: [UpperCasePipe],
+  imports: [UpperCasePipe,DecimalPipe, DatePipe, CurrencyPipe],
 })
 export class App {
   username = 'yOunGTECh';
