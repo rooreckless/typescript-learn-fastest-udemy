@@ -12,13 +12,17 @@
 // }
 
 import {Component} from '@angular/core';
+// パイプを使うためにimport
+import { UpperCasePipe } from '@angular/common';
 
+// テンプレートでパイプを使う例
 @Component({
   selector: 'app-root',
   template: `
-    {{ username }}
+  username = {{ username}}<br>  
+  username | uppercase = {{ username | uppercase }}
   `,
-  imports: [],
+  imports: [UpperCasePipe],
 })
 export class App {
   username = 'yOunGTECh';
