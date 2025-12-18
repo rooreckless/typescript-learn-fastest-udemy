@@ -11,32 +11,47 @@
 //   protected readonly title = signal('project_angular_01');
 // }
 
-// コンストラクタベースでの依存性注入(サービスをnewしなくても使えるようにする)にはinjectはなくてもいい
 import {Component} from '@angular/core';
-import {CarService} from './car.service';
+// パイプを使うためにimport
+import { UpperCasePipe } from '@angular/common';
+// いろんなパイプを使うため追加import
+import {DecimalPipe, DatePipe, CurrencyPipe} from '@angular/common';
+// カスタムパイプをimport
+import {ReversePipe} from './reverse.pipe';
+
+// テンプレートでパイプを使う例
 @Component({
   selector: 'app-root',
   template: `
-  <p>display = {{display}}</p>
-    `,
-  imports: [],
+  username = {{ username}}<br>  
+  username | uppercase = {{ username | uppercase }}<br>
+  <hr>
+  <ul>
+      <li>Number {{ num }}</li>
+      <li>Date  {{ birthday }}</li>
+      <li>Currency  {{ cost }}</li>
+  </ul>
+  <hr>
+  <ul>
+      <li>Number with "decimal" {{ num | number:"3.2-2" }}<br>
+      ↑ DecimalPipeのnumberに"3.2-2"を引数として渡したうえで、変数numを変換している</li>
+      <li>Date with "date" {{ birthday | date: 'medium' }}<br>
+      ↑ DatePipeのdateに'medium'を引数として渡したうえで、変数birthdayを変換している</li>
+      <li>Currency with "currency" {{ cost | currency}}<br>
+      ↑ CurrencyPipeのcurrencyを使って、変数costを変換している</li>
+  </ul>
+  <hr>
+  カスタムパイプ<br>
+  word = {{ word }}<br>
+  reverseWord = {{ word | reverse }}<br>
+  逆順にした単語を表示するカスタムパイプを利用しています。
+  `,
+  imports: [UpperCasePipe,DecimalPipe, DatePipe, CurrencyPipe, ReversePipe],
 })
 export class App {
-  // injectを使う場合(Angular14以降)
-  // carService = inject(CarService);
-  display: string;
-
-  // -----
-  // car.service.tsからCarServiceクラスをコンストラクタベースで注入(古いAngularでのやり方)
-  constructor(private carService: CarService) {
-    this.display = this.carService.getCars().join(' ⭐️ ');
-  }
-  // ただし、このやり方だと、carServiceはprivateなので、
-  // テンプレート内で直接carService.getCars()などは使えなくなる。
-  // -----
-
-
-  // injectを使う場合が以下のようになる。
-  // display = this.carService.getCars().join("☆");
+  username = 'yOunGTECh';
+  num = 103.1234;
+  birthday = new Date(2023, 3, 2);
+  cost = 4560.34;
+  word = 'Angular';
 }
-
