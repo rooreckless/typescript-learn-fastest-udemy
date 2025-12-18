@@ -16,6 +16,8 @@ import {Component} from '@angular/core';
 import { UpperCasePipe } from '@angular/common';
 // いろんなパイプを使うため追加import
 import {DecimalPipe, DatePipe, CurrencyPipe} from '@angular/common';
+// カスタムパイプをimport
+import {ReversePipe} from './reverse.pipe';
 
 // テンプレートでパイプを使う例
 @Component({
@@ -38,12 +40,18 @@ import {DecimalPipe, DatePipe, CurrencyPipe} from '@angular/common';
       <li>Currency with "currency" {{ cost | currency}}<br>
       ↑ CurrencyPipeのcurrencyを使って、変数costを変換している</li>
   </ul>
+  <hr>
+  カスタムパイプ<br>
+  word = {{ word }}<br>
+  reverseWord = {{ word | reverse }}<br>
+  逆順にした単語を表示するカスタムパイプを利用しています。
   `,
-  imports: [UpperCasePipe,DecimalPipe, DatePipe, CurrencyPipe],
+  imports: [UpperCasePipe,DecimalPipe, DatePipe, CurrencyPipe, ReversePipe],
 })
 export class App {
   username = 'yOunGTECh';
   num = 103.1234;
   birthday = new Date(2023, 3, 2);
   cost = 4560.34;
+  word = 'Angular';
 }
