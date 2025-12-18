@@ -17,7 +17,8 @@ import {CarService} from './car.service';
 @Component({
   selector: 'app-root',
   template: `
-  <p>{{carService.getCars()}}</p>
+  <p>carService.getCars() = {{carService.getCars()}}</p><br>
+  <p>display = {{display}}</p>
     `,
   imports: [],
 })
@@ -25,5 +26,7 @@ export class App {
   // car.service.tsからCarServiceクラスを注入
   // =インスタンス化しなくていい <- 依存性(サービス)を注入してきた状態
   carService = inject(CarService);
+  // インスタンス火していないけど、そのままサービスのメソッド(getCars)を使えている
+  display = this.carService.getCars().join("☆");
 }
 
