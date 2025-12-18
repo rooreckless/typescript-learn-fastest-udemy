@@ -11,18 +11,19 @@
 //   protected readonly title = signal('project_angular_01');
 // }
 
-
-import {Component} from '@angular/core';
-import {Car} from './car';
+// 依存性注入(サービスをnewしなくても使えるようにする)にはinfectもインポート
+import {Component,inject} from '@angular/core';
+import {CarService} from './car.service';
 @Component({
   selector: 'app-root',
   template: `
-  <p>{{car.getCars()}}</p>
+  <p>{{carService.getCars()}}</p>
     `,
   imports: [],
 })
 export class App {
-  // car.tsからCarクラスをインポートしてインスタンス化 <- 依存がある状態
-  car = new Car();
+  // car.service.tsからCarServiceクラスを注入
+  // =インスタンス化しなくていい <- 依存性(サービス)を注入してきた状態
+  carService = inject(CarService);
 }
 
