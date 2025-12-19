@@ -11,47 +11,38 @@
 //   protected readonly title = signal('project_angular_01');
 // }
 
-import {Component} from '@angular/core';
-// パイプを使うためにimport
-import { UpperCasePipe } from '@angular/common';
-// いろんなパイプを使うため追加import
-import {DecimalPipe, DatePipe, CurrencyPipe} from '@angular/common';
-// カスタムパイプをimport
-import {ReversePipe} from './reverse.pipe';
+import {Component,Inject} from '@angular/core';
+import {CarService,FakeCarService} from './car.service';
+import {ABSTRACT_CAR_SERVICE,AbstractCarService} from './abstract.car.service';
 
-// テンプレートでパイプを使う例
 @Component({
   selector: 'app-root',
   template: `
-  username = {{ username}}<br>  
-  username | uppercase = {{ username | uppercase }}<br>
-  <hr>
-  <ul>
-      <li>Number {{ num }}</li>
-      <li>Date  {{ birthday }}</li>
-      <li>Currency  {{ cost }}</li>
-  </ul>
-  <hr>
-  <ul>
-      <li>Number with "decimal" {{ num | number:"3.2-2" }}<br>
-      ↑ DecimalPipeのnumberに"3.2-2"を引数として渡したうえで、変数numを変換している</li>
-      <li>Date with "date" {{ birthday | date: 'medium' }}<br>
-      ↑ DatePipeのdateに'medium'を引数として渡したうえで、変数birthdayを変換している</li>
-      <li>Currency with "currency" {{ cost | currency}}<br>
-      ↑ CurrencyPipeのcurrencyを使って、変数costを変換している</li>
-  </ul>
-  <hr>
-  カスタムパイプ<br>
-  word = {{ word }}<br>
-  reverseWord = {{ word | reverse }}<br>
-  逆順にした単語を表示するカスタムパイプを利用しています。
+    
+    <p>car.getCars() : {{car.getCars()}}</p>
   `,
-  imports: [UpperCasePipe,DecimalPipe, DatePipe, CurrencyPipe, ReversePipe],
+  // DIPのために、providers配列でCarServiceを登録
+  //これは、抽象クラスと、実装クラスのひもづけを行う部分でもある
+  providers: [
+    // { provide: ABSTRACT_CAR_SERVICE, useClass: CarService }
+    // DI/DIPが成り立っているので、provicers配列で
+    //AbstractCarServiceに紐づける実装クラスを変更するだけで
+    //コンポーネント側のコードを一切変更せずに、サービスの入れ替えが可能
+    { provide: ABSTRACT_CAR_SERVICE, useClass: FakeCarService }
+  ],
+imports: [],
 })
 export class App {
-  username = 'yOunGTECh';
-  num = 103.1234;
-  birthday = new Date(2023, 3, 2);
-  cost = 4560.34;
-  word = 'Angular';
+  // car = new CarService();
+  //↑サービスを直接newして使うのはNG。DIPに反する。
+
+  // コンストラクタで抽象クラスを使って依存性注入を行う
+  constructor(
+    @Inject(ABSTRACT_CAR_SERVICE)
+    public car: AbstractCarService
+  ) {
+    // コンストラクタとしてやる処理はない。↑のAbstractな引数だけで十分
+    //これで、テンプレートでcar.getCars()をすると、provides配列で登録した
+    //CarServiceのメソッドが呼び出される。
+  }
 }
