@@ -1,0 +1,85 @@
+# [project]
+# name = "other-project-python01"
+# version = "0.1.0"
+# description = "Add your description here"
+# readme = "README.md"
+# requires-python = ">=3.13.9"
+# dependencies = [
+#     "pytest>=9.0.2",
+# ]
+
+# [project.scripts]
+# # ソース実行時の設定
+# run-app = "main:main"
+
+# [tool.pytest.ini_options]
+# # pytest関連の設定
+# pythonpath = ["src"]
+# testpaths = ["tests"]
+
+# [dependency-groups]
+# dev = [
+#     "pytest>=9.0.2",
+#     "pytest-mock>=3.15.1",
+#     "pytest-pythonpath>=0.7.3",
+# ]
+
+
+#----
+# 実行時に関しては、[project.scripts]は、ただの設定文字列ではなく
+# プロジェクトを環境に“インストール”したときに
+# run-app という実行ファイル（entry point）を生成する仕組み。
+#
+# つまり「entry point を作る」には、ツール（uv）が
+# 1.このプロジェクトをビルドできる（[build-system] が必要）
+# 2.どの Python モジュールをインストール対象にするか分かる（src レイアウトの配線が必要）
+# 3. その結果として run-app を生成できる
+# という情報が必要になる。
+#----
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "other-project-python01"
+version = "0.1.0"
+requires-python = ">=3.13.9"
+dependencies = []
+
+[project.scripts]
+# run-app というコマンドを作り、main.main() を呼ぶため。
+# このpyproject.tomlがあるディレクトリ、uv run run-appでソースを実行できる
+run-app = "main:main"
+
+[tool.setuptools]
+# import の起点が src/ であることを setuptools に教える。
+# ソースはプロジェクト直下ではなく src/ の中にある
+# ので「パッケージ探索は src/ の中を見てね」と伝える設定です
+package-dir = {"" = "src"}
+py-modules = ["main"]
+# ↑py-modulesとは、src/main.py を “モジュールとしてインストール対象に含める”。
+# main.py はディレクトリ（パッケージ）ではなく 単体モジュールです
+# だから「この単体モジュールも配布/インストール対象だよ」と明示します
+# これが無いと、main:main が見つからず run-app を作れません
+
+[tool.setuptools.packages.find]
+# 目的：src/ の中から “パッケージ（ディレクトリ）” を自動で見つける。
+# abstracts/, businesses/, impls/ はディレクトリなので（__init__.py がある前提）
+# setuptools が「パッケージ」として収集する必要があります
+# where=["src"] によって src/ 配下を探索対象にします
+where = ["src"]
+
+[tool.pytest.ini_options]
+# pytest 実行時の import を通すための設定です。
+# なので、run-appを作るためのsetuptoolsの設定とはべつもの
+# このpyproject.tomlがあるディレクトリ、uv run pytestでテストが実行できる
+pythonpath = ["src"]
+testpaths = ["tests"]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.2",
+    "pytest-mock>=3.15.1",
+    "pytest-pythonpath>=0.7.3",
+]
