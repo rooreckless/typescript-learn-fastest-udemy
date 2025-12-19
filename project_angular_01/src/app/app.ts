@@ -11,9 +11,9 @@
 //   protected readonly title = signal('project_angular_01');
 // }
 
-import {Component} from '@angular/core';
-import {Car} from './car';
-
+import {Component,Inject} from '@angular/core';
+import {CarService} from './car.service';
+import {ABSTRACT_CAR_SERVICE,AbstractCarService} from './abstract.car.service';
 
 @Component({
   selector: 'app-root',
@@ -21,8 +21,24 @@ import {Car} from './car';
     
     <p>car.getCars() : {{car.getCars()}}</p>
   `,
+  // DIPのために、providers配列でCarServiceを登録
+  //これは、抽象クラスと、実装クラスのひもづけを行う部分でもある
+  providers: [
+    { provide: ABSTRACT_CAR_SERVICE, useClass: CarService }
+  ],
 imports: [],
 })
 export class App {
-  car = new Car();
+  // car = new CarService();
+  //↑サービスを直接newして使うのはNG。DIPに反する。
+
+  // コンストラクタで抽象クラスを使って依存性注入を行う
+  constructor(
+    @Inject(ABSTRACT_CAR_SERVICE)
+    public car: AbstractCarService
+  ) {
+    // コンストラクタとしてやる処理はない。↑のAbstractな引数だけで十分
+    //これで、テンプレートでcar.getCars()をすると、provides配列で登録した
+    //CarServiceのメソッドが呼び出される。
+  }
 }
