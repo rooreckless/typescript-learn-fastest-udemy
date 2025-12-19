@@ -18,3 +18,18 @@ export class CarService implements AbstractCarService {
     }
 }
 
+// もう一つ、AbstractCarServiceを実装したFakeCarServiceクラスの定義
+// テスト用のサービスとして使うことができる
+@Injectable()
+export class FakeCarService implements AbstractCarService {
+    cars = ['Fake CAR1', 'Fake CAR2'];
+
+    getCars(): string[] {
+        return this.cars;
+    }
+
+    getCar(id: number) {
+        return this.cars[id];
+    }
+}
+

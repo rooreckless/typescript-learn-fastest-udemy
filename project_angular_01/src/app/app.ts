@@ -12,7 +12,7 @@
 // }
 
 import {Component,Inject} from '@angular/core';
-import {CarService} from './car.service';
+import {CarService,FakeCarService} from './car.service';
 import {ABSTRACT_CAR_SERVICE,AbstractCarService} from './abstract.car.service';
 
 @Component({
@@ -24,7 +24,11 @@ import {ABSTRACT_CAR_SERVICE,AbstractCarService} from './abstract.car.service';
   // DIPのために、providers配列でCarServiceを登録
   //これは、抽象クラスと、実装クラスのひもづけを行う部分でもある
   providers: [
-    { provide: ABSTRACT_CAR_SERVICE, useClass: CarService }
+    // { provide: ABSTRACT_CAR_SERVICE, useClass: CarService }
+    // DI/DIPが成り立っているので、provicers配列で
+    //AbstractCarServiceに紐づける実装クラスを変更するだけで
+    //コンポーネント側のコードを一切変更せずに、サービスの入れ替えが可能
+    { provide: ABSTRACT_CAR_SERVICE, useClass: FakeCarService }
   ],
 imports: [],
 })
