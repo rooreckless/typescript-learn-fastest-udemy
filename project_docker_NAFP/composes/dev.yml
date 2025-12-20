@@ -47,6 +47,7 @@ services:
     # 環境変数ファイルの読み込み
     env_file:
       - ../.envs/fastapi/dev
+      - ../.envs/postgres/dev
     # ボリュームマウント設定（ホットリロード用）
     volumes:
       # ソースコードのマウント（開発時の変更を即座に反映）

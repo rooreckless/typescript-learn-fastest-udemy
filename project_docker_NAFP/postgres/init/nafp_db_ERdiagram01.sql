@@ -1,13 +1,13 @@
 CREATE TABLE IF NOT EXISTS "users" (
 	"id" SERIAL,
 	"name" VARCHAR(45) NOT NULL,
-	"password_hash" BYTEA NOT NULL,
+	"password_hash" VARCHAR(255) NOT NULL,
 	"email" VARCHAR(255) NOT NULL,
 	"created_by" VARCHAR(45) NOT NULL,
 	"created_at" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	"updated_by" VARCHAR(45) NOT NULL,
 	"updated_at" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-	"deleted_at" TIMESTAMP NOT NULL,
+	"deleted_at" TIMESTAMP,
 	PRIMARY KEY("id")
 );
 
@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS "items" (
 	"created_at" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	"updated_by" VARCHAR(45) NOT NULL,
 	"updated_at" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-	"deleted_at" TIMESTAMP NOT NULL,
+	"deleted_at" TIMESTAMP,
 	PRIMARY KEY("id")
 );
 
@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS "categories" (
 	"created_at" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	"updated_by" VARCHAR(45) NOT NULL,
 	"updated_at" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-	"deleted_at" TIMESTAMP NOT NULL,
+	"deleted_at" TIMESTAMP,
 	PRIMARY KEY("id")
 );
 
@@ -52,7 +52,7 @@ CREATE TABLE IF NOT EXISTS "item_category" (
 	"created_at" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	"updated_by" VARCHAR(45) NOT NULL,
 	"updated_at" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-	"deleted_at" TIMESTAMP NOT NULL,
+	"deleted_at" TIMESTAMP,
 	PRIMARY KEY("item_id", "category_id")
 );
 

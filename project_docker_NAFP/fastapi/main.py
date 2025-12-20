@@ -1,23 +1,44 @@
 """
 =========================================
 FastAPI メインアプリケーション
+ドメイン駆動設計（DDD）に基づいたCRUD API
 =========================================
 """
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
-from typing import List, Optional
-import os
-from datetime import datetime
+from contextlib import asynccontextmanager
 
+from infrastructure.database import init_db
+from presentation.user_routes import router as user_router
+from presentation.item_routes import router as item_router
+from presentation.category_routes import router as category_router
+
+
+# =========================================
+# アプリケーションライフサイクルイベント
+# =========================================
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """起動時・終了時の処理"""
+    # 起動時: データベース初期化
+    # await init_db()  # 既にSQLファイルで初期化されるためコメントアウト
+    print("🚀 FastAPI application started")
+    yield
+    # 終了時の処理
+    print("🛑 FastAPI application stopped")
+
+
+# =========================================
 # FastAPIアプリケーションのインスタンス作成
+# =========================================
 app = FastAPI(
     title="NAFP API",
-    description="Nginx-Angular-FastAPI-PostgreSQL Stack API",
-    version="1.0.0",
+    description="Nginx-Angular-FastAPI-PostgreSQL Stack API (Domain-Driven Design)",
+    version="2.0.0",
     docs_url="/api/docs",  # Swagger UIのURL
     redoc_url="/api/redoc",  # ReDocのURL
+    lifespan=lifespan
 )
 
 # =========================================
@@ -36,23 +57,15 @@ app.add_middleware(
 )
 
 # =========================================
-# データモデル
+# ルーターの登録
 # =========================================
-class User(BaseModel):
-    """ユーザーモデル"""
-    id: Optional[int] = None
-    username: str
-    email: str
-    created_at: Optional[datetime] = None
+app.include_router(user_router, prefix="/api")
+app.include_router(item_router, prefix="/api")
+app.include_router(category_router, prefix="/api")
 
-class HealthResponse(BaseModel):
-    """ヘルスチェックレスポンスモデル"""
-    status: str
-    timestamp: datetime
-    environment: str
 
 # =========================================
-# エンドポイント
+# ヘルスチェックエンドポイント
 # =========================================
 
 @app.get("/", tags=["Root"])
@@ -62,108 +75,21 @@ async def root():
     APIの基本情報を返す
     """
     return {
-        "message": "Welcome to NAFP API",
-        "version": "1.0.0",
+        "message": "Welcome to NAFP API (Domain-Driven Design)",
+        "version": "2.0.0",
         "docs": "/api/docs",
+        "architecture": "DDD (Domain-Driven Design)"
     }
 
-@app.get("/health", response_model=HealthResponse, tags=["Health"])
+
+@app.get("/health", tags=["Health"])
 async def health_check():
     """
     ヘルスチェックエンドポイント
     アプリケーションの状態を確認
     """
-    return HealthResponse(
-        status="healthy",
-        timestamp=datetime.now(),
-        environment=os.getenv("ENVIRONMENT", "unknown"),
-    )
-
-@app.get("/api/users", response_model=List[User], tags=["Users"])
-async def get_users():
-    """
-    ユーザー一覧取得エンドポイント
-    
-    TODO: データベースからの取得に変更する
-    現在はダミーデータを返している
-    """
-    # ダミーデータ
-    dummy_users = [
-        User(
-            id=1,
-            username="admin",
-            email="admin@example.com",
-            created_at=datetime.now(),
-        ),
-        User(
-            id=2,
-            username="user1",
-            email="user1@example.com",
-            created_at=datetime.now(),
-        ),
-    ]
-    return dummy_users
-
-@app.get("/api/users/{user_id}", response_model=User, tags=["Users"])
-async def get_user(user_id: int):
-    """
-    ユーザー詳細取得エンドポイント
-    
-    Args:
-        user_id: ユーザーID
-    
-    Returns:
-        User: ユーザー情報
-    
-    Raises:
-        HTTPException: ユーザーが見つからない場合
-    """
-    # ダミーデータ
-    if user_id == 1:
-        return User(
-            id=1,
-            username="admin",
-            email="admin@example.com",
-            created_at=datetime.now(),
-        )
-    else:
-        raise HTTPException(status_code=404, detail="User not found")
-
-@app.post("/api/users", response_model=User, tags=["Users"])
-async def create_user(user: User):
-    """
-    ユーザー作成エンドポイント
-    
-    Args:
-        user: 作成するユーザー情報
-    
-    Returns:
-        User: 作成されたユーザー情報
-    
-    TODO: データベースへの保存を実装する
-    """
-    # ダミーレスポンス
-    user.id = 999
-    user.created_at = datetime.now()
-    return user
-
-# =========================================
-# アプリケーション起動イベント
-# =========================================
-@app.on_event("startup")
-async def startup_event():
-    """
-    アプリケーション起動時の処理
-    データベース接続の初期化など
-    """
-    print("🚀 FastAPI application is starting up...")
-    print(f"📝 Environment: {os.getenv('ENVIRONMENT', 'unknown')}")
-    print(f"🔗 Database URL: {os.getenv('DATABASE_URL', 'not set')}")
-
-@app.on_event("shutdown")
-async def shutdown_event():
-    """
-    アプリケーション終了時の処理
-    データベース接続のクローズなど
-    """
-    print("👋 FastAPI application is shutting down...")
+    return {
+        "status": "healthy",
+        "service": "NAFP API",
+        "architecture": "DDD"
+    }

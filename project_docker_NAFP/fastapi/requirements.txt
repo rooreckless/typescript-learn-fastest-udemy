@@ -17,6 +17,7 @@ sqlalchemy[asyncio]==2.0.36
 # データバリデーション
 pydantic==2.10.5
 pydantic-settings==2.7.1
+pydantic[email]==2.10.5
 
 # CORS対応
 python-multipart==0.0.20
@@ -35,7 +36,9 @@ python-dateutil==2.9.0.post0
 
 # JWT認証（必要に応じて）
 python-jose[cryptography]==3.3.0
-passlib[bcrypt]==1.7.4
+
+# パスワードハッシュ化
+bcrypt==4.2.1
 
 # テスト用
 pytest==8.3.4
