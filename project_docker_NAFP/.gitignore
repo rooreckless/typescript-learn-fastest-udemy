@@ -1,6 +1,55 @@
-# Created by https://www.toptal.com/developers/gitignore/api/node
-# Edit at https://www.toptal.com/developers/gitignore?templates=node
+# Git管理除外設定
 
+# 環境変数ファイル（機密情報を含むため）
+.envs/
+
+
+# IDE関連
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS関連
+.DS_Store
+Thumbs.db
+
+#--------------------------------------------------------------------------------------------------
+# Created by https://www.toptal.com/developers/gitignore/api/node,angular,python
+# Edit at https://www.toptal.com/developers/gitignore?templates=node,angular,python
+
+### Angular ###
+## Angular ##
+# compiled output
+dist/
+tmp/
+app/**/*.js
+app/**/*.js.map
+
+# dependencies
+node_modules/
+bower_components/
+
+# IDEs and editors
+.idea/
+
+# misc
+.sass-cache/
+connect.lock/
+coverage/
+libpeerconnection.log/
+npm-debug.log
+testem.log
+typings/
+.angular/
+
+# e2e
+e2e/*.js
+e2e/*.map
+
+# System Files
+.DS_Store/
+#--------------------------------------------------------------------------------------------------
 ### Node ###
 # Logs
 logs
@@ -43,7 +92,6 @@ bower_components
 build/Release
 
 # Dependency directories
-node_modules/
 jspm_packages/
 
 # Snowpack dependency directory (https://snowpack.dev/)
@@ -140,24 +188,7 @@ dist
 
 # SvelteKit build / generate output
 .svelte-kit
-
-# End of https://www.toptal.com/developers/gitignore/api/node
-
-#-----
-
-# Node modules (すべてのサブディレクトリのnode_modules(ディレクトリ)を再帰的に無視)
-**/node_modules/
-
-# ビルド成果物 (すべてのサブディレクトリのdist(ディレクトリ)を再帰的に無視)
-**/dist/
-
-# .env (すべてのサブディレクトリの.env(ファイル)を再帰的に無視)
-**/.env
-
-#--------------------------------------------------------------------------------------------
-# Created by https://www.toptal.com/developers/gitignore/api/python
-# Edit at https://www.toptal.com/developers/gitignore?templates=python
-
+#--------------------------------------------------------------------------------------------------
 ### Python ###
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -171,7 +202,6 @@ __pycache__/
 .Python
 build/
 develop-eggs/
-dist/
 downloads/
 eggs/
 .eggs/
@@ -203,7 +233,6 @@ htmlcov/
 .nox/
 .coverage
 .coverage.*
-.cache
 nosetests.xml
 coverage.xml
 *.cover
@@ -217,7 +246,6 @@ cover/
 *.pot
 
 # Django stuff:
-*.log
 local_settings.py
 db.sqlite3
 db.sqlite3-journal
@@ -281,7 +309,6 @@ celerybeat.pid
 *.sage.py
 
 # Environments
-.env
 .venv
 env/
 venv/
@@ -330,4 +357,4 @@ poetry.toml
 # LSP config files
 pyrightconfig.json
 
-# End of https://www.toptal.com/developers/gitignore/api/python
+# End of https://www.toptal.com/developers/gitignore/api/node,angular,python
