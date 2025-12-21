@@ -8,9 +8,9 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from infrastructure.database import get_db
-from infrastructure.user_repository import UserRepository
-from infrastructure.item_repository import ItemRepository
-from infrastructure.category_repository import CategoryRepository
+from infrastructure.user.repository import UserRepository
+from infrastructure.item.repository import ItemRepository
+from infrastructure.category.repository import CategoryRepository
 from application.user_service import UserService
 from application.item_service import ItemService
 from application.category_service import CategoryService

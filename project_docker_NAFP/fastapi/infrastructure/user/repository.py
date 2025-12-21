@@ -8,7 +8,7 @@ from sqlalchemy import select
 from datetime import datetime
 
 from domain import UserEntity,AbstractUserRepository
-from infrastructure.models import UserModel
+from .model import UserModel
 
 
 class UserRepository(AbstractUserRepository):

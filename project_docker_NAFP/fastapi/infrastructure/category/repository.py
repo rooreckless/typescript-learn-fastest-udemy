@@ -8,7 +8,9 @@ from sqlalchemy import select, and_
 from datetime import datetime
 
 from domain import CategoryEntity,AbstractCategoryRepository, ItemEntity
-from infrastructure.models import CategoryModel, ItemModel, ItemCategoryModel
+from .model import CategoryModel
+from ..item_category import ItemCategoryModel
+from ..item import ItemModel
 
 
 class CategoryRepository(AbstractCategoryRepository):

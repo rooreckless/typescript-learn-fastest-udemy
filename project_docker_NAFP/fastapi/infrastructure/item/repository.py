@@ -9,7 +9,9 @@ from datetime import datetime
 
 from domain.item import ItemEntity,AbstractItemRepository
 from domain import CategoryEntity
-from infrastructure.models import ItemModel, CategoryModel, ItemCategoryModel
+from .model import ItemModel
+from ..category import CategoryModel
+from ..item_category import ItemCategoryModel
 
 
 class ItemRepository(AbstractItemRepository):
