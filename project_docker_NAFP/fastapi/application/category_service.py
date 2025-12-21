@@ -4,8 +4,7 @@
 
 from typing import List, Optional
 
-from domain import CategoryEntity, AbstractCategoryRepository
-from domain.repositories import AbstractItemCategoryRepository
+from domain import CategoryEntity, AbstractCategoryRepository, ItemEntity, AbstractItemRepository
 
 
 class CategoryService:
@@ -14,10 +13,10 @@ class CategoryService:
     def __init__(
         self,
         category_repository: AbstractCategoryRepository,
-        item_category_repository: AbstractItemCategoryRepository
+        item_repository: AbstractItemRepository
     ):
         self.category_repository = category_repository
-        self.item_category_repository = item_category_repository
+        self.item_repository = item_repository
 
     async def create_category(
         self,
@@ -107,7 +106,7 @@ class CategoryService:
         Returns:
             成功した場合True
         """
-        return await self.item_category_repository.add_category_to_item(
+        return await self.item_repository.add_category_to_item(
             item_id=item_id,
             category_id=category_id,
             created_by=created_by,
@@ -116,8 +115,12 @@ class CategoryService:
 
     async def remove_category_from_item(self, item_id: int, category_id: int) -> bool:
         """商品からカテゴリを削除"""
-        return await self.item_category_repository.remove_category_from_item(item_id, category_id)
+        return await self.item_repository.remove_category_from_item(item_id, category_id)
 
     async def get_categories_by_item(self, item_id: int) -> List[CategoryEntity]:
         """商品に紐づくカテゴリを取得"""
-        return await self.item_category_repository.find_categories_by_item(item_id)
+        return await self.item_repository.find_categories_by_item(item_id)
+
+    async def get_items_by_category(self, category_id: int) -> List[ItemEntity]:
+        """カテゴリに紐づく商品を取得"""
+        return await self.category_repository.find_items_by_category(category_id)

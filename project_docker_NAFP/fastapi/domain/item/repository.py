@@ -7,6 +7,11 @@ from abc import ABC, abstractmethod
 from typing import List, Optional
 from .entity import ItemEntity
 
+# 循環インポート回避のTYPE_CHECKING
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from ..category.entity import CategoryEntity
+
 
 class AbstractItemRepository(ABC):
     """商品リポジトリインターフェース"""
@@ -34,4 +39,26 @@ class AbstractItemRepository(ABC):
     @abstractmethod
     async def delete(self, item_id: int) -> bool:
         """商品を論理削除"""
+        pass
+
+    # 以下、旧AbstractItemCategoryRepositoryから移動
+    @abstractmethod
+    async def add_category_to_item(
+        self, 
+        item_id: int, 
+        category_id: int, 
+        created_by: str, 
+        updated_by: str
+    ) -> bool:
+        """商品にカテゴリを追加"""
+        pass
+
+    @abstractmethod
+    async def remove_category_from_item(self, item_id: int, category_id: int) -> bool:
+        """商品からカテゴリを削除"""
+        pass
+
+    @abstractmethod
+    async def find_categories_by_item(self, item_id: int) -> List['CategoryEntity']:
+        """商品に紐づくカテゴリを取得"""
         pass

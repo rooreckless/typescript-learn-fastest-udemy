@@ -4,8 +4,7 @@
 
 from typing import List, Optional
 
-from domain import ItemEntity,CategoryEntity,ItemWithCategories,AbstractItemRepository
-from domain.repositories import AbstractItemCategoryRepository
+from domain import ItemEntity,ItemWithCategories,AbstractItemRepository
 
 
 class ItemService:
@@ -13,11 +12,9 @@ class ItemService:
 
     def __init__(
         self,
-        item_repository: AbstractItemRepository,
-        item_category_repository: AbstractItemCategoryRepository
+        item_repository: AbstractItemRepository
     ):
         self.item_repository = item_repository
-        self.item_category_repository = item_category_repository
 
     async def create_item(
         self,
@@ -57,7 +54,7 @@ class ItemService:
         if not item:
             return None
 
-        categories = await self.item_category_repository.find_categories_by_item(item_id)
+        categories = await self.item_repository.find_categories_by_item(item_id)
         return ItemWithCategories(item=item, categories=categories)
 
     async def get_all_items(self, skip: int = 0, limit: int = 100) -> List[ItemEntity]:
@@ -105,6 +102,3 @@ class ItemService:
         """商品を論理削除"""
         return await self.item_repository.delete(item_id)
 
-    async def get_items_by_category(self, category_id: int) -> List[ItemEntity]:
-        """特定のカテゴリに属する商品を取得"""
-        return await self.item_category_repository.find_items_by_category(category_id)

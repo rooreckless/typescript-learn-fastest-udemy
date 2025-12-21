@@ -4,12 +4,11 @@
 
 from typing import List, Optional
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
+from sqlalchemy import select, and_
 from datetime import datetime
 
-from domain import CategoryEntity,AbstractCategoryRepository
- 
-from infrastructure.models import CategoryModel
+from domain import CategoryEntity,AbstractCategoryRepository, ItemEntity
+from infrastructure.models import CategoryModel, ItemModel, ItemCategoryModel
 
 
 class CategoryRepository(AbstractCategoryRepository):
@@ -91,3 +90,20 @@ class CategoryRepository(AbstractCategoryRepository):
         db_category.deleted_at = datetime.now()
         await self.session.flush()
         return True
+
+    # 以下、旧ItemCategoryRepositoryから移動したメソッド
+    async def find_items_by_category(self, category_id: int) -> List[ItemEntity]:
+        """カテゴリに紐づく商品を取得"""
+        result = await self.session.execute(
+            select(ItemModel)
+            .join(ItemCategoryModel, ItemModel.id == ItemCategoryModel.item_id)
+            .where(
+                and_(
+                    ItemCategoryModel.category_id == category_id,
+                    ItemCategoryModel.deleted_at.is_(None),
+                    ItemModel.deleted_at.is_(None)
+                )
+            )
+        )
+        db_items = result.scalars().all()
+        return [ItemEntity.model_validate(item) for item in db_items]
