@@ -7,12 +7,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from datetime import datetime
 
-from domain.item import ItemEntity
-from domain.repositories import IItemRepository
+from domain.item import ItemEntity,AbstractItemRepository
 from infrastructure.models import ItemModel
 
 
-class ItemRepository(IItemRepository):
+class ItemRepository(AbstractItemRepository):
     """商品リポジトリ実装クラス"""
 
     def __init__(self, session: AsyncSession):

@@ -8,11 +8,11 @@ from sqlalchemy import select, and_
 from datetime import datetime
 
 from domain import ItemEntity,CategoryEntity
-from domain.repositories import IItemCategoryRepository
+from domain.repositories import AbstractItemCategoryRepository
 from infrastructure.models import ItemModel, CategoryModel, ItemCategoryModel
 
 
-class ItemCategoryRepository(IItemCategoryRepository):
+class ItemCategoryRepository(AbstractItemCategoryRepository):
     """商品カテゴリ関連リポジトリ実装クラス"""
 
     def __init__(self, session: AsyncSession):

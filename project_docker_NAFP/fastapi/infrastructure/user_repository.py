@@ -7,12 +7,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from datetime import datetime
 
-from domain import UserEntity
-from domain.repositories import IUserRepository
+from domain import UserEntity,AbstractUserRepository
 from infrastructure.models import UserModel
 
 
-class UserRepository(IUserRepository):
+class UserRepository(AbstractUserRepository):
     """ユーザーリポジトリ実装クラス"""
 
     def __init__(self, session: AsyncSession):

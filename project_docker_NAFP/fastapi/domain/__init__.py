@@ -3,10 +3,10 @@
 ビジネスロジックとドメインモデルを定義
 """
 
-from .user import UserEntity
-from .item import ItemEntity,ItemWithCategories
-from .category import CategoryEntity,CategoryWithItems
+from .user import UserEntity,AbstractUserRepository
+from .item import ItemEntity,ItemWithCategories,AbstractItemRepository
+from .category import CategoryEntity,CategoryWithItems,AbstractCategoryRepository
 __all__ = [
-    "UserEntity",
-    "ItemEntity",
-    "CategoryEntity","ItemWithCategories","CategoryWithItems"]
+    "UserEntity","AbstractUserRepository",
+    "ItemEntity","AbstractItemRepository",
+    "CategoryEntity","ItemWithCategories","CategoryWithItems","AbstractCategoryRepository"]

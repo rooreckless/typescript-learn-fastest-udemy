@@ -1,3 +1,3 @@
 from .entity import UserEntity
-
-__all__ = ["UserEntity"]
+from .repository import AbstractUserRepository
+__all__ = ["UserEntity","AbstractUserRepository"]

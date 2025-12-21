@@ -4,8 +4,8 @@
 
 from typing import List, Optional
 
-from domain import ItemEntity,CategoryEntity,ItemWithCategories
-from domain.repositories import IItemRepository, IItemCategoryRepository
+from domain import ItemEntity,CategoryEntity,ItemWithCategories,AbstractItemRepository
+from domain.repositories import AbstractItemCategoryRepository
 
 
 class ItemService:
@@ -13,8 +13,8 @@ class ItemService:
 
     def __init__(
         self,
-        item_repository: IItemRepository,
-        item_category_repository: IItemCategoryRepository
+        item_repository: AbstractItemRepository,
+        item_category_repository: AbstractItemCategoryRepository
     ):
         self.item_repository = item_repository
         self.item_category_repository = item_category_repository

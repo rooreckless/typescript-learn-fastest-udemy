@@ -7,12 +7,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from datetime import datetime
 
-from domain import CategoryEntity
-from domain.repositories import ICategoryRepository
+from domain import CategoryEntity,AbstractCategoryRepository
+ 
 from infrastructure.models import CategoryModel
 
 
-class CategoryRepository(ICategoryRepository):
+class CategoryRepository(AbstractCategoryRepository):
     """カテゴリリポジトリ実装クラス"""
 
     def __init__(self, session: AsyncSession):

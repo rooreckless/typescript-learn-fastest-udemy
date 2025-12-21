@@ -6,14 +6,13 @@
 from typing import List, Optional
 import bcrypt
 
-from domain import UserEntity
-from domain.repositories import IUserRepository
+from domain import UserEntity,AbstractUserRepository
 
 
 class UserService:
     """ユーザーサービスクラス"""
 
-    def __init__(self, user_repository: IUserRepository):
+    def __init__(self, user_repository: AbstractUserRepository):
         self.user_repository = user_repository
 
     @staticmethod
