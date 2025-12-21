@@ -5,7 +5,6 @@
 from typing import List, Optional
 
 from domain import CategoryEntity
-from domain.entities import ItemCategoryEntity
 from domain.repositories import ICategoryRepository, IItemCategoryRepository
 
 
@@ -96,7 +95,7 @@ class CategoryService:
         item_id: int,
         category_id: int,
         created_by: str
-    ) -> ItemCategoryEntity:
+    ) -> bool:
         """
         商品にカテゴリを追加
         
@@ -106,15 +105,14 @@ class CategoryService:
             created_by: 作成者
             
         Returns:
-            商品カテゴリ関連エンティティ
+            成功した場合True
         """
-        item_category = ItemCategoryEntity(
+        return await self.item_category_repository.add_category_to_item(
             item_id=item_id,
             category_id=category_id,
             created_by=created_by,
             updated_by=created_by
         )
-        return await self.item_category_repository.add_category_to_item(item_category)
 
     async def remove_category_from_item(self, item_id: int, category_id: int) -> bool:
         """商品からカテゴリを削除"""

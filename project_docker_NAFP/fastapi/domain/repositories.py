@@ -6,7 +6,6 @@
 from abc import ABC, abstractmethod
 from typing import List, Optional
 from domain import UserEntity,ItemEntity,CategoryEntity
-from domain.entities import ItemCategoryEntity
 
 
 class IUserRepository(ABC):
@@ -105,7 +104,13 @@ class IItemCategoryRepository(ABC):
     """商品カテゴリ関連リポジトリインターフェース"""
 
     @abstractmethod
-    async def add_category_to_item(self, item_category: ItemCategoryEntity) -> ItemCategoryEntity:
+    async def add_category_to_item(
+        self, 
+        item_id: int, 
+        category_id: int, 
+        created_by: str, 
+        updated_by: str
+    ) -> bool:
         """商品にカテゴリを追加"""
         pass
 

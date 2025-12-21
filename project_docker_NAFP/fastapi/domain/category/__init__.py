@@ -1,3 +1,3 @@
-from .entity import CategoryEntity
+from .entity import CategoryEntity,CategoryWithItems
 
-__all__ = ["CategoryEntity"]
+__all__ = ["CategoryEntity","CategoryWithItems"]

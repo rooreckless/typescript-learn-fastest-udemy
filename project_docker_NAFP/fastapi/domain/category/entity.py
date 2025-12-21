@@ -22,3 +22,12 @@ class CategoryEntity(BaseModel):
 
     class Config:
         from_attributes = True
+
+from ..item.entity import ItemEntity
+class CategoryWithItems(BaseModel):
+    """商品情報付きカテゴリエンティティ（集約ルート）"""
+    category: CategoryEntity
+    items: List[ItemEntity] = []
+
+    class Config:
+        from_attributes = True

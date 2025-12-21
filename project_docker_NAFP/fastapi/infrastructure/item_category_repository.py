@@ -8,7 +8,6 @@ from sqlalchemy import select, and_
 from datetime import datetime
 
 from domain import ItemEntity,CategoryEntity
-from domain.entities import ItemCategoryEntity
 from domain.repositories import IItemCategoryRepository
 from infrastructure.models import ItemModel, CategoryModel, ItemCategoryModel
 
@@ -19,14 +18,20 @@ class ItemCategoryRepository(IItemCategoryRepository):
     def __init__(self, session: AsyncSession):
         self.session = session
 
-    async def add_category_to_item(self, item_category: ItemCategoryEntity) -> ItemCategoryEntity:
+    async def add_category_to_item(
+        self, 
+        item_id: int, 
+        category_id: int, 
+        created_by: str, 
+        updated_by: str
+    ) -> bool:
         """商品にカテゴリを追加"""
         # 既存の関連を確認
         result = await self.session.execute(
             select(ItemCategoryModel).where(
                 and_(
-                    ItemCategoryModel.item_id == item_category.item_id,
-                    ItemCategoryModel.category_id == item_category.category_id
+                    ItemCategoryModel.item_id == item_id,
+                    ItemCategoryModel.category_id == category_id
                 )
             )
         )
@@ -36,23 +41,23 @@ class ItemCategoryRepository(IItemCategoryRepository):
             # 論理削除されている場合は復元
             if existing.deleted_at:
                 existing.deleted_at = None
-                existing.updated_by = item_category.updated_by
+                existing.updated_by = updated_by
                 existing.updated_at = datetime.now()
                 await self.session.flush()
-                return ItemCategoryEntity.model_validate(existing)
-            return ItemCategoryEntity.model_validate(existing)
+                return True
+            return True
 
         # 新規作成
         db_item_category = ItemCategoryModel(
-            item_id=item_category.item_id,
-            category_id=item_category.category_id,
-            created_by=item_category.created_by,
-            updated_by=item_category.updated_by,
+            item_id=item_id,
+            category_id=category_id,
+            created_by=created_by,
+            updated_by=updated_by,
         )
         self.session.add(db_item_category)
         await self.session.flush()
         await self.session.refresh(db_item_category)
-        return ItemCategoryEntity.model_validate(db_item_category)
+        return True
 
     async def remove_category_from_item(self, item_id: int, category_id: int) -> bool:
         """商品からカテゴリを削除（論理削除）"""

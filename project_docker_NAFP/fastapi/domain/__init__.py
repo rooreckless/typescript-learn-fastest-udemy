@@ -5,8 +5,8 @@
 
 from .user import UserEntity
 from .item import ItemEntity,ItemWithCategories
-from .category import CategoryEntity
+from .category import CategoryEntity,CategoryWithItems
 __all__ = [
     "UserEntity",
     "ItemEntity",
-    "CategoryEntity","ItemWithCategories"]
+    "CategoryEntity","ItemWithCategories","CategoryWithItems"]
