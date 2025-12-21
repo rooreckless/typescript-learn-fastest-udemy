@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List
 
 from infrastructure.database import get_db
-from presentation.dependencies import get_category_service, get_item_service
+from presentation.dependencies import get_category_service, get_item_service, require_admin
 from presentation.schemas import (
     CategoryCreateRequest,
     CategoryUpdateRequest,
@@ -16,7 +16,7 @@ from presentation.schemas import (
     ItemResponse,
     MessageResponse
 )
-from application.category_service import CategoryService
+from domain.entities import UserEntity
 
 
 router = APIRouter(
@@ -33,13 +33,16 @@ router = APIRouter(
 )
 async def create_category(
     request: CategoryCreateRequest,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
+    admin_user: UserEntity = Depends(require_admin)
 ):
     """
     新しいカテゴリを作成します
     
     - **name**: カテゴリ名
     - **description**: カテゴリ説明
+    
+    ※ 管理者権限が必要です
     """
     service = get_category_service(db)
     category = await service.create_category(
@@ -122,7 +125,8 @@ async def get_items_by_category(
 async def update_category(
     category_id: int,
     request: CategoryUpdateRequest,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
+    admin_user: UserEntity = Depends(require_admin)
 ):
     """
     指定されたIDのカテゴリ情報を更新します
@@ -130,6 +134,8 @@ async def update_category(
     - **category_id**: カテゴリID
     - **name**: 新しいカテゴリ名（オプション）
     - **description**: 新しいカテゴリ説明（オプション）
+    
+    ※ 管理者権限が必要です
     """
     service = get_category_service(db)
     category = await service.update_category(
@@ -153,12 +159,15 @@ async def update_category(
 )
 async def delete_category(
     category_id: int,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
+    admin_user: UserEntity = Depends(require_admin)
 ):
     """
     指定されたIDのカテゴリを論理削除します
     
     - **category_id**: カテゴリID
+    
+    ※ 管理者権限が必要です
     """
     service = get_category_service(db)
     success = await service.delete_category(category_id)
@@ -178,13 +187,16 @@ async def delete_category(
 )
 async def add_category_to_item(
     request: ItemCategoryRequest,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
+    admin_user: UserEntity = Depends(require_admin)
 ):
     """
     商品にカテゴリを追加します
     
     - **item_id**: 商品ID
     - **category_id**: カテゴリID
+    
+    ※ 管理者権限が必要です
     """
     service = get_category_service(db)
     await service.add_category_to_item(
@@ -205,13 +217,16 @@ async def add_category_to_item(
 async def remove_category_from_item(
     item_id: int,
     category_id: int,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
+    admin_user: UserEntity = Depends(require_admin)
 ):
     """
     商品からカテゴリを削除します
     
     - **item_id**: 商品ID
     - **category_id**: カテゴリID
+    
+    ※ 管理者権限が必要です
     """
     service = get_category_service(db)
     success = await service.remove_category_from_item(item_id, category_id)

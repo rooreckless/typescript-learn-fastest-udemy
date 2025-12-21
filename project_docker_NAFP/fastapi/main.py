@@ -13,6 +13,7 @@ from infrastructure.database import init_db
 from presentation.user_routes import router as user_router
 from presentation.item_routes import router as item_router
 from presentation.category_routes import router as category_router
+from presentation.auth_routes import router as auth_router
 
 
 # =========================================
@@ -59,6 +60,7 @@ app.add_middleware(
 # =========================================
 # ルーターの登録
 # =========================================
+app.include_router(auth_router, prefix="/api")
 app.include_router(user_router, prefix="/api")
 app.include_router(item_router, prefix="/api")
 app.include_router(category_router, prefix="/api")

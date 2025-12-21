@@ -149,3 +149,12 @@ docker-compose -f composes/dev.yml up --build
 - [FastAPI Documentation](https://fastapi.tiangolo.com/)
 - [Nginx Documentation](https://nginx.org/en/docs/)
 - [PostgreSQL Documentation](https://www.postgresql.org/docs/)
+
+
+
+### スーパーユーザー
+postgres/init/nafp_db_ERdiagram01.sqlにより、usersテーブルにはadmin=Trueなユーザーが作成される。
+
+メールアドレスはadmin@example.com,パスワードは「admin123」を暗号化したものが入っている。
+
+(admin123を暗号化した結果を確認するには、`docker exec nafp_fastapi_dev python -c "import bcrypt; print(bcrypt.hashpw(b'admin123', bcrypt.gensalt()).decode('utf-8'))"`のコマンドを使うこと。)

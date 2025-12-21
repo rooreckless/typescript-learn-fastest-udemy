@@ -17,6 +17,7 @@ class UserCreateRequest(BaseModel):
     name: str = Field(..., min_length=1, max_length=45, description="ユーザー名")
     email: EmailStr = Field(..., description="メールアドレス")
     password: str = Field(..., min_length=8, description="パスワード")
+    admin: bool = Field(default=False, description="管理者フラグ")
     created_by: str = Field(default="system", description="作成者")
 
 
@@ -25,6 +26,7 @@ class UserUpdateRequest(BaseModel):
     name: Optional[str] = Field(None, min_length=1, max_length=45, description="ユーザー名")
     email: Optional[EmailStr] = Field(None, description="メールアドレス")
     password: Optional[str] = Field(None, min_length=8, description="パスワード")
+    admin: Optional[bool] = Field(None, description="管理者フラグ")
     updated_by: str = Field(default="system", description="更新者")
 
 
@@ -33,6 +35,7 @@ class UserResponse(BaseModel):
     id: int
     name: str
     email: str
+    admin: bool
     created_at: datetime
     updated_at: datetime
 
@@ -136,4 +139,21 @@ class MessageResponse(BaseModel):
 class ErrorResponse(BaseModel):
     """エラーレスポンス"""
     detail: str
-    error_code: Optional[str] = None
+    status_code: int
+
+
+# =========================================
+# 認証関連スキーマ
+# =========================================
+
+class LoginRequest(BaseModel):
+    """ログインリクエスト"""
+    email: EmailStr = Field(..., description="メールアドレス")
+    password: str = Field(..., min_length=1, description="パスワード")
+
+
+class LoginResponse(BaseModel):
+    """ログインレスポンス"""
+    access_token: str = Field(..., description="アクセストークン")
+    token_type: str = Field(default="bearer", description="トークンタイプ")
+    user: UserResponse = Field(..., description="ユーザー情報")

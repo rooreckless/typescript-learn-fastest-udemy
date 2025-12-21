@@ -55,7 +55,8 @@ class UserService:
         name: str,
         email: str,
         password: str,
-        created_by: str
+        created_by: str,
+        admin: bool = False
     ) -> UserEntity:
         """
         新しいユーザーを作成
@@ -65,6 +66,7 @@ class UserService:
             email: メールアドレス
             password: パスワード（平文）
             created_by: 作成者
+            admin: 管理者フラグ
             
         Returns:
             作成されたユーザーエンティティ
@@ -85,6 +87,7 @@ class UserService:
             name=name,
             email=email,
             password_hash=password_hash,
+            admin=admin,
             created_by=created_by,
             updated_by=created_by
         )
@@ -109,6 +112,7 @@ class UserService:
         name: Optional[str] = None,
         email: Optional[str] = None,
         password: Optional[str] = None,
+        admin: Optional[bool] = None,
         updated_by: str = "system"
     ) -> Optional[UserEntity]:
         """
@@ -119,6 +123,7 @@ class UserService:
             name: 新しいユーザー名（オプション）
             email: 新しいメールアドレス（オプション）
             password: 新しいパスワード（オプション）
+            admin: 管理者フラグ（オプション）
             updated_by: 更新者
             
         Returns:
@@ -144,6 +149,7 @@ class UserService:
             name=name if name else existing_user.name,
             email=email if email else existing_user.email,
             password_hash=self.hash_password(password) if password else existing_user.password_hash,
+            admin=admin if admin is not None else existing_user.admin,
             created_by=existing_user.created_by,
             created_at=existing_user.created_at,
             updated_by=updated_by

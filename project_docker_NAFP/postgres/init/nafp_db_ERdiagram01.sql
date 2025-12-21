@@ -3,6 +3,7 @@ CREATE TABLE IF NOT EXISTS "users" (
 	"name" VARCHAR(45) NOT NULL,
 	"password_hash" VARCHAR(255) NOT NULL,
 	"email" VARCHAR(255) NOT NULL,
+	"admin" BOOLEAN NOT NULL DEFAULT FALSE,
 	"created_by" VARCHAR(45) NOT NULL,
 	"created_at" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	"updated_by" VARCHAR(45) NOT NULL,
@@ -65,3 +66,14 @@ ON UPDATE NO ACTION ON DELETE NO ACTION;
 ALTER TABLE "item_category"
 ADD FOREIGN KEY("category_id") REFERENCES "categories"("id")
 ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+-- 初期管理者ユーザーの挿入 admin123
+INSERT INTO "users" ("name", "password_hash", "email", "admin", "created_by", "updated_by")
+VALUES (
+	'admin',
+	'$2b$12$AemB3IUP9cipWKOBMoJSe.xGAGeysP0jLqrobPyVoFfkqxre6zYwm',  -- パスワード: admin123
+	'admin@example.com',
+	TRUE,
+	'system',
+	'system'
+);

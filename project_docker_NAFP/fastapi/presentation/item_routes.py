@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List
 
 from infrastructure.database import get_db
-from presentation.dependencies import get_item_service
+from presentation.dependencies import get_item_service, require_admin
 from presentation.schemas import (
     ItemCreateRequest,
     ItemUpdateRequest,
@@ -15,7 +15,7 @@ from presentation.schemas import (
     ItemWithCategoriesResponse,
     MessageResponse
 )
-from application.item_service import ItemService
+from domain.entities import UserEntity
 
 
 router = APIRouter(
@@ -32,7 +32,8 @@ router = APIRouter(
 )
 async def create_item(
     request: ItemCreateRequest,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
+    admin_user: UserEntity = Depends(require_admin)
 ):
     """
     新しい商品を作成します
@@ -40,6 +41,8 @@ async def create_item(
     - **name**: 商品名
     - **description**: 商品説明
     - **price**: 価格（0以上）
+    
+    ※ 管理者権限が必要です
     """
     service = get_item_service(db)
     item = await service.create_item(
@@ -128,7 +131,8 @@ async def get_item_with_categories(
 async def update_item(
     item_id: int,
     request: ItemUpdateRequest,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
+    admin_user: UserEntity = Depends(require_admin)
 ):
     """
     指定されたIDの商品情報を更新します
@@ -137,6 +141,8 @@ async def update_item(
     - **name**: 新しい商品名（オプション）
     - **description**: 新しい商品説明（オプション）
     - **price**: 新しい価格（オプション）
+    
+    ※ 管理者権限が必要です
     """
     service = get_item_service(db)
     item = await service.update_item(
@@ -161,12 +167,15 @@ async def update_item(
 )
 async def delete_item(
     item_id: int,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
+    admin_user: UserEntity = Depends(require_admin)
 ):
     """
     指定されたIDの商品を論理削除します
     
     - **item_id**: 商品ID
+    
+    ※ 管理者権限が必要です
     """
     service = get_item_service(db)
     success = await service.delete_item(item_id)

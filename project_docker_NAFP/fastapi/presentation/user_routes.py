@@ -7,14 +7,14 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List
 
 from infrastructure.database import get_db
-from presentation.dependencies import get_user_service
+from presentation.dependencies import get_user_service, require_admin
 from presentation.schemas import (
     UserCreateRequest,
     UserUpdateRequest,
     UserResponse,
     MessageResponse
 )
-from application.user_service import UserService
+from domain.entities import UserEntity
 
 
 router = APIRouter(
@@ -31,7 +31,8 @@ router = APIRouter(
 )
 async def create_user(
     request: UserCreateRequest,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
+    admin_user: UserEntity = Depends(require_admin)
 ):
     """
     新しいユーザーを作成します
@@ -39,6 +40,8 @@ async def create_user(
     - **name**: ユーザー名
     - **email**: メールアドレス（一意）
     - **password**: パスワード（8文字以上）
+    
+    ※ 管理者権限が必要です
     """
     service = get_user_service(db)
     try:
@@ -46,6 +49,7 @@ async def create_user(
             name=request.name,
             email=request.email,
             password=request.password,
+            admin=request.admin,
             created_by=request.created_by
         )
         return UserResponse.model_validate(user)
@@ -109,7 +113,8 @@ async def get_user(
 async def update_user(
     user_id: int,
     request: UserUpdateRequest,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
+    admin_user: UserEntity = Depends(require_admin)
 ):
     """
     指定されたIDのユーザー情報を更新します
@@ -118,6 +123,8 @@ async def update_user(
     - **name**: 新しいユーザー名（オプション）
     - **email**: 新しいメールアドレス（オプション）
     - **password**: 新しいパスワード（オプション）
+    
+    ※ 管理者権限が必要です
     """
     service = get_user_service(db)
     try:
@@ -126,6 +133,7 @@ async def update_user(
             name=request.name,
             email=request.email,
             password=request.password,
+            admin=request.admin,
             updated_by=request.updated_by
         )
         if not user:
@@ -148,12 +156,15 @@ async def update_user(
 )
 async def delete_user(
     user_id: int,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
+    admin_user: UserEntity = Depends(require_admin)
 ):
     """
     指定されたIDのユーザーを論理削除します
     
     - **user_id**: ユーザーID
+    
+    ※ 管理者権限が必要です
     """
     service = get_user_service(db)
     success = await service.delete_user(user_id)
@@ -162,4 +173,5 @@ async def delete_user(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"User with id {user_id} not found"
         )
+    return MessageResponse(message=f"User {user_id} deleted successfully")
     return MessageResponse(message=f"User {user_id} deleted successfully")

@@ -3,6 +3,8 @@
 FastAPIのDependsで使用するサービス・リポジトリのファクトリー関数
 """
 
+from fastapi import HTTPException, Depends, status
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from infrastructure.database import get_db
@@ -13,6 +15,12 @@ from infrastructure.item_category_repository import ItemCategoryRepository
 from application.user_service import UserService
 from application.item_service import ItemService
 from application.category_service import CategoryService
+from domain.entities import UserEntity
+from presentation.auth import decode_access_token
+
+
+# HTTPベアラートークン認証
+security = HTTPBearer()
 
 
 # =========================================
@@ -61,3 +69,65 @@ def get_category_service(db: AsyncSession) -> CategoryService:
     category_repo = get_category_repository(db)
     item_category_repo = get_item_category_repository(db)
     return CategoryService(category_repo, item_category_repo)
+
+
+# =========================================
+# 認証・認可
+# =========================================
+
+async def get_current_user(
+    credentials: HTTPAuthorizationCredentials = Depends(security),
+    db: AsyncSession = Depends(get_db)
+) -> UserEntity:
+    """
+    現在のユーザーを取得
+    JWTトークンからユーザー情報を取得し、そのユーザー情報を返す
+    """
+    # トークンをデコード
+    payload = decode_access_token(credentials.credentials)
+    
+    if payload is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Could not validate credentials",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    
+    # ペイロードからユーザーIDを取得
+    user_id: str = payload.get("sub")
+    if user_id is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Could not validate credentials",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    
+    # ユーザー情報を取得
+    user_service = get_user_service(db)
+    user = await user_service.get_user_by_id(int(user_id))
+    
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="User not found",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    
+    return user
+
+
+async def require_admin(
+    current_user: UserEntity = Depends(get_current_user)
+) -> UserEntity:
+    """
+    管理者権限を要求
+    現在のユーザーが管理者でない場合は403エラーを返す
+    """
+    if not current_user.admin:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Admin privileges required"
+        )
+    
+    return current_user
+

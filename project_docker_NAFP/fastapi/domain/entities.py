@@ -14,6 +14,7 @@ class UserEntity(BaseModel):
     name: str = Field(..., min_length=1, max_length=45)
     password_hash: str
     email: EmailStr = Field(..., max_length=255)
+    admin: bool = Field(default=False)
     created_by: str = Field(..., max_length=45)
     created_at: datetime = Field(default_factory=datetime.now)
     updated_by: str = Field(..., max_length=45)
