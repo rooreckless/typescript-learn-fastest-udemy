@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from datetime import datetime
 
-from domain.entities import UserEntity
+from domain import UserEntity
 from domain.repositories import IUserRepository
 from infrastructure.models import UserModel
 

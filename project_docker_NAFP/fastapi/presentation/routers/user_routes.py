@@ -8,13 +8,13 @@ from typing import List
 
 from infrastructure.database import get_db
 from presentation.dependencies import get_user_service, require_admin
-from presentation.schemas import (
+from ..schemas.users import (
     UserCreateRequest,
     UserUpdateRequest,
-    UserResponse,
-    MessageResponse
+    UserResponse
 )
-from domain.entities import UserEntity
+from ..schemas.common import MessageResponse
+from domain import UserEntity
 
 
 router = APIRouter(

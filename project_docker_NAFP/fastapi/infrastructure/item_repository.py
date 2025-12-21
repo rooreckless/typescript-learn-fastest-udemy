@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from datetime import datetime
 
-from domain.entities import ItemEntity
+from domain.item import ItemEntity
 from domain.repositories import IItemRepository
 from infrastructure.models import ItemModel
 

@@ -5,7 +5,8 @@
 
 from abc import ABC, abstractmethod
 from typing import List, Optional
-from domain.entities import UserEntity, ItemEntity, CategoryEntity, ItemCategoryEntity
+from domain import UserEntity,ItemEntity,CategoryEntity
+from domain.entities import ItemCategoryEntity
 
 
 class IUserRepository(ABC):

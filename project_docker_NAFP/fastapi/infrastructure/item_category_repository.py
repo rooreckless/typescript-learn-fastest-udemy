@@ -7,7 +7,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, and_
 from datetime import datetime
 
-from domain.entities import ItemEntity, CategoryEntity, ItemCategoryEntity
+from domain import ItemEntity,CategoryEntity
+from domain.entities import ItemCategoryEntity
 from domain.repositories import IItemCategoryRepository
 from infrastructure.models import ItemModel, CategoryModel, ItemCategoryModel
 

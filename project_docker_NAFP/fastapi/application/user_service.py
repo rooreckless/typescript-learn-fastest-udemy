@@ -6,7 +6,7 @@
 from typing import List, Optional
 import bcrypt
 
-from domain.entities import UserEntity
+from domain import UserEntity
 from domain.repositories import IUserRepository
 
 

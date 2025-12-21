@@ -4,7 +4,8 @@
 
 from typing import List, Optional
 
-from domain.entities import CategoryEntity, ItemCategoryEntity
+from domain import CategoryEntity
+from domain.entities import ItemCategoryEntity
 from domain.repositories import ICategoryRepository, IItemCategoryRepository
 
 

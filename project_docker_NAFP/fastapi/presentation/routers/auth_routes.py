@@ -8,7 +8,8 @@ from datetime import timedelta
 
 from infrastructure.database import get_db
 from presentation.dependencies import get_user_service
-from presentation.schemas import LoginRequest, LoginResponse, UserResponse
+from ..schemas import LoginRequest, LoginResponse
+from ..schemas import UserResponse
 from presentation.auth import create_access_token, verify_password, ACCESS_TOKEN_EXPIRE_MINUTES
 
 

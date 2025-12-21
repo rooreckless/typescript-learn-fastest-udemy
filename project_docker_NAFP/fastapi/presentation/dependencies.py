@@ -15,7 +15,7 @@ from infrastructure.item_category_repository import ItemCategoryRepository
 from application.user_service import UserService
 from application.item_service import ItemService
 from application.category_service import CategoryService
-from domain.entities import UserEntity
+from domain import UserEntity
 from presentation.auth import decode_access_token
 
 

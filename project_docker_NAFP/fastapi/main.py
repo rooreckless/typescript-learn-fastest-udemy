@@ -10,10 +10,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 
 from infrastructure.database import init_db
-from presentation.user_routes import router as user_router
-from presentation.item_routes import router as item_router
-from presentation.category_routes import router as category_router
-from presentation.auth_routes import router as auth_router
+
+from presentation.routers import user_router,item_router,category_router,auth_router
 
 
 # =========================================

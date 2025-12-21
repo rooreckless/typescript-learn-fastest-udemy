@@ -8,15 +8,15 @@ from typing import List
 
 from infrastructure.database import get_db
 from presentation.dependencies import get_category_service, get_item_service, require_admin
-from presentation.schemas import (
-    CategoryCreateRequest,
-    CategoryUpdateRequest,
-    CategoryResponse,
-    ItemCategoryRequest,
-    ItemResponse,
+from ..schemas.common import (
     MessageResponse
 )
-from domain.entities import UserEntity
+from ..schemas.item_category import ItemCategoryRequest
+from ..schemas.categories import (CategoryCreateRequest,
+    CategoryUpdateRequest,
+    CategoryResponse)
+from .. schemas.items import ItemResponse
+from domain import UserEntity
 
 
 router = APIRouter(
