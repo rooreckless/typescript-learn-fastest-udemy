@@ -33,7 +33,7 @@ COMMENT ON TABLE "items" IS '商品情報テーブル';
 
 CREATE TABLE IF NOT EXISTS "categories" (
 	"id" SERIAL,
-	"name" VARCHAR(100) NOT NULL,
+	"name" VARCHAR(200) NOT NULL,
 	"description" VARCHAR(200) NOT NULL,
 	"created_by" VARCHAR(45) NOT NULL,
 	"created_at" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,

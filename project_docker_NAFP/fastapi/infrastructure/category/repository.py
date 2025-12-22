@@ -30,7 +30,7 @@ class CategoryRepository(AbstractCategoryRepository):
         self.session.add(db_category)
         await self.session.flush()
         await self.session.refresh(db_category)
-        return CategoryEntity.model_validate(db_category)
+        return CategoryEntity.model_validate(db_category, from_attributes=True)
 
     async def find_by_id(self, category_id: int) -> Optional[CategoryEntity]:
         """IDでカテゴリを検索"""
@@ -41,7 +41,7 @@ class CategoryRepository(AbstractCategoryRepository):
             )
         )
         db_category = result.scalar_one_or_none()
-        return CategoryEntity.model_validate(db_category) if db_category else None
+        return CategoryEntity.model_validate(db_category, from_attributes=True) if db_category else None
 
     async def find_all(self, skip: int = 0, limit: int = 100) -> List[CategoryEntity]:
         """全カテゴリを取得"""
@@ -52,7 +52,7 @@ class CategoryRepository(AbstractCategoryRepository):
             .limit(limit)
         )
         db_categories = result.scalars().all()
-        return [CategoryEntity.model_validate(category) for category in db_categories]
+        return [CategoryEntity.model_validate(category, from_attributes=True) for category in db_categories]
 
     async def update(self, category_id: int, category: CategoryEntity) -> Optional[CategoryEntity]:
         """カテゴリを更新"""
@@ -74,7 +74,7 @@ class CategoryRepository(AbstractCategoryRepository):
 
         await self.session.flush()
         await self.session.refresh(db_category)
-        return CategoryEntity.model_validate(db_category)
+        return CategoryEntity.model_validate(db_category, from_attributes=True)
 
     async def delete(self, category_id: int) -> bool:
         """カテゴリを論理削除"""

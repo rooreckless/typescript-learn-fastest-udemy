@@ -9,14 +9,14 @@ from datetime import datetime
 
 class CategoryCreateRequest(BaseModel):
     """カテゴリ作成リクエスト"""
-    name: str = Field(..., min_length=1, max_length=100, description="カテゴリ名")
+    name: str = Field(..., min_length=1, max_length=200, description="カテゴリ名")
     description: str = Field(..., max_length=200, description="カテゴリ説明")
     created_by: str = Field(default="system", description="作成者")
 
 
 class CategoryUpdateRequest(BaseModel):
     """カテゴリ更新リクエスト"""
-    name: Optional[str] = Field(None, min_length=1, max_length=100, description="カテゴリ名")
+    name: Optional[str] = Field(None, min_length=1, max_length=200, description="カテゴリ名")
     description: Optional[str] = Field(None, max_length=200, description="カテゴリ説明")
     updated_by: str = Field(default="system", description="更新者")
 

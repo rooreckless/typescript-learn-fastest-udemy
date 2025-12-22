@@ -16,8 +16,8 @@ from ..schemas.categories import (CategoryCreateRequest,
     CategoryUpdateRequest,
     CategoryResponse)
 from .. schemas.items import ItemResponse
-from domain import UserEntity
-
+from domain import UserEntity,CategoryEntity
+from domain.category import Name
 
 router = APIRouter(
     prefix="/categories",
@@ -45,12 +45,15 @@ async def create_category(
     ※ 管理者権限が必要です
     """
     service = get_category_service(db)
-    category = await service.create_category(
+    category = CategoryEntity.create(
         name=request.name,
         description=request.description,
-        created_by=request.created_by
+        created_by=request.created_by,
+        updated_by=request.created_by
     )
-    return CategoryResponse.model_validate(category)
+
+    return_created_category = await service.create_category(category)
+    return CategoryResponse.model_validate(return_created_category)
 
 
 @router.get(
