@@ -6,8 +6,8 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from datetime import timedelta
 
-from infrastructure.database import get_db
-from presentation.dependencies import get_user_service
+from infrastructure.database import provide_db
+from presentation.dependencies import provide_user_service
 from ..schemas import LoginRequest, LoginResponse
 from ..schemas import UserResponse
 from presentation.auth import create_access_token, verify_password, ACCESS_TOKEN_EXPIRE_MINUTES
@@ -26,7 +26,7 @@ router = APIRouter(
 )
 async def login(
     request: LoginRequest,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(provide_db)
 ):
     """
     ユーザー認証を行い、JWTトークンを発行します
@@ -36,7 +36,7 @@ async def login(
     
     成功時にはアクセストークンとユーザー情報を返します
     """
-    service = get_user_service(db)
+    service = provide_user_service(db)
     
     # メールアドレスでユーザーを検索
     user = await service.get_user_by_email(request.email)

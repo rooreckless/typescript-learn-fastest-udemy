@@ -6,8 +6,8 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List
 
-from infrastructure.database import get_db
-from presentation.dependencies import get_user_service, require_admin
+from infrastructure.database import provide_db
+from presentation.dependencies import provide_user_service, require_admin
 from ..schemas.users import (
     UserCreateRequest,
     UserUpdateRequest,
@@ -31,7 +31,7 @@ router = APIRouter(
 )
 async def create_user(
     request: UserCreateRequest,
-    db: AsyncSession = Depends(get_db),
+    db: AsyncSession = Depends(provide_db),
     admin_user: UserEntity = Depends(require_admin)
 ):
     """
@@ -43,7 +43,7 @@ async def create_user(
     
     ※ 管理者権限が必要です
     """
-    service = get_user_service(db)
+    service = provide_user_service(db)
     try:
         user = await service.create_user(
             name=request.name,
@@ -68,7 +68,7 @@ async def create_user(
 async def get_users(
     skip: int = 0,
     limit: int = 100,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(provide_db)
 ):
     """
     全ユーザーのリストを取得します
@@ -76,7 +76,7 @@ async def get_users(
     - **skip**: スキップする件数（デフォルト: 0）
     - **limit**: 取得する最大件数（デフォルト: 100）
     """
-    service = get_user_service(db)
+    service = provide_user_service(db)
     users = await service.get_all_users(skip=skip, limit=limit)
     return [UserResponse.model_validate(user) for user in users]
 
@@ -88,14 +88,14 @@ async def get_users(
 )
 async def get_user(
     user_id: int,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(provide_db)
 ):
     """
     指定されたIDのユーザーを取得します
     
     - **user_id**: ユーザーID
     """
-    service = get_user_service(db)
+    service = provide_user_service(db)
     user = await service.get_user_by_id(user_id)
     if not user:
         raise HTTPException(
@@ -113,7 +113,7 @@ async def get_user(
 async def update_user(
     user_id: int,
     request: UserUpdateRequest,
-    db: AsyncSession = Depends(get_db),
+    db: AsyncSession = Depends(provide_db),
     admin_user: UserEntity = Depends(require_admin)
 ):
     """
@@ -126,7 +126,7 @@ async def update_user(
     
     ※ 管理者権限が必要です
     """
-    service = get_user_service(db)
+    service = provide_user_service(db)
     try:
         user = await service.update_user(
             user_id=user_id,
@@ -156,7 +156,7 @@ async def update_user(
 )
 async def delete_user(
     user_id: int,
-    db: AsyncSession = Depends(get_db),
+    db: AsyncSession = Depends(provide_db),
     admin_user: UserEntity = Depends(require_admin)
 ):
     """
@@ -166,7 +166,7 @@ async def delete_user(
     
     ※ 管理者権限が必要です
     """
-    service = get_user_service(db)
+    service = provide_user_service(db)
     success = await service.delete_user(user_id)
     if not success:
         raise HTTPException(

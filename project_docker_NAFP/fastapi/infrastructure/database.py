@@ -36,7 +36,7 @@ async_session_maker = async_sessionmaker(
 Base = declarative_base()
 
 
-async def get_db() -> AsyncGenerator[AsyncSession, None]:
+async def provide_db() -> AsyncGenerator[AsyncSession, None]:
     """
     データベースセッション依存性注入用関数
     FastAPIのDependsで使用

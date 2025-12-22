@@ -7,7 +7,7 @@ from fastapi import HTTPException, Depends, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from infrastructure.database import get_db
+from infrastructure.database import provide_db
 from infrastructure.user.repository import UserRepository
 from infrastructure.item.repository import ItemRepository
 from infrastructure.category.repository import CategoryRepository
@@ -26,17 +26,17 @@ security = HTTPBearer()
 # リポジトリファクトリー
 # =========================================
 
-def get_user_repository(db: AsyncSession) -> UserRepository:
+def provide_user_repository(db: AsyncSession) -> UserRepository:
     """ユーザーリポジトリを取得"""
     return UserRepository(db)
 
 
-def get_item_repository(db: AsyncSession) -> ItemRepository:
+def provide_item_repository(db: AsyncSession) -> ItemRepository:
     """商品リポジトリを取得"""
     return ItemRepository(db)
 
 
-def get_category_repository(db: AsyncSession) -> CategoryRepository:
+def provide_category_repository(db: AsyncSession) -> CategoryRepository:
     """カテゴリリポジトリを取得"""
     return CategoryRepository(db)
 
@@ -45,22 +45,22 @@ def get_category_repository(db: AsyncSession) -> CategoryRepository:
 # サービスファクトリー
 # =========================================
 
-def get_user_service(db: AsyncSession) -> UserService:
+def provide_user_service(db: AsyncSession) -> UserService:
     """ユーザーサービスを取得"""
-    user_repo = get_user_repository(db)
+    user_repo = provide_user_repository(db)
     return UserService(user_repo)
 
 
-def get_item_service(db: AsyncSession) -> ItemService:
+def provide_item_service(db: AsyncSession) -> ItemService:
     """商品サービスを取得"""
-    item_repo = get_item_repository(db)
+    item_repo = provide_item_repository(db)
     return ItemService(item_repo)
 
 
-def get_category_service(db: AsyncSession) -> CategoryService:
+def provide_category_service(db: AsyncSession) -> CategoryService:
     """カテゴリサービスを取得"""
-    category_repo = get_category_repository(db)
-    item_repo = get_item_repository(db)
+    category_repo = provide_category_repository(db)
+    item_repo = provide_item_repository(db)
     return CategoryService(category_repo, item_repo)
 
 
@@ -70,7 +70,7 @@ def get_category_service(db: AsyncSession) -> CategoryService:
 
 async def get_current_user(
     credentials: HTTPAuthorizationCredentials = Depends(security),
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(provide_db)
 ) -> UserEntity:
     """
     現在のユーザーを取得
@@ -96,7 +96,7 @@ async def get_current_user(
         )
     
     # ユーザー情報を取得
-    user_service = get_user_service(db)
+    user_service = provide_user_service(db)
     user = await user_service.get_user_by_id(int(user_id))
     
     if not user:

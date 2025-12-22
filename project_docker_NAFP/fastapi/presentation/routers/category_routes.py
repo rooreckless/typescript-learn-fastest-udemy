@@ -6,8 +6,8 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List
 
-from infrastructure.database import get_db
-from presentation.dependencies import get_category_service, get_item_service, require_admin
+from infrastructure.database import provide_db
+from presentation.dependencies import provide_category_service, provide_item_service, require_admin
 from ..schemas.common import (
     MessageResponse
 )
@@ -18,7 +18,8 @@ from ..schemas.categories import (CategoryCreateRequest,
 from .. schemas.items import ItemResponse
 from domain import UserEntity,CategoryEntity
 from domain.category import Name
-
+from application.use_cases.category.create import CreateCategoryUseCase
+from presentation.schemas.categories import CategoryCreateRequest, CategoryResponse
 router = APIRouter(
     prefix="/categories",
     tags=["Categories"]
@@ -33,7 +34,7 @@ router = APIRouter(
 )
 async def create_category(
     request: CategoryCreateRequest,
-    db: AsyncSession = Depends(get_db),
+    db: AsyncSession = Depends(provide_db),
     admin_user: UserEntity = Depends(require_admin)
 ):
     """
@@ -44,16 +45,9 @@ async def create_category(
     
     ※ 管理者権限が必要です
     """
-    service = get_category_service(db)
-    category = CategoryEntity.create(
-        name=request.name,
-        description=request.description,
-        created_by=request.created_by,
-        updated_by=request.created_by
-    )
-
-    return_created_category = await service.create_category(category)
-    return CategoryResponse.model_validate(return_created_category)
+    service = provide_category_service(db)
+    use_case = CreateCategoryUseCase(service)
+    return CategoryResponse.model_validate(await use_case(request))
 
 
 @router.get(
@@ -64,7 +58,7 @@ async def create_category(
 async def get_categories(
     skip: int = 0,
     limit: int = 100,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(provide_db)
 ):
     """
     全カテゴリのリストを取得します
@@ -72,7 +66,7 @@ async def get_categories(
     - **skip**: スキップする件数（デフォルト: 0）
     - **limit**: 取得する最大件数（デフォルト: 100）
     """
-    service = get_category_service(db)
+    service = provide_category_service(db)
     categories = await service.get_all_categories(skip=skip, limit=limit)
     return [CategoryResponse.model_validate(category) for category in categories]
 
@@ -84,14 +78,14 @@ async def get_categories(
 )
 async def get_category(
     category_id: int,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(provide_db)
 ):
     """
     指定されたIDのカテゴリを取得します
     
     - **category_id**: カテゴリID
     """
-    service = get_category_service(db)
+    service = provide_category_service(db)
     category = await service.get_category_by_id(category_id)
     if not category:
         raise HTTPException(
@@ -108,15 +102,15 @@ async def get_category(
 )
 async def get_items_by_category(
     category_id: int,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(provide_db)
 ):
     """
     指定されたカテゴリに属する商品のリストを取得します
     
     - **category_id**: カテゴリID
     """
-    item_service = get_item_service(db)
-    items = await item_service.get_items_by_category(category_id)
+    category_service = provide_category_service(db)
+    items = await category_service.get_items_by_category(category_id)
     return [ItemResponse.model_validate(item) for item in items]
 
 
@@ -128,7 +122,7 @@ async def get_items_by_category(
 async def update_category(
     category_id: int,
     request: CategoryUpdateRequest,
-    db: AsyncSession = Depends(get_db),
+    db: AsyncSession = Depends(provide_db),
     admin_user: UserEntity = Depends(require_admin)
 ):
     """
@@ -140,7 +134,7 @@ async def update_category(
     
     ※ 管理者権限が必要です
     """
-    service = get_category_service(db)
+    service = provide_category_service(db)
     category = await service.update_category(
         category_id=category_id,
         name=request.name,
@@ -162,7 +156,7 @@ async def update_category(
 )
 async def delete_category(
     category_id: int,
-    db: AsyncSession = Depends(get_db),
+    db: AsyncSession = Depends(provide_db),
     admin_user: UserEntity = Depends(require_admin)
 ):
     """
@@ -172,7 +166,7 @@ async def delete_category(
     
     ※ 管理者権限が必要です
     """
-    service = get_category_service(db)
+    service = provide_category_service(db)
     success = await service.delete_category(category_id)
     if not success:
         raise HTTPException(
@@ -190,7 +184,7 @@ async def delete_category(
 )
 async def add_category_to_item(
     request: ItemCategoryRequest,
-    db: AsyncSession = Depends(get_db),
+    db: AsyncSession = Depends(provide_db),
     admin_user: UserEntity = Depends(require_admin)
 ):
     """
@@ -201,7 +195,7 @@ async def add_category_to_item(
     
     ※ 管理者権限が必要です
     """
-    service = get_category_service(db)
+    service = provide_category_service(db)
     await service.add_category_to_item(
         item_id=request.item_id,
         category_id=request.category_id,
@@ -220,7 +214,7 @@ async def add_category_to_item(
 async def remove_category_from_item(
     item_id: int,
     category_id: int,
-    db: AsyncSession = Depends(get_db),
+    db: AsyncSession = Depends(provide_db),
     admin_user: UserEntity = Depends(require_admin)
 ):
     """
@@ -231,7 +225,7 @@ async def remove_category_from_item(
     
     ※ 管理者権限が必要です
     """
-    service = get_category_service(db)
+    service = provide_category_service(db)
     success = await service.remove_category_from_item(item_id, category_id)
     if not success:
         raise HTTPException(

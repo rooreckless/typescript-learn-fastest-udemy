@@ -6,8 +6,8 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List
 
-from infrastructure.database import get_db
-from presentation.dependencies import get_item_service, require_admin
+from infrastructure.database import provide_db
+from presentation.dependencies import provide_item_service, require_admin
 from ..schemas.common import (
     MessageResponse,
     
@@ -35,7 +35,7 @@ router = APIRouter(
 )
 async def create_item(
     request: ItemCreateRequest,
-    db: AsyncSession = Depends(get_db),
+    db: AsyncSession = Depends(provide_db),
     admin_user: UserEntity = Depends(require_admin)
 ):
     """
@@ -47,7 +47,7 @@ async def create_item(
     
     ※ 管理者権限が必要です
     """
-    service = get_item_service(db)
+    service = provide_item_service(db)
     item = await service.create_item(
         name=request.name,
         description=request.description,
@@ -65,7 +65,7 @@ async def create_item(
 async def get_items(
     skip: int = 0,
     limit: int = 100,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(provide_db)
 ):
     """
     全商品のリストを取得します
@@ -73,7 +73,7 @@ async def get_items(
     - **skip**: スキップする件数（デフォルト: 0）
     - **limit**: 取得する最大件数（デフォルト: 100）
     """
-    service = get_item_service(db)
+    service = provide_item_service(db)
     items = await service.get_all_items(skip=skip, limit=limit)
     return [ItemResponse.model_validate(item) for item in items]
 
@@ -85,14 +85,14 @@ async def get_items(
 )
 async def get_item(
     item_id: int,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(provide_db)
 ):
     """
     指定されたIDの商品を取得します
     
     - **item_id**: 商品ID
     """
-    service = get_item_service(db)
+    service = provide_item_service(db)
     item = await service.get_item_by_id(item_id)
     if not item:
         raise HTTPException(
@@ -109,14 +109,14 @@ async def get_item(
 )
 async def get_item_with_categories(
     item_id: int,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(provide_db)
 ):
     """
     指定されたIDの商品をカテゴリ情報付きで取得します
     
     - **item_id**: 商品ID
     """
-    service = get_item_service(db)
+    service = provide_item_service(db)
     item_with_categories = await service.get_item_with_categories(item_id)
     if not item_with_categories:
         raise HTTPException(
@@ -134,7 +134,7 @@ async def get_item_with_categories(
 async def update_item(
     item_id: int,
     request: ItemUpdateRequest,
-    db: AsyncSession = Depends(get_db),
+    db: AsyncSession = Depends(provide_db),
     admin_user: UserEntity = Depends(require_admin)
 ):
     """
@@ -147,7 +147,7 @@ async def update_item(
     
     ※ 管理者権限が必要です
     """
-    service = get_item_service(db)
+    service = provide_item_service(db)
     item = await service.update_item(
         item_id=item_id,
         name=request.name,
@@ -170,7 +170,7 @@ async def update_item(
 )
 async def delete_item(
     item_id: int,
-    db: AsyncSession = Depends(get_db),
+    db: AsyncSession = Depends(provide_db),
     admin_user: UserEntity = Depends(require_admin)
 ):
     """
@@ -180,7 +180,7 @@ async def delete_item(
     
     ※ 管理者権限が必要です
     """
-    service = get_item_service(db)
+    service = provide_item_service(db)
     success = await service.delete_item(item_id)
     if not success:
         raise HTTPException(
