@@ -18,7 +18,7 @@ from ..schemas.categories import (CategoryCreateRequest,
 from .. schemas.items import ItemResponse
 from domain import UserEntity,CategoryEntity
 from domain.category import Name
-from application.use_cases.category.create import CreateCategoryUseCase
+
 from presentation.schemas.categories import CategoryCreateRequest, CategoryResponse
 router = APIRouter(
     prefix="/categories",
@@ -45,6 +45,7 @@ async def create_category(
     
     ※ 管理者権限が必要です
     """
+    from application.use_cases.category.create import CreateCategoryUseCase
     service = provide_category_service(db)
     use_case = CreateCategoryUseCase(service)
     return CategoryResponse.model_validate(await use_case(request))
@@ -66,9 +67,12 @@ async def get_categories(
     - **skip**: スキップする件数（デフォルト: 0）
     - **limit**: 取得する最大件数（デフォルト: 100）
     """
+    from application.use_cases.category.get_all import GetAllCategoriesUseCase
     service = provide_category_service(db)
-    categories = await service.get_all_categories(skip=skip, limit=limit)
-    return [CategoryResponse.model_validate(category) for category in categories]
+    use_case = GetAllCategoriesUseCase(service)
+
+    all_categories = await use_case(skip=skip, limit=limit)
+    return [CategoryResponse.model_validate(category) for category in all_categories]
 
 
 @router.get(
@@ -85,8 +89,11 @@ async def get_category(
     
     - **category_id**: カテゴリID
     """
+    from application.use_cases.category.get_by_pk import GetCategoryByPkUseCase
     service = provide_category_service(db)
-    category = await service.get_category_by_id(category_id)
+    use_case = GetCategoryByPkUseCase(service)
+    category = await use_case(category_id=category_id)
+
     if not category:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -109,10 +116,19 @@ async def get_items_by_category(
     
     - **category_id**: カテゴリID
     """
+    from application.use_cases.category.get_items_by_category_pk import GetItemsByCategoryPkUseCase
     category_service = provide_category_service(db)
-    items = await category_service.get_items_by_category(category_id)
+    use_case = GetItemsByCategoryPkUseCase(category_service)
+
+    items = await use_case(category_id=category_id)
+    if not items :
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Item with CategoryId {category_id} not found"
+        )
     return [ItemResponse.model_validate(item) for item in items]
 
+# ----------------------------------------
 
 @router.put(
     "/{category_id}",

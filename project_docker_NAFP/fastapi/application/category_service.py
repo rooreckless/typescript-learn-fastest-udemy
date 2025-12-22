@@ -18,31 +18,6 @@ class CategoryService:
         self.category_repository = category_repository
         self.item_repository = item_repository
 
-    # async def create_category(
-    #     self,
-    #     name: str,
-    #     description: str,
-    #     created_by: str
-    # ) -> CategoryEntity:
-    #     """
-    #     新しいカテゴリを作成
-        
-    #     Args:
-    #         name: カテゴリ名
-    #         description: カテゴリ説明
-    #         created_by: 作成者
-            
-    #     Returns:
-    #         作成されたカテゴリエンティティ
-    #     """
-    #     category = CategoryEntity(
-    #         name=name,
-    #         description=description,
-    #         created_by=created_by,
-    #         updated_by=created_by
-    #     )
-    #     return await self.category_repository.create(category)
-
     async def create_category(self, category: CategoryEntity) -> CategoryEntity:
         return await self.category_repository.create(category)
     async def get_category_by_id(self, category_id: int) -> Optional[CategoryEntity]:

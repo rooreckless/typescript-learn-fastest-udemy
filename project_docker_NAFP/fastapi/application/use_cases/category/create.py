@@ -41,5 +41,5 @@ class CreateCategoryUseCase:
         # カテゴリを永続化
         created_category = await self.category_service.create_category(category)
         
-        # レスポンスに変換して返す
+        # 作成されたカテゴリを返す
         return created_category
