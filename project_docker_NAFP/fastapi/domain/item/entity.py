@@ -5,19 +5,19 @@
 
 from datetime import datetime
 from typing import Optional, List
-from pydantic import BaseModel, Field, EmailStr
-
+from pydantic import BaseModel, Field
+from .value_objects import ItemName, ItemDescription, ItemPrice, ItemCreatedBy, ItemUpdatedBy
 
 
 class ItemEntity(BaseModel):
     """商品エンティティ"""
     id: Optional[int] = None
-    name: str = Field(..., min_length=1, max_length=100)
-    description: str = Field(..., max_length=200)
-    price: int = Field(..., ge=0)
-    created_by: str = Field(..., max_length=45)
+    name: ItemName
+    description: ItemDescription
+    price: ItemPrice
+    created_by: ItemCreatedBy
     created_at: datetime = Field(default_factory=datetime.now)
-    updated_by: str = Field(..., max_length=45)
+    updated_by: ItemUpdatedBy
     updated_at: datetime = Field(default_factory=datetime.now)
     deleted_at: Optional[datetime] = None
 

@@ -40,7 +40,7 @@ class LoginUseCase:
             return None
         
         # パスワードを検証
-        if not verify_password(request.password, user.password_hash):
+        if not verify_password(request.password, str(user.password_hash)):
             return None
         
         # JWTトークンを生成
@@ -48,7 +48,7 @@ class LoginUseCase:
         access_token = create_access_token(
             data={
                 "sub": str(user.id),
-                "email": user.email,
+                "email": str(user.email),
                 "admin": user.admin
             },
             expires_delta=access_token_expires

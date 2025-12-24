@@ -23,11 +23,11 @@ class ItemRepository(AbstractItemRepository):
     async def create(self, item: ItemEntity) -> ItemEntity:
         """商品を作成"""
         db_item = ItemModel(
-            name=item.name,
-            description=item.description,
-            price=item.price,
-            created_by=item.created_by,
-            updated_by=item.updated_by,
+            name=item.name.value,
+            description=item.description.value,
+            price=item.price.value,
+            created_by=item.created_by.value,
+            updated_by=item.updated_by.value,
         )
         self.session.add(db_item)
         await self.session.flush()
@@ -69,10 +69,10 @@ class ItemRepository(AbstractItemRepository):
         if not db_item:
             return None
 
-        db_item.name = item.name
-        db_item.description = item.description
-        db_item.price = item.price
-        db_item.updated_by = item.updated_by
+        db_item.name = item.name.value
+        db_item.description = item.description.value
+        db_item.price = item.price.value
+        db_item.updated_by = item.updated_by.value
         db_item.updated_at = datetime.now()
 
         await self.session.flush()
@@ -172,4 +172,4 @@ class ItemRepository(AbstractItemRepository):
             )
         )
         db_categories = result.scalars().all()
-        return [CategoryEntity.model_validate(category) for category in db_categories]
+        return [CategoryEntity.model_validate(category, from_attributes=True) for category in db_categories]

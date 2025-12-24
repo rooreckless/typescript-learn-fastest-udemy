@@ -137,7 +137,7 @@ class UserService:
             return None
 
         # メールアドレスの重複チェック
-        if email and email != existing_user.email:
+        if email and email != existing_user.email.value:
             duplicate_user = await self.user_repository.find_by_email(email)
             if duplicate_user:
                 raise ValueError(f"Email {email} is already registered")
@@ -175,7 +175,7 @@ class UserService:
         if not user:
             return None
 
-        if not self.verify_password(password, user.password_hash):
+        if not self.verify_password(password, user.password_hash.value):
             return None
 
         return user

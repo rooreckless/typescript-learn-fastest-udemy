@@ -22,10 +22,10 @@ class CategoryRepository(AbstractCategoryRepository):
     async def create(self, category: CategoryEntity) -> CategoryEntity:
         """カテゴリを作成"""
         db_category = CategoryModel(
-            name=category.name,
-            description=category.description,
-            created_by=category.created_by,
-            updated_by=category.updated_by,
+            name=category.name.value,
+            description=category.description.value,
+            created_by=category.created_by.value,
+            updated_by=category.updated_by.value,
         )
         self.session.add(db_category)
         await self.session.flush()
@@ -67,9 +67,9 @@ class CategoryRepository(AbstractCategoryRepository):
         if not db_category:
             return None
 
-        db_category.name = category.name
-        db_category.description = category.description
-        db_category.updated_by = category.updated_by
+        db_category.name = category.name.value
+        db_category.description = category.description.value
+        db_category.updated_by = category.updated_by.value
         db_category.updated_at = datetime.now()
 
         await self.session.flush()

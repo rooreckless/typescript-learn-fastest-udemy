@@ -5,19 +5,20 @@
 
 from datetime import datetime
 from typing import Optional, List
-from pydantic import BaseModel, Field, EmailStr
+from pydantic import BaseModel, Field
+from .value_objects import UserName, UserEmail, UserPasswordHash, UserCreatedBy, UserUpdatedBy
 
 
 class UserEntity(BaseModel):
     """ユーザーエンティティ"""
     id: Optional[int] = None
-    name: str = Field(..., min_length=1, max_length=45)
-    password_hash: str
-    email: EmailStr = Field(..., max_length=255)
+    name: UserName
+    password_hash: UserPasswordHash
+    email: UserEmail
     admin: bool = Field(default=False)
-    created_by: str = Field(..., max_length=45)
+    created_by: UserCreatedBy
     created_at: datetime = Field(default_factory=datetime.now)
-    updated_by: str = Field(..., max_length=45)
+    updated_by: UserUpdatedBy
     updated_at: datetime = Field(default_factory=datetime.now)
     deleted_at: Optional[datetime] = None
 

@@ -4,21 +4,22 @@
 """
 
 from datetime import datetime
-from typing import Optional, List, Union
-from pydantic import BaseModel, Field, EmailStr, field_validator
-from .value_objects import Name
+from typing import Optional, List, Union, Dict, Any
+from pydantic import BaseModel, Field, field_validator, model_serializer
+from .value_objects import Name, Description, CreatedBy, UpdatedBy
 from typing import Self
 
 class CategoryEntity(BaseModel):
     """カテゴリエンティティ"""
     id: Optional[int] = None
-    name: str  # 常に文字列として扱う
-    description: str = Field(..., max_length=200)
-    created_by: str = Field(..., max_length=45)
+    name: Name  # Name値オブジェクト
+    description: Description  # Description値オブジェクト
+    created_by: CreatedBy  # CreatedBy値オブジェクト
     created_at: datetime = Field(default_factory=datetime.now)
-    updated_by: str = Field(..., max_length=45)
+    updated_by: UpdatedBy  # UpdatedBy値オブジェクト
     updated_at: datetime = Field(default_factory=datetime.now)
     deleted_at: Optional[datetime] = None
+
 
     
     @classmethod
@@ -34,16 +35,16 @@ class CategoryEntity(BaseModel):
         
         Args:
             name: カテゴリ名（文字列）
-            description: カテゴリ説明
-            created_by: 作成者
-            updated_by: 更新者
+            description: カテゴリ説明（文字列）
+            created_by: 作成者（文字列）
+            updated_by: 更新者（文字列）
             
         Returns:
             作成されたカテゴリエンティティ
         """
-        # field_validatorにより自動的にstrからNameに変換される
+        # field_validatorにより自動的にstrから各値オブジェクトに変換される
         category = cls(
-            name=name,  # ここでは文字列を渡すだけでOK
+            name=name,
             description=description,
             created_by=created_by,
             updated_by=updated_by

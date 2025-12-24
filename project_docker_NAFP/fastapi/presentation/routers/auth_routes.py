@@ -36,34 +36,18 @@ async def login(
     
     成功時にはアクセストークンとユーザー情報を返します
     """
+    from application.use_cases.auth.login import LoginUseCase
     service = provide_user_service(db)
+    use_case = LoginUseCase(service)
+    result = await use_case(request)
     
-    # メールアドレスでユーザーを検索
-    user = await service.get_user_by_email(request.email)
-    
-    if not user:
+    if not result:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect email or password"
         )
     
-    # パスワードを検証
-    if not verify_password(request.password, user.password_hash):
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect email or password"
-        )
-    
-    # JWTトークンを生成
-    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = create_access_token(
-        data={
-            "sub": str(user.id),
-            "email": user.email,
-            "admin": user.admin
-        },
-        expires_delta=access_token_expires
-    )
+    access_token, user = result
     
     return LoginResponse(
         access_token=access_token,

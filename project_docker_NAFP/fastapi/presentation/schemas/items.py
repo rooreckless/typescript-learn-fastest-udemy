@@ -1,5 +1,5 @@
-from pydantic import BaseModel, Field
-from typing import Optional, List
+from pydantic import BaseModel, Field, field_serializer, model_validator
+from typing import Optional, List, Any
 from datetime import datetime
 
 
@@ -31,6 +31,20 @@ class ItemResponse(BaseModel):
     price: int
     created_at: datetime
     updated_at: datetime
+
+    @model_validator(mode='before')
+    @classmethod
+    def convert_value_objects(cls, data: Any) -> Any:
+        """値オブジェクトを適切な型に変換"""
+        if hasattr(data, '__dict__'):
+            data_dict = {}
+            for key, value in data.__dict__.items():
+                if hasattr(value, 'value'):
+                    data_dict[key] = value.value
+                else:
+                    data_dict[key] = value
+            return data_dict
+        return data
 
     class Config:
         from_attributes = True

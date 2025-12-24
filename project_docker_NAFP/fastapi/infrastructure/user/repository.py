@@ -20,16 +20,16 @@ class UserRepository(AbstractUserRepository):
     async def create(self, user: UserEntity) -> UserEntity:
         """ユーザーを作成"""
         db_user = UserModel(
-            name=user.name,
-            password_hash=user.password_hash,
-            email=user.email,
-            created_by=user.created_by,
-            updated_by=user.updated_by,
+            name=user.name.value,
+            password_hash=user.password_hash.value,
+            email=user.email.value,
+            created_by=user.created_by.value,
+            updated_by=user.updated_by.value,
         )
         self.session.add(db_user)
         await self.session.flush()
         await self.session.refresh(db_user)
-        return UserEntity.model_validate(db_user)
+        return UserEntity.model_validate(db_user, from_attributes=True)
 
     async def find_by_id(self, user_id: int) -> Optional[UserEntity]:
         """IDでユーザーを検索"""
@@ -40,7 +40,7 @@ class UserRepository(AbstractUserRepository):
             )
         )
         db_user = result.scalar_one_or_none()
-        return UserEntity.model_validate(db_user) if db_user else None
+        return UserEntity.model_validate(db_user, from_attributes=True) if db_user else None
 
     async def find_by_email(self, email: str) -> Optional[UserEntity]:
         """メールアドレスでユーザーを検索"""
@@ -51,7 +51,7 @@ class UserRepository(AbstractUserRepository):
             )
         )
         db_user = result.scalar_one_or_none()
-        return UserEntity.model_validate(db_user) if db_user else None
+        return UserEntity.model_validate(db_user, from_attributes=True) if db_user else None
 
     async def find_all(self, skip: int = 0, limit: int = 100) -> List[UserEntity]:
         """全ユーザーを取得"""
@@ -62,7 +62,7 @@ class UserRepository(AbstractUserRepository):
             .limit(limit)
         )
         db_users = result.scalars().all()
-        return [UserEntity.model_validate(user) for user in db_users]
+        return [UserEntity.model_validate(user, from_attributes=True) for user in db_users]
 
     async def update(self, user_id: int, user: UserEntity) -> Optional[UserEntity]:
         """ユーザーを更新"""
@@ -77,16 +77,16 @@ class UserRepository(AbstractUserRepository):
         if not db_user:
             return None
 
-        db_user.name = user.name
-        db_user.email = user.email
+        db_user.name = user.name.value
+        db_user.email = user.email.value
         if user.password_hash:
-            db_user.password_hash = user.password_hash
-        db_user.updated_by = user.updated_by
+            db_user.password_hash = user.password_hash.value
+        db_user.updated_by = user.updated_by.value
         db_user.updated_at = datetime.now()
 
         await self.session.flush()
         await self.session.refresh(db_user)
-        return UserEntity.model_validate(db_user)
+        return UserEntity.model_validate(db_user, from_attributes=True)
 
     async def delete(self, user_id: int) -> bool:
         """ユーザーを論理削除"""

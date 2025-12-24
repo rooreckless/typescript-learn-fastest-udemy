@@ -1,9 +1,11 @@
+"""作成者の値オブジェクト"""
+
 from pydantic import BaseModel, ConfigDict, field_validator, model_validator
 from typing import Any
 
-class Name(BaseModel):
 
-    """カテゴリ名の値オブジェクト"""
+class UserCreatedBy(BaseModel):
+    """作成者の値オブジェクト"""
     model_config = ConfigDict(frozen=True)
 
     value: str
@@ -18,9 +20,10 @@ class Name(BaseModel):
 
     @field_validator("value")
     @classmethod
-    def validate_value(cls, value: str) ->str:
-        if not (1 <= len(value) <= 200):
-            raise ValueError("カテゴリ名は1文字以上200文字以下でなければなりません。")
+    def validate_value(cls, value: str) -> str:
+        if not (1 <= len(value) <= 45):
+            raise ValueError("作成者は1文字以上45文字以下でなければなりません。")
         return value
+
     def __str__(self) -> str:
         return self.value
