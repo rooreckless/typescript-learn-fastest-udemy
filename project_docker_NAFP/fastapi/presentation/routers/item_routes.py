@@ -47,8 +47,10 @@ async def create_item(
     
     ※ 管理者権限が必要です
     """
+    from application.use_cases.item.create import CreateItemUseCase
     service = provide_item_service(db)
-    item = await service.create_item(
+    use_case = CreateItemUseCase(service)
+    item = await use_case(
         name=request.name,
         description=request.description,
         price=request.price,
@@ -73,8 +75,10 @@ async def get_items(
     - **skip**: スキップする件数（デフォルト: 0）
     - **limit**: 取得する最大件数（デフォルト: 100）
     """
+    from application.use_cases.item.get_all import GetAllItemsUseCase
     service = provide_item_service(db)
-    items = await service.get_all_items(skip=skip, limit=limit)
+    use_case = GetAllItemsUseCase(service)
+    items = await use_case(skip=skip, limit=limit)
     return [ItemResponse.model_validate(item) for item in items]
 
 
@@ -92,8 +96,10 @@ async def get_item(
     
     - **item_id**: 商品ID
     """
+    from application.use_cases.item.get_by_id import GetItemByIdUseCase
     service = provide_item_service(db)
-    item = await service.get_item_by_id(item_id)
+    use_case = GetItemByIdUseCase(service)
+    item = await use_case(item_id)
     if not item:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -116,8 +122,10 @@ async def get_item_with_categories(
     
     - **item_id**: 商品ID
     """
+    from application.use_cases.item.get_with_categories import GetItemWithCategoriesUseCase
     service = provide_item_service(db)
-    item_with_categories = await service.get_item_with_categories(item_id)
+    use_case = GetItemWithCategoriesUseCase(service)
+    item_with_categories = await use_case(item_id)
     if not item_with_categories:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -147,8 +155,10 @@ async def update_item(
     
     ※ 管理者権限が必要です
     """
+    from application.use_cases.item.update import UpdateItemUseCase
     service = provide_item_service(db)
-    item = await service.update_item(
+    use_case = UpdateItemUseCase(service)
+    item = await use_case(
         item_id=item_id,
         name=request.name,
         description=request.description,
@@ -180,8 +190,10 @@ async def delete_item(
     
     ※ 管理者権限が必要です
     """
+    from application.use_cases.item.delete import DeleteItemUseCase
     service = provide_item_service(db)
-    success = await service.delete_item(item_id)
+    use_case = DeleteItemUseCase(service)
+    success = await use_case(item_id)
     if not success:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,

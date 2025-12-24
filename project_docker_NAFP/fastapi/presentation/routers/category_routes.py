@@ -150,8 +150,10 @@ async def update_category(
     
     ※ 管理者権限が必要です
     """
+    from application.use_cases.category.update import UpdateCategoryUseCase
     service = provide_category_service(db)
-    category = await service.update_category(
+    use_case = UpdateCategoryUseCase(service)
+    category = await use_case(
         category_id=category_id,
         name=request.name,
         description=request.description,
@@ -182,8 +184,10 @@ async def delete_category(
     
     ※ 管理者権限が必要です
     """
+    from application.use_cases.category.delete import DeleteCategoryUseCase
     service = provide_category_service(db)
-    success = await service.delete_category(category_id)
+    use_case = DeleteCategoryUseCase(service)
+    success = await use_case(category_id)
     if not success:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -211,8 +215,10 @@ async def add_category_to_item(
     
     ※ 管理者権限が必要です
     """
+    from application.use_cases.category.add_category_to_item import AddCategoryToItemUseCase
     service = provide_category_service(db)
-    await service.add_category_to_item(
+    use_case = AddCategoryToItemUseCase(service)
+    await use_case(
         item_id=request.item_id,
         category_id=request.category_id,
         created_by=request.created_by
@@ -241,8 +247,10 @@ async def remove_category_from_item(
     
     ※ 管理者権限が必要です
     """
+    from application.use_cases.category.remove_category_from_item import RemoveCategoryFromItemUseCase
     service = provide_category_service(db)
-    success = await service.remove_category_from_item(item_id, category_id)
+    use_case = RemoveCategoryFromItemUseCase(service)
+    success = await use_case(item_id, category_id)
     if not success:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,

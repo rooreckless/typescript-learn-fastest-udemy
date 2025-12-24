@@ -11,9 +11,9 @@ from infrastructure.database import provide_db
 from infrastructure.user.repository import UserRepository
 from infrastructure.item.repository import ItemRepository
 from infrastructure.category.repository import CategoryRepository
-from application.user_service import UserService
-from application.item_service import ItemService
-from application.category_service import CategoryService
+from application.services.user_service import UserService
+from application.services.item_service import ItemService
+from application.services.category_service import CategoryService
 from domain import UserEntity
 from presentation.auth import decode_access_token
 

@@ -3,7 +3,7 @@
 """
 
 from domain import CategoryEntity
-from application.category_service import CategoryService
+from application.services.category_service import CategoryService
 
 
 class GetAllCategoriesUseCase:

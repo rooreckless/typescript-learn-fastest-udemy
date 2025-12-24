@@ -3,7 +3,7 @@
 """
 from typing import List
 from domain import ItemEntity
-from application.category_service import CategoryService
+from application.services.category_service import CategoryService
 
 
 class GetItemsByCategoryPkUseCase:

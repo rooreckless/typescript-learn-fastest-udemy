@@ -43,9 +43,11 @@ async def create_user(
     
     ※ 管理者権限が必要です
     """
+    from application.use_cases.user.create import CreateUserUseCase
     service = provide_user_service(db)
+    use_case = CreateUserUseCase(service)
     try:
-        user = await service.create_user(
+        user = await use_case(
             name=request.name,
             email=request.email,
             password=request.password,
@@ -76,8 +78,10 @@ async def get_users(
     - **skip**: スキップする件数（デフォルト: 0）
     - **limit**: 取得する最大件数（デフォルト: 100）
     """
+    from application.use_cases.user.get_all import GetAllUsersUseCase
     service = provide_user_service(db)
-    users = await service.get_all_users(skip=skip, limit=limit)
+    use_case = GetAllUsersUseCase(service)
+    users = await use_case(skip=skip, limit=limit)
     return [UserResponse.model_validate(user) for user in users]
 
 
@@ -95,8 +99,10 @@ async def get_user(
     
     - **user_id**: ユーザーID
     """
+    from application.use_cases.user.get_by_id import GetUserByIdUseCase
     service = provide_user_service(db)
-    user = await service.get_user_by_id(user_id)
+    use_case = GetUserByIdUseCase(service)
+    user = await use_case(user_id)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -126,9 +132,11 @@ async def update_user(
     
     ※ 管理者権限が必要です
     """
+    from application.use_cases.user.update import UpdateUserUseCase
     service = provide_user_service(db)
+    use_case = UpdateUserUseCase(service)
     try:
-        user = await service.update_user(
+        user = await use_case(
             user_id=user_id,
             name=request.name,
             email=request.email,
@@ -166,12 +174,13 @@ async def delete_user(
     
     ※ 管理者権限が必要です
     """
+    from application.use_cases.user.delete import DeleteUserUseCase
     service = provide_user_service(db)
-    success = await service.delete_user(user_id)
+    use_case = DeleteUserUseCase(service)
+    success = await use_case(user_id)
     if not success:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"User with id {user_id} not found"
         )
-    return MessageResponse(message=f"User {user_id} deleted successfully")
     return MessageResponse(message=f"User {user_id} deleted successfully")
