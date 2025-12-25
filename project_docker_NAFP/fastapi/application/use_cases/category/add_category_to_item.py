@@ -3,8 +3,8 @@
 """
 
 from application.services.category_service import CategoryService
-
-
+from presentation.schemas.item_category import ItemCategoryRequest
+from domain.item import CreatedBy
 class AddCategoryToItemUseCase:
     """商品にカテゴリを追加するユースケース"""
 
@@ -17,9 +17,7 @@ class AddCategoryToItemUseCase:
 
     async def __call__(
         self,
-        item_id: int,
-        category_id: int,
-        created_by: str
+        request: ItemCategoryRequest
     ) -> None:
         """
         商品にカテゴリを追加する
@@ -31,7 +29,7 @@ class AddCategoryToItemUseCase:
         """
         # 商品にカテゴリを追加
         await self.category_service.add_category_to_item(
-            item_id=item_id,
-            category_id=category_id,
-            created_by=created_by
+            item_id=request.item_id,
+            category_id=request.category_id,
+            created_by=CreatedBy.validate_value(request.created_by)
         )

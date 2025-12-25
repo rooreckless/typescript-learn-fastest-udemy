@@ -87,7 +87,7 @@ services:
       - /app/node_modules
     # ポートマッピング
     ports:
-      - "4200:4200"
+      - "4440:4200"
     # 依存関係の設定
     depends_on:
       - fastapi

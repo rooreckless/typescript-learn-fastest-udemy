@@ -32,7 +32,7 @@ class AbstractItemRepository(ABC):
         pass
 
     @abstractmethod
-    async def update(self, item_id: int, item: ItemEntity) -> Optional[ItemEntity]:
+    async def update(self, item: ItemEntity) -> Optional[ItemEntity]:
         """商品を更新"""
         pass
 

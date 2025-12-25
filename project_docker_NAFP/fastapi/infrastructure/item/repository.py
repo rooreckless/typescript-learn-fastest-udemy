@@ -56,11 +56,11 @@ class ItemRepository(AbstractItemRepository):
         db_items = result.scalars().all()
         return [ItemEntity.model_validate(item) for item in db_items]
 
-    async def update(self, item_id: int, item: ItemEntity) -> Optional[ItemEntity]:
+    async def update(self, item: ItemEntity) -> Optional[ItemEntity]:
         """商品を更新"""
         result = await self.session.execute(
             select(ItemModel).where(
-                ItemModel.id == item_id,
+                ItemModel.id == item.id,
                 ItemModel.deleted_at.is_(None)
             )
         )
@@ -69,21 +69,21 @@ class ItemRepository(AbstractItemRepository):
         if not db_item:
             return None
 
-        db_item.name = item.name.value
-        db_item.description = item.description.value
-        db_item.price = item.price.value
-        db_item.updated_by = item.updated_by.value
+        db_item.name = item.name
+        db_item.description = item.description
+        db_item.price = item.price
+        db_item.updated_by = item.updated_by
         db_item.updated_at = datetime.now()
 
         await self.session.flush()
         await self.session.refresh(db_item)
         return ItemEntity.model_validate(db_item)
 
-    async def delete(self, item_id: int) -> bool:
+    async def delete(self, item: ItemEntity) -> bool:
         """商品を論理削除"""
         result = await self.session.execute(
             select(ItemModel).where(
-                ItemModel.id == item_id,
+                ItemModel.id == item.id,
                 ItemModel.deleted_at.is_(None)
             )
         )

@@ -3,6 +3,7 @@
 """
 
 from domain import CategoryEntity
+from domain.category import Name,Description,CreatedBy,UpdatedBy
 from application.services.category_service import CategoryService
 from presentation.schemas.categories import CategoryCreateRequest
 
@@ -32,10 +33,10 @@ class CreateCategoryUseCase:
         """
         # カテゴリエンティティを作成
         category = CategoryEntity.create(
-            name=request.name,
-            description=request.description,
-            created_by=request.created_by,
-            updated_by=request.created_by
+            name=Name.validate_value(request.name),
+            description=Description.validate_value(request.description),
+            created_by=CreatedBy.validate_value(request.created_by),
+            updated_by=UpdatedBy.validate_value(request.created_by)
         )
 
         # カテゴリを永続化

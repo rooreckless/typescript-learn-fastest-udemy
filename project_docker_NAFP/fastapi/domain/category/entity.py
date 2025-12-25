@@ -44,10 +44,10 @@ class CategoryEntity(BaseModel):
         """
         # field_validatorにより自動的にstrから各値オブジェクトに変換される
         category = cls(
-            name=name,
-            description=description,
-            created_by=created_by,
-            updated_by=updated_by
+            name=Name.validate_value(name),
+            description=Description.validate_value(description),
+            created_by=CreatedBy.validate_value(created_by),
+            updated_by=UpdatedBy.validate_value(updated_by)
         )
         return category
 

@@ -18,10 +18,7 @@ class ItemService:
 
     async def create_item(
         self,
-        name: str,
-        description: str,
-        price: int,
-        created_by: str
+        item: ItemEntity
     ) -> ItemEntity:
         """
         新しい商品を作成
@@ -35,13 +32,7 @@ class ItemService:
         Returns:
             作成された商品エンティティ
         """
-        item = ItemEntity(
-            name=name,
-            description=description,
-            price=price,
-            created_by=created_by,
-            updated_by=created_by
-        )
+        
         return await self.item_repository.create(item)
 
     async def get_item_by_id(self, item_id: int) -> Optional[ItemEntity]:
@@ -63,40 +54,24 @@ class ItemService:
 
     async def update_item(
         self,
-        item_id: int,
-        name: Optional[str] = None,
-        description: Optional[str] = None,
-        price: Optional[int] = None,
-        updated_by: str = "system"
+        item: ItemEntity,
+        # item_id: int,
+        # name: Optional[str] = None,
+        # description: Optional[str] = None,
+        # price: Optional[int] = None,
+        # updated_by: str = "system"
     ) -> Optional[ItemEntity]:
         """
         商品情報を更新
         
         Args:
-            item_id: 商品ID
-            name: 新しい商品名（オプション）
-            description: 新しい商品説明（オプション）
-            price: 新しい価格（オプション）
-            updated_by: 更新者
+            item: 更新する商品エンティティ
             
         Returns:
             更新された商品エンティティ
         """
-        existing_item = await self.item_repository.find_by_id(item_id)
-        if not existing_item:
-            return None
 
-        updated_item = ItemEntity(
-            id=item_id,
-            name=name if name else existing_item.name,
-            description=description if description else existing_item.description,
-            price=price if price is not None else existing_item.price,
-            created_by=existing_item.created_by,
-            created_at=existing_item.created_at,
-            updated_by=updated_by
-        )
-
-        return await self.item_repository.update(item_id, updated_item)
+        return await self.item_repository.update(item)
 
     async def delete_item(self, item_id: int) -> bool:
         """商品を論理削除"""

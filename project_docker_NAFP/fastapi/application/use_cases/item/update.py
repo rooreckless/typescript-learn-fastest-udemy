@@ -5,7 +5,8 @@
 from typing import Optional
 from domain import ItemEntity
 from application.services.item_service import ItemService
-
+from presentation.schemas.items import ItemUpdateRequest
+from domain.item import Name,Description,Price,UpdatedBy
 
 class UpdateItemUseCase:
     """商品更新ユースケース"""
@@ -20,10 +21,7 @@ class UpdateItemUseCase:
     async def __call__(
         self,
         item_id: int,
-        name: Optional[str] = None,
-        description: Optional[str] = None,
-        price: Optional[float] = None,
-        updated_by: Optional[str] = None
+        request: ItemUpdateRequest
     ) -> Optional[ItemEntity]:
         """
         商品を更新する
@@ -39,12 +37,18 @@ class UpdateItemUseCase:
             更新された商品エンティティ、存在しない場合はNone
         """
         # 商品を更新
+        target_item = await self.item_service.get_item_by_id(item_id)
+        if not target_item:
+            return None
+
+        updated_item = target_item.update(
+            name=request.name,
+            description=request.description,
+            price=request.price,
+            updated_by=request.updated_by
+        )   
         item = await self.item_service.update_item(
-            item_id=item_id,
-            name=name,
-            description=description,
-            price=price,
-            updated_by=updated_by
+            item=updated_item
         )
         
         return item

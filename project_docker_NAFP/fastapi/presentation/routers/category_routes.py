@@ -25,7 +25,6 @@ router = APIRouter(
     tags=["Categories"]
 )
 
-
 @router.post(
     "",
     response_model=CategoryResponse,
@@ -155,9 +154,7 @@ async def update_category(
     use_case = UpdateCategoryUseCase(service)
     category = await use_case(
         category_id=category_id,
-        name=request.name,
-        description=request.description,
-        updated_by=request.updated_by
+        request=request
     )
     if not category:
         raise HTTPException(
@@ -216,13 +213,10 @@ async def add_category_to_item(
     ※ 管理者権限が必要です
     """
     from application.use_cases.category.add_category_to_item import AddCategoryToItemUseCase
+    
     service = provide_category_service(db)
     use_case = AddCategoryToItemUseCase(service)
-    await use_case(
-        item_id=request.item_id,
-        category_id=request.category_id,
-        created_by=request.created_by
-    )
+    await use_case(request)
     return MessageResponse(
         message=f"Category {request.category_id} added to item {request.item_id}"
     )

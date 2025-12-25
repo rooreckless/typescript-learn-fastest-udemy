@@ -4,7 +4,7 @@ from pydantic import BaseModel, ConfigDict, field_validator, model_validator
 from typing import Any
 
 
-class ItemUpdatedBy(BaseModel):
+class UpdatedBy(BaseModel):
     """更新者の値オブジェクト"""
     model_config = ConfigDict(frozen=True)
 

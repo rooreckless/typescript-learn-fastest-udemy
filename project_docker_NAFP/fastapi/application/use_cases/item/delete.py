@@ -28,7 +28,10 @@ class DeleteItemUseCase:
         Returns:
             削除が成功した場合True、失敗した場合False
         """
+        target_item = await self.item_service.get_item_by_id(item_id)
+        if not target_item:
+            return None
         # 商品を削除
-        success = await self.item_service.delete_item(item_id)
+        success = await self.item_service.delete_item(target_item)
         
         return success

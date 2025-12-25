@@ -51,10 +51,7 @@ async def create_item(
     service = provide_item_service(db)
     use_case = CreateItemUseCase(service)
     item = await use_case(
-        name=request.name,
-        description=request.description,
-        price=request.price,
-        created_by=request.created_by
+        request=request
     )
     return ItemResponse.model_validate(item)
 
@@ -160,10 +157,7 @@ async def update_item(
     use_case = UpdateItemUseCase(service)
     item = await use_case(
         item_id=item_id,
-        name=request.name,
-        description=request.description,
-        price=request.price,
-        updated_by=request.updated_by
+        request=request
     )
     if not item:
         raise HTTPException(

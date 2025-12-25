@@ -4,7 +4,7 @@ from pydantic import BaseModel, ConfigDict, field_validator, model_validator
 from typing import Any
 
 
-class ItemDescription(BaseModel):
+class Description(BaseModel):
     """商品説明の値オブジェクト"""
     model_config = ConfigDict(frozen=True)
 

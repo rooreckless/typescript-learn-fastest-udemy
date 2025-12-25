@@ -4,8 +4,9 @@
 
 from typing import Optional
 from domain import CategoryEntity
+from domain.category import Name,Description,UpdatedBy
 from application.services.category_service import CategoryService
-
+from presentation.schemas.categories import CategoryUpdateRequest
 
 class UpdateCategoryUseCase:
     """カテゴリ更新ユースケース"""
@@ -19,11 +20,9 @@ class UpdateCategoryUseCase:
 
     async def __call__(
         self,
+        request: CategoryUpdateRequest,
         category_id: int,
-        name: Optional[str] = None,
-        description: Optional[str] = None,
-        updated_by: Optional[str] = None
-    ) -> Optional[CategoryEntity]:
+    ) -> CategoryEntity:
         """
         カテゴリを更新する
         
@@ -39,9 +38,9 @@ class UpdateCategoryUseCase:
         # カテゴリを更新
         updated_category = await self.category_service.update_category(
             category_id=category_id,
-            name=name,
-            description=description,
-            updated_by=updated_by
+            name=Name.validate_value(request.name),
+            description=Description.validate_value(request.description),
+            updated_by=UpdatedBy.validate_value(request.updated_by)
         )
         
         return updated_category

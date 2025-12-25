@@ -4,7 +4,7 @@ from pydantic import BaseModel, ConfigDict, field_validator, model_validator
 from typing import Any
 
 
-class ItemCreatedBy(BaseModel):
+class CreatedBy(BaseModel):
     """作成者の値オブジェクト"""
     model_config = ConfigDict(frozen=True)
 

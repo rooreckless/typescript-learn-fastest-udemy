@@ -1,13 +1,13 @@
-from .name import ItemName
-from .description import ItemDescription
-from .price import ItemPrice
-from .created_by import ItemCreatedBy
-from .updated_by import ItemUpdatedBy
+from .name import Name
+from .description import Description
+from .price import Price
+from .created_by import CreatedBy
+from .updated_by import UpdatedBy
 
 __all__ = [
-    "ItemName",
-    "ItemDescription",
-    "ItemPrice",
-    "ItemCreatedBy",
-    "ItemUpdatedBy",
+    "Name",
+    "Description",
+    "Price",
+    "CreatedBy",
+    "UpdatedBy",
 ]
