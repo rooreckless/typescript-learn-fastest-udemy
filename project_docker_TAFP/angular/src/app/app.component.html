@@ -1,0 +1,48 @@
+<!-- =========================================
+     メインアプリケーションテンプレート
+     ========================================= -->
+
+<div class="container">
+  <!-- ヘッダー -->
+  <header class="header">
+    <h1>{{ title }}</h1>
+    <p class="subtitle">Nginx + Angular + FastAPI + PostgreSQL</p>
+  </header>
+
+  <!-- API接続状態 -->
+  <div class="status-bar">
+    <div class="status-item">
+      <strong>API Status:</strong> {{ apiStatus }}
+    </div>
+  </div>
+
+  <!-- メインコンテンツ -->
+  <main class="main-content">
+    <!-- ユーザー一覧 -->
+    <section class="users-section">
+      <h2>ユーザー一覧</h2>
+      
+      <div *ngIf="users.length === 0" class="no-data">
+        ユーザーデータを読み込んでいます...
+      </div>
+
+      <div *ngIf="users.length > 0" class="users-grid">
+        <div *ngFor="let user of users" class="user-card">
+          <div class="user-info">
+            <h3>{{ user.username }}</h3>
+            <p class="user-email">{{ user.email }}</p>
+            <p class="user-id">ID: {{ user.id }}</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- フッター -->
+  <footer class="footer">
+    <p>TAFP Stack Development Environment</p>
+  </footer>
+</div>
+
+<!-- ルーターアウトレット（子ルート用） -->
+<router-outlet></router-outlet>

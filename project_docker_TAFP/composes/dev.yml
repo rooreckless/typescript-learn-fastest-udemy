@@ -1,0 +1,183 @@
+# =========================================
+# Docker Compose 開発環境設定ファイル
+# TAFP Stack (Nginx + Angular + FastAPI + PostgreSQL)
+# =========================================
+
+services:
+  # =========================================
+  # PostgreSQLデータベースサービス
+  # =========================================
+  postgres:
+    # 開発用Dockerfileを使用
+    build:
+      context: ..
+      dockerfile: dockerfiles/postgres/dev/Dockerfile
+    container_name: tafp_postgres
+    # 環境変数ファイルの読み込み
+    env_file:
+      - ../.envs/postgres/dev
+    # ボリュームマウント設定
+    volumes:
+      # データ永続化用のボリューム
+      - postgres_data:/var/lib/postgresql/data
+      # 初期化スクリプト用（必要に応じて）
+      - ../postgres/init:/docker-entrypoint-initdb.d
+    # ポートマッピング（ホスト:コンテナ）
+    # ports:
+    #   - "5432:5432"
+    # ネットワーク設定
+    networks:
+      - tafp_network
+    # ヘルスチェック設定
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U tafp_user -d tafp_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # =========================================
+  # FastAPI バックエンドサービス
+  # =========================================
+  fastapi:
+    # 開発用Dockerfileを使用
+    build:
+      context: ..
+      dockerfile: dockerfiles/fastapi/dev/Dockerfile
+    container_name: tafp_fastapi
+    # 環境変数ファイルの読み込み
+    env_file:
+      - ../.envs/fastapi/dev
+      - ../.envs/postgres/dev
+    # ボリュームマウント設定（ホットリロード用）
+    volumes:
+      # ソースコードのマウント（開発時の変更を即座に反映）
+      - ../fastapi:/app
+      # Pythonキャッシュを除外
+      - /app/__pycache__
+    # ポートマッピング
+    # ports:
+    #   - "8000:8000"
+    # expose:
+    #   - "8000"
+    # 依存関係の設定（PostgreSQLが起動してから起動）
+    depends_on:
+      postgres:
+        condition: service_healthy
+    # ネットワーク設定
+    networks:
+      - tafp_network
+    # 開発用コマンド（ホットリロード有効）
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    labels:
+      - traefik.enable=true
+
+      # /api → FastAPI
+      - traefik.http.routers.api.entrypoints=web
+      - traefik.http.routers.api.rule=PathPrefix(`/api`)
+      - traefik.http.services.api.loadbalancer.server.port=8000
+
+      # /docs, /redoc, /openapi.json → FastAPI（あなたのnginx設定と同じ）
+      - traefik.http.routers.docs.entrypoints=web
+      - traefik.http.routers.docs.rule=PathPrefix(`/docs`) || PathPrefix(`/redoc`) || Path(`/openapi.json`)
+      - traefik.http.routers.docs.service=api
+  # =========================================
+  # Angular フロントエンドサービス
+  # =========================================
+  angular:
+    # 開発用Dockerfileを使用
+    build:
+      context: ..
+      dockerfile: dockerfiles/angular/dev/Dockerfile
+    container_name: tafp_angular
+    # 環境変数ファイルの読み込み
+    env_file:
+      - ../.envs/angular/dev
+    # ボリュームマウント設定（ホットリロード用）
+    volumes:
+      # ソースコードのマウント
+      - ../angular:/app
+      # node_modulesを除外（パフォーマンス向上）
+      - /app/node_modules
+    # ポートマッピング
+    # ports:
+    #   - "4440:4200"
+    # 依存関係の設定
+    depends_on:
+      - fastapi
+    # ネットワーク設定
+    networks:
+      - tafp_network
+    # 開発用コマンド（ホットリロード有効）
+    command: npm start
+    profiles: ["dev"]
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.front.entrypoints=web
+      - traefik.http.routers.front.rule=PathPrefix(`/`)
+      - traefik.http.services.front.loadbalancer.server.port=4200
+  # =========================================
+  # Nginx リバースプロキシサービス
+  # =========================================
+  nginx:
+    # 開発用Dockerfileを使用
+    build:
+      context: ..
+      dockerfile: dockerfiles/nginx/stg/Dockerfile
+    container_name: tafp_nginx
+    # ボリュームマウント設定
+    volumes:
+      # Nginx設定ファイルのマウント
+      - ../nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ../nginx/conf.d/stg:/etc/nginx/conf.d:ro
+    # ポートマッピング（メインのエントリーポイント）
+    ports:
+      - "80:80"
+      - "443:443"
+    # 依存関係の設定（全サービスが起動してから起動）
+    depends_on:
+      - fastapi
+    # ネットワーク設定
+    networks:
+      - tafp_network
+    profiles: ["stg"]
+
+    # labels:
+    #   - traefik.enable=true
+    #   - traefik.http.routers.front.entrypoints=web
+    #   - traefik.http.routers.front.rule=PathPrefix(`/`)
+    #   - traefik.http.services.front.loadbalancer.server.port=80
+
+  traefik:
+    image: traefik:v3.6.2
+    container_name: tafp_traefik
+    command:
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --entrypoints.web.address=:80
+      # 任意：ダッシュボード（開発用）
+      - --api.dashboard=true
+      - --api.insecure=true
+    ports:
+      - "80:80"
+      - "443:443" # 任意： http://localhost:8080
+      - "8880:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - tafp_network
+    profiles: ["dev"]
+# =========================================
+# ネットワーク定義
+# =========================================
+networks:
+  tafp_network:
+    driver: bridge
+    # カスタムネットワークでサービス間通信を簡単に
+
+# =========================================
+# ボリューム定義
+# =========================================
+volumes:
+  postgres_data:
+    # PostgreSQLデータの永続化
+    driver: local

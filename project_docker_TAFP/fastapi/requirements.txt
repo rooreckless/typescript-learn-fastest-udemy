@@ -1,0 +1,45 @@
+# =========================================
+# FastAPI 依存パッケージ（Python 3.13対応）
+# =========================================
+
+# FastAPIフレームワーク
+fastapi==0.115.6
+
+# ASGIサーバー（ホットリロード機能付き）
+uvicorn[standard]==0.34.0
+
+# PostgreSQLドライバー（非同期対応）
+asyncpg==0.30.0
+
+# SQLAlchemy ORM（非同期対応）
+sqlalchemy[asyncio]==2.0.36
+
+# データバリデーション
+pydantic==2.10.5
+pydantic-settings==2.7.1
+pydantic[email]==2.10.5
+
+# CORS対応
+python-multipart==0.0.20
+
+# 環境変数管理
+python-dotenv==1.0.1
+
+# データベースマイグレーション
+alembic==1.14.0
+
+# HTTPクライアント（外部API呼び出し用）
+httpx==0.28.1
+
+# 日付・時刻処理
+python-dateutil==2.9.0.post0
+
+# JWT認証（必要に応じて）
+python-jose[cryptography]==3.3.0
+
+# パスワードハッシュ化
+bcrypt==4.2.1
+
+# テスト用
+pytest==8.3.4
+pytest-asyncio==0.24.0
