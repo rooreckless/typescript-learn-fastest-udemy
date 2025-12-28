@@ -55,7 +55,8 @@ services:
       # Pythonキャッシュを除外
       - /app/__pycache__
     # ポートマッピング
-    # ports:
+    ports:
+        - "5678:5678" # debugpyによるデバッグ用ポート（必要に応じて）
     #   - "8000:8000"
     # exposeはホストに公開しないが、Dockerネットワーク内では見えるようにする(ただしドキュメント的な意味合いが強く、expose自体に技術的な効果はほぼない)
     # expose:
@@ -68,7 +69,12 @@ services:
     networks:
       - tafp_network
     # 開発用コマンド（ホットリロード有効）
-    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    # command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    # 開発用コマンドその2（ホットリロード+ debugpy有効にしたので、project_docker_TAFPディレクトリをvscodeで開いた上で、デバッグボタン押下後にブレークポイントができるようになった）
+    command: >
+      python -Xfrozen_modules=off
+              -m debugpy --listen 0.0.0.0:5678
+              -m uvicorn main:app --host 0.0.0.0 --port 8000 --reload
     # Traefik に「/api から始まるパス は fastapi に流す」と教える設定（labels）
     # つまり、labelsのみで Traefik との連携を実現
     labels:
