@@ -1,0 +1,222 @@
+# =========================================
+# Docker Compose 開発環境設定ファイル
+# TAFP Stack (Nginx + Angular + FastAPI + PostgreSQL)
+# =========================================
+
+services:
+  # =========================================
+  # PostgreSQLデータベースサービス
+  # =========================================
+  postgres:
+    # 開発用Dockerfileを使用
+    build:
+      context: ..
+      dockerfile: dockerfiles/postgres/dev/Dockerfile
+    container_name: tafp_postgres
+    # 環境変数ファイルの読み込み
+    env_file:
+      - ../.envs/postgres/dev
+    # ボリュームマウント設定
+    volumes:
+      # データ永続化用のボリューム
+      - postgres_data:/var/lib/postgresql/data
+      # 初期化スクリプト用（必要に応じて）
+      - ../postgres/init:/docker-entrypoint-initdb.d
+    # ポートマッピング（ホスト:コンテナ）開発中は外部からも接続できるようにするためportsを使用
+    ports:
+      - "5432:5432"
+    # ネットワーク設定
+    networks:
+      - tafp_network
+    # ヘルスチェック設定
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U tafp_user -d tafp_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # =========================================
+  # FastAPI バックエンドサービス
+  # =========================================
+  fastapi:
+    # 開発用Dockerfileを使用
+    build:
+      context: ..
+      dockerfile: dockerfiles/fastapi/dev/Dockerfile
+    container_name: tafp_fastapi
+    # 環境変数ファイルの読み込み
+    env_file:
+      - ../.envs/fastapi/dev
+      - ../.envs/postgres/dev
+    # ボリュームマウント設定（ホットリロード用）
+    volumes:
+      # ソースコードのマウント（開発時の変更を即座に反映）
+      - ../fastapi:/app
+      # Pythonキャッシュを除外
+      - /app/__pycache__
+    # ポートマッピング
+    ports:
+        - "5678:5678" # debugpyによるデバッグ用ポート（必要に応じて）
+    #   - "8000:8000"
+    # exposeはホストに公開しないが、Dockerネットワーク内では見えるようにする(ただしドキュメント的な意味合いが強く、expose自体に技術的な効果はほぼない)
+    # expose:
+    #   - "8000"  # Docker ネットワーク内（Traefik から）見えるようにするだけ つまりホストに= ports は出さない
+    # 依存関係の設定（PostgreSQLが起動してから起動）
+    depends_on:
+      postgres:
+        condition: service_healthy
+    # ネットワーク設定
+    networks:
+      - tafp_network
+    # 開発用コマンド（ホットリロード有効）
+    # command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    # 開発用コマンドその2（ホットリロード+ debugpy有効にしたので、project_docker_TAFPディレクトリをvscodeで開いた上で、デバッグボタン押下後にブレークポイントができるようになった）
+    command: >
+      python -Xfrozen_modules=off
+              -m debugpy --listen 0.0.0.0:5678
+              -m uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    # Traefik に「/api から始まるパス は fastapi に流す」と教える設定（labels）
+    # つまり、labelsのみで Traefik との連携を実現
+    labels:
+      - traefik.enable=true
+
+      # ルータ定義：/api で始まるものは API=fastapi=ポート8000 に流す
+      - traefik.http.routers.api.rule=PathPrefix(`/api`)
+      - traefik.http.routers.api.entrypoints=web
+      # front より優先させるためにpriorityを10まで上げる（/api は確実に API=fastapi に流す）
+      - traefik.http.routers.api.priority=10
+      # 転送先ポート（FastAPI がコンテナ内で listen しているポート）
+      - traefik.http.services.api.loadbalancer.server.port=8000
+
+      # /api/docs, /api/redoc, /api/openapi.json → FastAPI ドキュメント用ルート
+      - traefik.http.routers.docs.rule=PathPrefix(`/api/docs`) || PathPrefix(`/api/redoc`) || Path(`/api/openapi.json`)
+      - traefik.http.routers.docs.entrypoints=web
+      - traefik.http.routers.docs.priority=15
+  # =========================================
+  # Angular フロントエンドサービス　dev は開発サーバ(ng serve)を使う
+  # =========================================
+  angular:
+    
+    build:
+      # docker compose build(=docker buildに相当)を実行したときに使う設定
+      # 開発用Dockerfileを使用
+      context: ..
+      dockerfile: dockerfiles/angular/dev/Dockerfile
+    container_name: tafp_angular
+    # 環境変数ファイルの読み込み
+    env_file:
+      - ../.envs/angular/dev
+    # ボリュームマウント設定（ホットリロード用）
+    volumes:
+      # ソースコードのマウント
+      - ../angular:/app
+      # node_modulesを除外（パフォーマンス向上）
+      - /app/node_modules
+    # ポートマッピング
+    # ports:
+    #   - "4440:4200"
+    # dev ではホストに ports 公開しない（Traefik 経由でアクセスする）
+    # ↑みたいにports を書くと Windows/WSL でポート衝突や転送問題が増えるので避ける
+    expose:
+      - "4200"  # Docker ネットワーク内（Traefik から）見えるようにするだけ
+    # 依存関係の設定
+    depends_on:
+      - fastapi
+    # ネットワーク設定
+    networks:
+      - tafp_network
+    # 開発用コマンド（ホットリロード有効）
+    command: npm start
+    profiles: ["dev"]
+    # Traefik に「/ は Angular に流す」と教える設定（labels）
+    # つまり、labelsのみで Traefik との連携を実現
+    labels:
+      - traefik.enable=true
+      # ルータ定義：どんなリクエストを拾うか
+      # PathPrefix(`/`) は「全部」に一致するので、/api より優先順位に注意が必要
+      - traefik.http.routers.front.entrypoints=web
+      - traefik.http.routers.front.rule=PathPrefix(`/`)
+      # サービス定義：どのポートに転送するか（Angular dev server の 4200）
+      - traefik.http.services.front.loadbalancer.server.port=4200
+      # もし、/api を優先させたいときは priority を付けると安全
+      - traefik.http.routers.front.priority=1
+  # =========================================
+  # Nginx リバースプロキシサービス
+  # =========================================
+  nginx:
+    # 開発用Dockerfileを使用
+    build:
+      context: ..
+      dockerfile: dockerfiles/nginx/stg/Dockerfile
+    container_name: tafp_nginx
+    # ボリュームマウント設定
+    volumes:
+      # Nginx設定ファイルのマウント
+      - ../nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ../nginx/conf.d/stg:/etc/nginx/conf.d:ro
+    # ポートマッピング（メインのエントリーポイント）
+    ports:
+      - "80:80"
+      - "443:443"
+    # 依存関係の設定（全サービスが起動してから起動）
+    depends_on:
+      - fastapi
+    # ネットワーク設定
+    networks:
+      - tafp_network
+    profiles: ["stg"]
+
+    # labels:
+    #   - traefik.enable=true
+    #   - traefik.http.routers.front.entrypoints=web
+    #   - traefik.http.routers.front.rule=PathPrefix(`/`)
+    #   - traefik.http.services.front.loadbalancer.server.port=80
+  
+  # =========================================
+  # Traefik: 開発環境の「入口」(Reverse Proxy / Router)
+  # =========================================
+  traefik:
+    image: traefik:v3.6.2 # Docker 29.x との相性問題を避けるため v3.6+ を推奨
+    container_name: tafp_traefik
+    
+    # ホストに公開するのは原則 Traefik のみ = portsを使うのはdevプロファイルだとTraefikサービスだけ
+    ports:
+      - "80:80"     # 必須： http://localhost   ブラウザは http://localhost にアクセス → Traefik が各サービスへ転送
+      - "443:443"   # 任意： https://localhost  （TLS設定があれば有効化）
+      - "8880:8080" # Traefik Dashboard（開発用。8080は衝突しやすいので 8880 に逃がす）
+    
+    volumes:
+      # Traefik が Docker のコンテナ情報（labels）を読み取れるようにする。
+      # そのための読み取り専用マウント
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - tafp_network
+    # Traefik 自体の挙動設定（コマンドラインで指定 するが多い）
+    command:
+      # Docker provider を有効化：コンテナの labels を見てルーティングを自動生成する
+      - --providers.docker=true
+      # 明示的に traefik.enable=true を付けたサービスだけ公開する（事故防止
+      - --providers.docker.exposedbydefault=false
+      # 入口（entrypoint）として web を作り、80番で待ち受ける
+      - --entrypoints.web.address=:80
+      # ダッシュボード（開発用）を有効化 http://localhost:8880 でアクセス可能にする
+      - --api.dashboard=true
+      - --api.insecure=true
+      # デバッグしたいときだけ（普段は INFO でもOK）
+      # - --log.level=DEBUG
+    profiles: ["dev"]   # dev のときだけ Traefik を起動する（stg では nginx を入口にするため）
+# =========================================
+# ネットワーク定義
+# =========================================
+networks:
+  tafp_network:
+    driver: bridge
+    # カスタムネットワークでサービス間通信を簡単に
+
+# =========================================
+# ボリューム定義
+# =========================================
+volumes:
+  postgres_data:
+    # PostgreSQLデータの永続化
+    driver: local
