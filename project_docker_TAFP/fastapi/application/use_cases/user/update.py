@@ -10,12 +10,14 @@ from application.services.user_service import UserService
 class UpdateUserUseCase:
     """ユーザー更新ユースケース"""
 
-    def __init__(self, user_service: UserService):
+    def __init__(self, user_service: UserService, current_user: UserEntity):
         """
         Args:
             user_service: ユーザーサービス
+            current_user: 現在のログインユーザー
         """
         self.user_service = user_service
+        self.current_user = current_user
 
     async def __call__(
         self,
@@ -23,8 +25,7 @@ class UpdateUserUseCase:
         name: Optional[str] = None,
         email: Optional[str] = None,
         password: Optional[str] = None,
-        admin: Optional[bool] = None,
-        updated_by: Optional[str] = None
+        admin: Optional[bool] = None
     ) -> Optional[UserEntity]:
         """
         ユーザーを更新する
@@ -35,7 +36,6 @@ class UpdateUserUseCase:
             email: 新しいメールアドレス（オプション）
             password: 新しいパスワード（オプション）
             admin: 管理者フラグ（オプション）
-            updated_by: 更新者
             
         Returns:
             更新されたユーザーエンティティ、存在しない場合はNone
@@ -50,7 +50,7 @@ class UpdateUserUseCase:
             email=email,
             password=password,
             admin=admin,
-            updated_by=updated_by
+            updated_by=self.current_user.name.value
         )
         
         return user

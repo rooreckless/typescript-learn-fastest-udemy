@@ -73,10 +73,10 @@ class ItemRepository(AbstractItemRepository):
         if not db_item:
             return None
 
-        db_item.name = item.name
-        db_item.description = item.description
-        db_item.price = item.price
-        db_item.updated_by = item.updated_by
+        db_item.name = item.name.value
+        db_item.description = item.description.value
+        db_item.price = item.price.value
+        db_item.updated_by = item.updated_by.value
         db_item.updated_at = datetime.now(tz=jst)
 
         await self.session.flush()

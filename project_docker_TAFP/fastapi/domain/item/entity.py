@@ -69,17 +69,23 @@ class ItemEntity(BaseModel):
             updated_by: 更新者（文字列、オプション)
         """
 
-        self.name = Name.validate_value(name) if name is not None else self.name
-        self.description = Description.validate_value(description) if description is not None else self.description
-        self.price = Price.validate_value(price) if price is not None else self.price
-        self.updated_by = UpdatedBy.validate_value(updated_by)
+        self.name = Name(value=name) if name is not None else self.name
+        self.description = Description(value=description) if description is not None else self.description
+        self.price = Price(value=price) if price is not None else self.price
+        self.updated_by = UpdatedBy(value=updated_by)
         self.updated_at = datetime.now()
 
         return self
 
-    def delete(self) -> "ItemEntity":
-        """商品を論理削除"""
+    def delete(self, updated_by: str = "system") -> "ItemEntity":
+        """商品を論理削除
+        
+        Args:
+            updated_by: 更新者（文字列、オプション）
+        """
         self.deleted_at = datetime.now()
+        self.updated_by = UpdatedBy(value=updated_by)
+        self.updated_at = datetime.now()
         return self
 
 from ..category.entity import CategoryEntity

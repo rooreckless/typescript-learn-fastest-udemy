@@ -156,9 +156,17 @@ class UserService:
 
         return await self.user_repository.update(user_id, updated_user)
 
-    async def delete_user(self, user_id: int) -> bool:
-        """ユーザーを論理削除"""
-        return await self.user_repository.delete(user_id)
+    async def delete_user(self, user_id: int, current_user: UserEntity) -> bool:
+        """ユーザーを論理削除
+        
+        Args:
+            user_id: ユーザーID
+            current_user: 現在のログインユーザー
+            
+        Returns:
+            削除が成功した場合True
+        """
+        return await self.user_repository.delete(user_id, current_user.name.value)
 
     async def authenticate_user(self, email: str, password: str) -> Optional[UserEntity]:
         """

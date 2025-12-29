@@ -3,7 +3,7 @@
 """
 
 from typing import Optional
-from domain import ItemEntity
+from domain import ItemEntity, UserEntity
 from application.services.item_service import ItemService
 from presentation.schemas.items import ItemUpdateRequest
 from domain.item import Name,Description,Price,UpdatedBy
@@ -11,12 +11,14 @@ from domain.item import Name,Description,Price,UpdatedBy
 class UpdateItemUseCase:
     """商品更新ユースケース"""
 
-    def __init__(self, item_service: ItemService):
+    def __init__(self, item_service: ItemService, current_user: UserEntity):
         """
         Args:
             item_service: 商品サービス
+            current_user: 現在のログインユーザー
         """
         self.item_service = item_service
+        self.current_user = current_user
 
     async def __call__(
         self,
@@ -45,7 +47,7 @@ class UpdateItemUseCase:
             name=request.name,
             description=request.description,
             price=request.price,
-            updated_by=request.updated_by
+            updated_by=self.current_user.name.value
         )   
         item = await self.item_service.update_item(
             item=updated_item

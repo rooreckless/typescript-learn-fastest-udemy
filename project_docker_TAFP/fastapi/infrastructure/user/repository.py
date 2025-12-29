@@ -93,8 +93,16 @@ class UserRepository(AbstractUserRepository):
         await self.session.commit()
         return UserEntity.model_validate(db_user, from_attributes=True)
 
-    async def delete(self, user_id: int) -> bool:
-        """ユーザーを論理削除"""
+    async def delete(self, user_id: int, updated_by: str) -> bool:
+        """ユーザーを論理削除
+        
+        Args:
+            user_id: ユーザーID
+            updated_by: 更新者
+            
+        Returns:
+            削除が成功した場合True
+        """
         result = await self.session.execute(
             select(UserModel).where(
                 UserModel.id == user_id,
@@ -106,6 +114,7 @@ class UserRepository(AbstractUserRepository):
         if not db_user:
             return False
 
+        db_user.updated_by = updated_by
         db_user.updated_at = datetime.now(tz=jst)
         db_user.deleted_at = datetime.now(tz=jst)
         await self.session.flush()
