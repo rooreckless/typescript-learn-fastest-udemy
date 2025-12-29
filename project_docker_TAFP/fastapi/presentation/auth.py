@@ -3,7 +3,7 @@
 JWT トークンの生成と検証
 """
 
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta,timezone
 from typing import Optional
 from jose import JWTError, jwt
 import bcrypt
@@ -11,8 +11,10 @@ import bcrypt
 # JWT設定
 SECRET_KEY = "your-secret-key-change-this-in-production"  # 本番環境では環境変数から取得すべき
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
-
+# JWTトークンの有効期限（分）
+# ACCESS_TOKEN_EXPIRE_MINUTES = 30
+ACCESS_TOKEN_EXPIRE_MINUTES = 3000
+jst = timezone(timedelta(hours=9))
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     """
@@ -43,9 +45,9 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -
     """
     to_encode = data.copy()
     if expires_delta:
-        expire = datetime.utcnow() + expires_delta
+        expire = datetime.now(tz=jst) + expires_delta
     else:
-        expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+        expire = datetime.now(tz=jst) + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
