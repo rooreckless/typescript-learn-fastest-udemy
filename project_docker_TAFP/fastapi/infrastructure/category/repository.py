@@ -6,7 +6,7 @@ from typing import List, Optional
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, and_
 from datetime import datetime,timezone,timedelta
-from domain import CategoryEntity,AbstractCategoryRepository, ItemEntity
+from domain import CategoryEntity,AbstractCategoryRepository,UserEntity, ItemEntity
 from .model import CategoryModel
 from ..item_category import ItemCategoryModel
 from ..item import ItemModel
@@ -80,7 +80,7 @@ class CategoryRepository(AbstractCategoryRepository):
         await self.session.commit()
         return CategoryEntity.model_validate(db_category, from_attributes=True)
 
-    async def delete(self, category_id: int) -> bool:
+    async def delete(self, category_id: int, current_user: UserEntity) -> bool:
         """カテゴリを論理削除"""
         result = await self.session.execute(
             select(CategoryModel).where(
@@ -93,6 +93,7 @@ class CategoryRepository(AbstractCategoryRepository):
         if not db_category:
             return False
         db_category.updated_at = datetime.now(tz=jst)
+        db_category.updated_by = current_user.name.value
         db_category.deleted_at = datetime.now(tz=jst)
         await self.session.flush()
         await self.session.commit()
