@@ -21,6 +21,8 @@ class Description(BaseModel):
     @field_validator("value")
     @classmethod
     def validate_value(cls, value: str) -> str:
+        if value is None or value == "":
+            return None
         if not (1 <= len(value) <= 200):
             raise ValueError("カテゴリ説明は1文字以上200文字以下でなければなりません。")
         return value

@@ -3,9 +3,9 @@
 """
 
 from typing import List, Optional
-
-from domain import CategoryEntity, AbstractCategoryRepository, ItemEntity, AbstractItemRepository
-
+from datetime import datetime,timezone,timedelta
+from domain import CategoryEntity, AbstractCategoryRepository, UserEntity,ItemEntity, AbstractItemRepository
+jst = timezone(timedelta(hours=+9), 'JST')
 
 class CategoryService:
     """カテゴリサービスクラス"""
@@ -57,14 +57,15 @@ class CategoryService:
             description=description if description else existing_category.description,
             created_by=existing_category.created_by,
             created_at=existing_category.created_at,
-            updated_by=updated_by
+            updated_by=updated_by,
+            updated_at=datetime.now(tz=jst)
         )
 
         return await self.category_repository.update(category_id, updated_category)
 
-    async def delete_category(self, category_id: int) -> bool:
+    async def delete_category(self, category_id: int,current_user: UserEntity) -> bool:
         """カテゴリを論理削除"""
-        return await self.category_repository.delete(category_id)
+        return await self.category_repository.delete(category_id,current_user)
 
     async def add_category_to_item(
         self,

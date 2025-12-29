@@ -6,7 +6,6 @@ from domain import CategoryEntity
 from domain.category import Name,Description,CreatedBy,UpdatedBy
 from application.services.category_service import CategoryService
 from presentation.schemas.categories import CategoryCreateRequest
-# from presentation.dependencies import get_current_user
 from domain.user import UserEntity
 
 class CreateCategoryUseCase:
