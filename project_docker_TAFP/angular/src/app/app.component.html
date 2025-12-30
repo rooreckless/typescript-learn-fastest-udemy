@@ -17,6 +17,9 @@
 <ol>
      {{recipe().name}}'s ingredients for {{ servings() }} servings:
   @for(elem of adjustedIngredients(); track elem.name){
-     <li>name = {{elem.name}},quantity = {{elem.quantity}}, unit = {{elem.unit}}</li>
+     <li>name = {{elem.name}},<span [style.color]="'red'">quantity = {{elem.quantity}}</span>, unit = {{elem.unit}}</li>
   }
 </ol>
+<hr>
+<h3>Module 7: Template Binding (Properties & Attributes) 画像のsrcがプロパティバインディング</h3>
+<img [src]="recipe().imgUrl" [alt]="recipe().name" width="300"/>
