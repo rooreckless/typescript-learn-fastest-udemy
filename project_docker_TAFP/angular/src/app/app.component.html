@@ -11,3 +11,12 @@
 <p>The servings Number is: {{ servings() }}</p>
 <button (click)="incrementCount()">count Increment</button><br>
 <button (click)="decrementCount()">count Decrement</button>
+<hr>
+<p>adjustedIngredients={{adjustedIngredients() }}</p>
+<hr>
+<ol>
+     {{recipe().name}}'s ingredients for {{ servings() }} servings:
+  @for(elem of adjustedIngredients(); track elem.name){
+     <li>name = {{elem.name}},quantity = {{elem.quantity}}, unit = {{elem.unit}}</li>
+  }
+</ol>
