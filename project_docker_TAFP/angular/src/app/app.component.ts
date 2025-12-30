@@ -1,75 +1,33 @@
-/**
- * =========================================
- * メインアプリケーションコンポーネント
- * =========================================
- */
-
-import { Component, OnInit, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { RouterOutlet } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
-
-/**
- * ユーザーインターフェース
- */
-interface User {
-  id?: number;
-  username: string;
-  email: string;
-  created_at?: string;
-}
+import { Component,signal } from '@angular/core';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet],
+  // templateUrlをいれたことで、htmlは外部ファイルにした
   templateUrl: './app.component.html',
+  // styleUrls配列をいれたことで、cssは外部ファイルにした上で、複数導入できる
   styleUrls: ['./app.component.css']
 })
-export class AppComponent implements OnInit {
-  title = 'TAFP Application';
-  users: User[] = [];
-  apiStatus = 'checking...';
-  private apiUrl = 'http://localhost:8000';
-  private readonly http: HttpClient = inject(HttpClient);
+// クラス名はAppにする必要があり、↑のselectorも'app-root'にする必要がある
+export class App {
+  // Module2: Dynamic Text with Interpolationとsignalを使って状態管理を行う 参考 https://zenn.dev/rdlabo/articles/4b23117adb33aa
+  // protected readonlyをつけた変数は、コンポーネントのテンプレートから「のみ」アクセス可能にする
+  // テンプレートでは{{ count() }}のように関数呼び出しの形でアクセスする
+  protected readonly count = signal(0);
+  // signalには文字列を入れることもできるし、テンプレートで{{ title() }}のように表示するのも一緒
+  // (protected readonlyを使へばテンプレートからのみアクセス可能でより安全になるが、それは状況しだい)
+  title = signal("My Recipe Box");
 
-  /**
-   * コンポーネント初期化時の処理
-   * APIからユーザーデータを取得
-   */
-  ngOnInit(): void {
-    this.checkApiHealth();
-    this.loadUsers();
+  // Module3: Event Listeners ボタンがクリックされたときに呼び出されるメソッド
+  // 以下のlogInfoが、htmlでは、<button (click)= "logInfo()">と書いてあれば、それをクリックすると呼び出される
+  // protectedをつけたメソッドは、コンポーネントのテンプレートから「のみ」アクセス可能にする　= tsファイルからはアクセスできない
+  protected logInfo(): void {
+    console.log('Info button was clicked!');
   }
-
-  /**
-   * APIヘルスチェック
-   */
-  checkApiHealth(): void {
-    this.http.get(`${this.apiUrl}/health`).subscribe({
-      next: (response: unknown) => {
-        this.apiStatus = '✅ Connected';
-        console.log('API Health:', response);
-      },
-      error: (error: unknown) => {
-        this.apiStatus = '❌ Disconnected';
-        console.error('API Health Check Failed:', error);
-      }
-    });
+  protected logAlert(): void {
+    alert('Warning button was clicked!');
   }
-
-  /**
-   * ユーザー一覧の読み込み
-   */
-  loadUsers(): void {
-    this.http.get<User[]>(`${this.apiUrl}/api/users`).subscribe({
-      next: (data: User[]) => {
-        this.users = data;
-        console.log('Users loaded:', data);
-      },
-      error: (error: unknown) => {
-        console.error('Failed to load users:', error);
-      }
-    });
+  protected changeTitle(): void {
+    this.title.set("CHANGED--- My Recipe Box");
   }
 }

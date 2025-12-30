@@ -42,6 +42,20 @@ docker-compose -f composes/dev.yml --profile dev up -d
 
 - **Nginx (メインエントリーポイント)**: http://localhost
 
+### 開発環境として動いているコンテナにログインする方法
+
+`docker compose`の`exec`かを使用してください。
+
+```bash
+# dev.ymlで起動しているとし、そのdev.ymlのangularサービスにログインする場合
+docker compose -f composes/dev.ym
+l --profile dev exec -it angular /bin/bash
+# dev.ymlで起動しているとし、そのdev.ymlのfastapiサービスにログインする場合
+docker compose -f composes/dev.ym
+l --profile dev exec -it fastapi /bin/bash
+```
+
+
 ### 停止方法
 
 ```bash
