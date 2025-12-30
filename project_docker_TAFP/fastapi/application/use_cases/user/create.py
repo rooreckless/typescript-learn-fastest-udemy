@@ -9,20 +9,21 @@ from application.services.user_service import UserService
 class CreateUserUseCase:
     """ユーザー作成ユースケース"""
 
-    def __init__(self, user_service: UserService):
+    def __init__(self, user_service: UserService, current_user: UserEntity):
         """
         Args:
             user_service: ユーザーサービス
+            current_user: 現在のログインユーザー
         """
         self.user_service = user_service
+        self.current_user = current_user
 
     async def __call__(
         self,
         name: str,
         email: str,
         password: str,
-        admin: bool,
-        created_by: str
+        admin: bool
     ) -> UserEntity:
         """
         ユーザーを作成する
@@ -32,7 +33,6 @@ class CreateUserUseCase:
             email: メールアドレス
             password: パスワード
             admin: 管理者フラグ
-            created_by: 作成者
             
         Returns:
             作成されたユーザーエンティティ
@@ -46,7 +46,7 @@ class CreateUserUseCase:
             email=email,
             password=password,
             admin=admin,
-            created_by=created_by
+            created_by=self.current_user.name.value
         )
         
         return user

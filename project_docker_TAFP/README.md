@@ -116,6 +116,12 @@ docker-compose -f composes/dev.yml --profile dev logs -f postgres
 docker-compose -f composes/dev.yml --profile dev logs -f nginx
 ```
 
+### VsCodeでのデバッグ
+
+wslに接続している状態もVsCodeで`project_docker_TAFP`ディレクトリを開き、`-f composes/dev.yml --profile dev`でdocker compose upをしてください。
+
+その状態だと、そのVsCodeのデバッグビューから、「実行とデバッグ」で実行すると、ブレークポイントがつかえるようになります。
+
 ### データベース接続
 
 コンテナ内からPostgreSQLに接続:

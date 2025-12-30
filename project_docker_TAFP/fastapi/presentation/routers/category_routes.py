@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List
 
 from infrastructure.database import provide_db
-from presentation.dependencies import provide_category_service, provide_item_service, require_admin
+from presentation.dependencies import provide_category_service, provide_item_service, require_admin,get_current_user
 from ..schemas.common import (
     MessageResponse
 )
@@ -34,7 +34,8 @@ router = APIRouter(
 async def create_category(
     request: CategoryCreateRequest,
     db: AsyncSession = Depends(provide_db),
-    admin_user: UserEntity = Depends(require_admin)
+    admin_user: UserEntity = Depends(require_admin),
+    current_user: UserEntity = Depends(get_current_user)
 ):
     """
     新しいカテゴリを作成します
@@ -46,7 +47,7 @@ async def create_category(
     """
     from application.use_cases.category.create import CreateCategoryUseCase
     service = provide_category_service(db)
-    use_case = CreateCategoryUseCase(service)
+    use_case = CreateCategoryUseCase(service,current_user)
     return CategoryResponse.model_validate(await use_case(request))
 
 
@@ -138,7 +139,8 @@ async def update_category(
     category_id: int,
     request: CategoryUpdateRequest,
     db: AsyncSession = Depends(provide_db),
-    admin_user: UserEntity = Depends(require_admin)
+    admin_user: UserEntity = Depends(require_admin),
+    current_user: UserEntity = Depends(get_current_user)
 ):
     """
     指定されたIDのカテゴリ情報を更新します
@@ -151,7 +153,7 @@ async def update_category(
     """
     from application.use_cases.category.update import UpdateCategoryUseCase
     service = provide_category_service(db)
-    use_case = UpdateCategoryUseCase(service)
+    use_case = UpdateCategoryUseCase(service, current_user)
     category = await use_case(
         category_id=category_id,
         request=request
@@ -172,7 +174,8 @@ async def update_category(
 async def delete_category(
     category_id: int,
     db: AsyncSession = Depends(provide_db),
-    admin_user: UserEntity = Depends(require_admin)
+    admin_user: UserEntity = Depends(require_admin),
+    current_user: UserEntity = Depends(get_current_user)
 ):
     """
     指定されたIDのカテゴリを論理削除します
@@ -183,7 +186,7 @@ async def delete_category(
     """
     from application.use_cases.category.delete import DeleteCategoryUseCase
     service = provide_category_service(db)
-    use_case = DeleteCategoryUseCase(service)
+    use_case = DeleteCategoryUseCase(service, current_user=current_user)
     success = await use_case(category_id)
     if not success:
         raise HTTPException(

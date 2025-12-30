@@ -21,6 +21,8 @@ class Name(BaseModel):
     @field_validator("value")
     @classmethod
     def validate_value(cls, value: str) -> str:
+        if value is None or value == "":
+            raise ValueError("商品名は必須項目です。")
         if not (1 <= len(value) <= 100):
             raise ValueError("商品名は1文字以上100文字以下でなければなりません。")
         return value

@@ -3,11 +3,12 @@ SQLAlchemyモデル定義
 データベーステーブルとORMマッピング
 """
 
-from sqlalchemy import Column, Integer, String, TIMESTAMP, ForeignKey, Index, Boolean
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Index, Boolean
 from sqlalchemy.orm import relationship
 from infrastructure.database import Base
-from datetime import datetime
+from datetime import datetime,timezone,timedelta
 
+jst = timezone(timedelta(hours=9), 'JST')
 
 class CategoryModel(Base):
     """カテゴリテーブルモデル"""
@@ -17,10 +18,10 @@ class CategoryModel(Base):
     name = Column(String(100), nullable=False)
     description = Column(String(200), nullable=False)
     created_by = Column(String(45), nullable=False)
-    created_at = Column(TIMESTAMP, nullable=False, default=datetime.now)
+    created_at = Column(DateTime(timezone=True), nullable=False, default=datetime.now(jst))
     updated_by = Column(String(45), nullable=False)
-    updated_at = Column(TIMESTAMP, nullable=False, default=datetime.now, onupdate=datetime.now)
-    deleted_at = Column(TIMESTAMP, nullable=True)
+    updated_at = Column(DateTime(timezone=True), nullable=False, default=datetime.now(jst), onupdate=datetime.now(jst))
+    deleted_at = Column(DateTime(timezone=True), nullable=True)
 
     # リレーションシップ
     items = relationship(

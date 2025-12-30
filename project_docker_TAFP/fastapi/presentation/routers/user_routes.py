@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List
 
 from infrastructure.database import provide_db
-from presentation.dependencies import provide_user_service, require_admin
+from presentation.dependencies import provide_user_service, require_admin, get_current_user
 from ..schemas.users import (
     UserCreateRequest,
     UserUpdateRequest,
@@ -32,7 +32,8 @@ router = APIRouter(
 async def create_user(
     request: UserCreateRequest,
     db: AsyncSession = Depends(provide_db),
-    admin_user: UserEntity = Depends(require_admin)
+    admin_user: UserEntity = Depends(require_admin),
+    current_user: UserEntity = Depends(get_current_user)
 ):
     """
     新しいユーザーを作成します
@@ -45,14 +46,13 @@ async def create_user(
     """
     from application.use_cases.user.create import CreateUserUseCase
     service = provide_user_service(db)
-    use_case = CreateUserUseCase(service)
+    use_case = CreateUserUseCase(service, current_user)
     try:
         user = await use_case(
             name=request.name,
             email=request.email,
             password=request.password,
-            admin=request.admin,
-            created_by=request.created_by
+            admin=request.admin
         )
         return UserResponse.model_validate(user)
     except ValueError as e:
@@ -120,7 +120,8 @@ async def update_user(
     user_id: int,
     request: UserUpdateRequest,
     db: AsyncSession = Depends(provide_db),
-    admin_user: UserEntity = Depends(require_admin)
+    admin_user: UserEntity = Depends(require_admin),
+    current_user: UserEntity = Depends(get_current_user)
 ):
     """
     指定されたIDのユーザー情報を更新します
@@ -134,15 +135,14 @@ async def update_user(
     """
     from application.use_cases.user.update import UpdateUserUseCase
     service = provide_user_service(db)
-    use_case = UpdateUserUseCase(service)
+    use_case = UpdateUserUseCase(service, current_user)
     try:
         user = await use_case(
             user_id=user_id,
             name=request.name,
             email=request.email,
             password=request.password,
-            admin=request.admin,
-            updated_by=request.updated_by
+            admin=request.admin
         )
         if not user:
             raise HTTPException(
@@ -165,7 +165,8 @@ async def update_user(
 async def delete_user(
     user_id: int,
     db: AsyncSession = Depends(provide_db),
-    admin_user: UserEntity = Depends(require_admin)
+    admin_user: UserEntity = Depends(require_admin),
+    current_user: UserEntity = Depends(get_current_user)
 ):
     """
     指定されたIDのユーザーを論理削除します
@@ -176,7 +177,7 @@ async def delete_user(
     """
     from application.use_cases.user.delete import DeleteUserUseCase
     service = provide_user_service(db)
-    use_case = DeleteUserUseCase(service)
+    use_case = DeleteUserUseCase(service, current_user)
     success = await use_case(user_id)
     if not success:
         raise HTTPException(

@@ -3,11 +3,13 @@
 ビジネスルールと永続化されるエンティティを定義
 """
 
-from datetime import datetime
+from datetime import datetime,timezone,timedelta
 from typing import Optional, List, Union, Dict, Any
 from pydantic import BaseModel, Field, field_validator, model_serializer
 from .value_objects import Name, Description, CreatedBy, UpdatedBy
 from typing import Self
+
+jst = timezone(timedelta(hours=9))
 
 class CategoryEntity(BaseModel):
     """カテゴリエンティティ"""
@@ -15,9 +17,11 @@ class CategoryEntity(BaseModel):
     name: Name  # Name値オブジェクト
     description: Description  # Description値オブジェクト
     created_by: CreatedBy  # CreatedBy値オブジェクト
-    created_at: datetime = Field(default_factory=datetime.now)
+    # created_at: datetime = Field(default_factory=datetime.now)
+    created_at: datetime
     updated_by: UpdatedBy  # UpdatedBy値オブジェクト
-    updated_at: datetime = Field(default_factory=datetime.now)
+    # updated_at: datetime = Field(default_factory=datetime.now)
+    updated_at: datetime
     deleted_at: Optional[datetime] = None
 
 
@@ -47,7 +51,9 @@ class CategoryEntity(BaseModel):
             name=Name.validate_value(name),
             description=Description.validate_value(description),
             created_by=CreatedBy.validate_value(created_by),
-            updated_by=UpdatedBy.validate_value(updated_by)
+            created_at=datetime.now(tz=jst),
+            updated_by=UpdatedBy.validate_value(updated_by),
+            updated_at=datetime.now(tz=jst)
         )
         return category
 

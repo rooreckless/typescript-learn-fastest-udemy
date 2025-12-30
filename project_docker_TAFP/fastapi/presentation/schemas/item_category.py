@@ -15,7 +15,6 @@ class ItemCategoryRequest(BaseModel):
     """商品カテゴリ関連リクエスト"""
     item_id: int = Field(..., description="商品ID")
     category_id: int = Field(..., description="カテゴリID")
-    created_by: str = Field(default="system", description="作成者")
 
 
 class ItemWithCategoriesResponse(BaseModel):

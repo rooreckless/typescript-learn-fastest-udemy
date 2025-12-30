@@ -5,13 +5,13 @@
 from typing import List, Optional
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, and_
-from datetime import datetime
-
-from domain import CategoryEntity,AbstractCategoryRepository, ItemEntity
+from datetime import datetime,timezone,timedelta
+from domain import CategoryEntity,AbstractCategoryRepository,UserEntity, ItemEntity
 from .model import CategoryModel
 from ..item_category import ItemCategoryModel
 from ..item import ItemModel
 
+jst = timezone(timedelta(hours=+9), 'JST')
 
 class CategoryRepository(AbstractCategoryRepository):
     """カテゴリリポジトリ実装クラス"""
@@ -25,11 +25,14 @@ class CategoryRepository(AbstractCategoryRepository):
             name=category.name.value,
             description=category.description.value,
             created_by=category.created_by.value,
+            created_at=datetime.now(tz=jst),
             updated_by=category.updated_by.value,
+            updated_at=datetime.now(tz=jst)
         )
         self.session.add(db_category)
         await self.session.flush()
-        await self.session.refresh(db_category)
+        # await self.session.refresh(db_category)
+        await self.session.commit()
         return CategoryEntity.model_validate(db_category, from_attributes=True)
 
     async def find_by_id(self, category_id: int) -> Optional[CategoryEntity]:
@@ -70,13 +73,14 @@ class CategoryRepository(AbstractCategoryRepository):
         db_category.name = category.name.value
         db_category.description = category.description.value
         db_category.updated_by = category.updated_by.value
-        db_category.updated_at = datetime.now()
+        db_category.updated_at = datetime.now(tz=jst)
 
         await self.session.flush()
-        await self.session.refresh(db_category)
+        # await self.session.refresh(db_category)
+        await self.session.commit()
         return CategoryEntity.model_validate(db_category, from_attributes=True)
 
-    async def delete(self, category_id: int) -> bool:
+    async def delete(self, category_id: int, current_user: UserEntity) -> bool:
         """カテゴリを論理削除"""
         result = await self.session.execute(
             select(CategoryModel).where(
@@ -88,9 +92,11 @@ class CategoryRepository(AbstractCategoryRepository):
         
         if not db_category:
             return False
-
-        db_category.deleted_at = datetime.now()
+        db_category.updated_at = datetime.now(tz=jst)
+        db_category.updated_by = current_user.name.value
+        db_category.deleted_at = datetime.now(tz=jst)
         await self.session.flush()
+        await self.session.commit()
         return True
 
     # 以下、旧ItemCategoryRepositoryから移動したメソッド

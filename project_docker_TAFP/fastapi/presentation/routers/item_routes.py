@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List
 
 from infrastructure.database import provide_db
-from presentation.dependencies import provide_item_service, require_admin
+from presentation.dependencies import provide_item_service, require_admin, get_current_user
 from ..schemas.common import (
     MessageResponse,
     
@@ -36,7 +36,8 @@ router = APIRouter(
 async def create_item(
     request: ItemCreateRequest,
     db: AsyncSession = Depends(provide_db),
-    admin_user: UserEntity = Depends(require_admin)
+    admin_user: UserEntity = Depends(require_admin),
+    current_user: UserEntity = Depends(get_current_user)
 ):
     """
     新しい商品を作成します
@@ -49,7 +50,7 @@ async def create_item(
     """
     from application.use_cases.item.create import CreateItemUseCase
     service = provide_item_service(db)
-    use_case = CreateItemUseCase(service)
+    use_case = CreateItemUseCase(service, current_user)
     item = await use_case(
         request=request
     )
@@ -140,7 +141,8 @@ async def update_item(
     item_id: int,
     request: ItemUpdateRequest,
     db: AsyncSession = Depends(provide_db),
-    admin_user: UserEntity = Depends(require_admin)
+    admin_user: UserEntity = Depends(require_admin),
+    current_user: UserEntity = Depends(get_current_user)
 ):
     """
     指定されたIDの商品情報を更新します
@@ -154,7 +156,7 @@ async def update_item(
     """
     from application.use_cases.item.update import UpdateItemUseCase
     service = provide_item_service(db)
-    use_case = UpdateItemUseCase(service)
+    use_case = UpdateItemUseCase(service, current_user)
     item = await use_case(
         item_id=item_id,
         request=request
@@ -175,7 +177,8 @@ async def update_item(
 async def delete_item(
     item_id: int,
     db: AsyncSession = Depends(provide_db),
-    admin_user: UserEntity = Depends(require_admin)
+    admin_user: UserEntity = Depends(require_admin),
+    current_user: UserEntity = Depends(get_current_user)
 ):
     """
     指定されたIDの商品を論理削除します
@@ -186,7 +189,7 @@ async def delete_item(
     """
     from application.use_cases.item.delete import DeleteItemUseCase
     service = provide_item_service(db)
-    use_case = DeleteItemUseCase(service)
+    use_case = DeleteItemUseCase(service, current_user)
     success = await use_case(item_id)
     if not success:
         raise HTTPException(

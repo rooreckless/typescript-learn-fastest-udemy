@@ -4,7 +4,7 @@
 
 from typing import List, Optional
 
-from domain import ItemEntity,ItemWithCategories,AbstractItemRepository
+from domain import ItemEntity,ItemWithCategories,AbstractItemRepository,UserEntity
 
 
 class ItemService:
@@ -55,11 +55,6 @@ class ItemService:
     async def update_item(
         self,
         item: ItemEntity,
-        # item_id: int,
-        # name: Optional[str] = None,
-        # description: Optional[str] = None,
-        # price: Optional[int] = None,
-        # updated_by: str = "system"
     ) -> Optional[ItemEntity]:
         """
         商品情報を更新
@@ -73,7 +68,17 @@ class ItemService:
 
         return await self.item_repository.update(item)
 
-    async def delete_item(self, item_id: int) -> bool:
-        """商品を論理削除"""
-        return await self.item_repository.delete(item_id)
+    async def delete_item(self, item: ItemEntity, current_user: UserEntity) -> bool:
+        """商品を論理削除
+        
+        Args:
+            item: 削除する商品エンティティ
+            current_user: 現在のログインユーザー
+            
+        Returns:
+            削除が成功した場合True
+        """
+        item.delete(updated_by=current_user.name.value)
+        await self.item_repository.update(item)
+        return True
 

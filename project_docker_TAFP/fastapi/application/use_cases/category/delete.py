@@ -3,17 +3,18 @@
 """
 
 from application.services.category_service import CategoryService
-
+from domain.user import UserEntity
 
 class DeleteCategoryUseCase:
     """カテゴリ削除ユースケース"""
 
-    def __init__(self, category_service: CategoryService):
+    def __init__(self, category_service: CategoryService, current_user: UserEntity):
         """
         Args:
             category_service: カテゴリサービス
         """
         self.category_service = category_service
+        self.current_user = current_user
 
     async def __call__(
         self,
@@ -29,6 +30,6 @@ class DeleteCategoryUseCase:
             削除が成功した場合True、失敗した場合False
         """
         # カテゴリを削除
-        success = await self.category_service.delete_category(category_id)
+        success = await self.category_service.delete_category(category_id,self.current_user)
         
         return success

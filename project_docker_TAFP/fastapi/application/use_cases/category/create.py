@@ -6,18 +6,18 @@ from domain import CategoryEntity
 from domain.category import Name,Description,CreatedBy,UpdatedBy
 from application.services.category_service import CategoryService
 from presentation.schemas.categories import CategoryCreateRequest
-
+from domain.user import UserEntity
 
 class CreateCategoryUseCase:
     """カテゴリ作成ユースケース"""
 
-    def __init__(self, category_service: CategoryService):
+    def __init__(self, category_service: CategoryService,current_user: UserEntity):
         """
         Args:
             category_service: カテゴリサービス
         """
         self.category_service = category_service
-
+        self.current_user = current_user
     async def __call__(
         self,
         request: CategoryCreateRequest
@@ -35,8 +35,8 @@ class CreateCategoryUseCase:
         category = CategoryEntity.create(
             name=Name.validate_value(request.name),
             description=Description.validate_value(request.description),
-            created_by=CreatedBy.validate_value(request.created_by),
-            updated_by=UpdatedBy.validate_value(request.created_by)
+            created_by=CreatedBy.validate_value(self.current_user.name.value),
+            updated_by=UpdatedBy.validate_value(self.current_user.name.value)
         )
 
         # カテゴリを永続化

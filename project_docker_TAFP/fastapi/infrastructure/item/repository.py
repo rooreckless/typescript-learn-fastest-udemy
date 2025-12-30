@@ -5,7 +5,7 @@
 from typing import List, Optional
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, and_
-from datetime import datetime
+from datetime import datetime,timezone,timedelta
 
 from domain.item import ItemEntity,AbstractItemRepository
 from domain import CategoryEntity
@@ -13,6 +13,7 @@ from .model import ItemModel
 from ..category import CategoryModel
 from ..item_category import ItemCategoryModel
 
+jst = timezone(timedelta(hours=+9), 'JST')
 
 class ItemRepository(AbstractItemRepository):
     """商品リポジトリ実装クラス"""
@@ -27,11 +28,14 @@ class ItemRepository(AbstractItemRepository):
             description=item.description.value,
             price=item.price.value,
             created_by=item.created_by.value,
+            created_at=datetime.now(tz=jst),
             updated_by=item.updated_by.value,
+            updated_at=datetime.now(tz=jst)
         )
         self.session.add(db_item)
         await self.session.flush()
-        await self.session.refresh(db_item)
+        # await self.session.refresh(db_item)
+        await self.session.commit()
         return ItemEntity.model_validate(db_item)
 
     async def find_by_id(self, item_id: int) -> Optional[ItemEntity]:
@@ -69,14 +73,15 @@ class ItemRepository(AbstractItemRepository):
         if not db_item:
             return None
 
-        db_item.name = item.name
-        db_item.description = item.description
-        db_item.price = item.price
-        db_item.updated_by = item.updated_by
-        db_item.updated_at = datetime.now()
+        db_item.name = item.name.value
+        db_item.description = item.description.value
+        db_item.price = item.price.value
+        db_item.updated_by = item.updated_by.value
+        db_item.updated_at = datetime.now(tz=jst)
 
         await self.session.flush()
-        await self.session.refresh(db_item)
+        # await self.session.refresh(db_item)
+        await self.session.commit()
         return ItemEntity.model_validate(db_item)
 
     async def delete(self, item: ItemEntity) -> bool:
@@ -92,8 +97,10 @@ class ItemRepository(AbstractItemRepository):
         if not db_item:
             return False
 
-        db_item.deleted_at = datetime.now()
+        db_item.updated_at = datetime.now(tz=jst)
+        db_item.deleted_at = datetime.now(tz=jst)
         await self.session.flush()
+        await self.session.commit()
         return True
 
     # 以下、旧ItemCategoryRepositoryから移動したメソッド
@@ -121,7 +128,7 @@ class ItemRepository(AbstractItemRepository):
             if existing.deleted_at:
                 existing.deleted_at = None
                 existing.updated_by = updated_by
-                existing.updated_at = datetime.now()
+                existing.updated_at = datetime.now(tz=jst)
                 await self.session.flush()
                 return True
             return True
@@ -131,11 +138,14 @@ class ItemRepository(AbstractItemRepository):
             item_id=item_id,
             category_id=category_id,
             created_by=created_by,
+            created_at=datetime.now(tz=jst),
             updated_by=updated_by,
+            updated_at=datetime.now(tz=jst)
         )
         self.session.add(db_item_category)
         await self.session.flush()
-        await self.session.refresh(db_item_category)
+        # await self.session.refresh(db_item_category)
+        await self.session.commit()
         return True
 
     async def remove_category_from_item(self, item_id: int, category_id: int) -> bool:
@@ -154,8 +164,9 @@ class ItemRepository(AbstractItemRepository):
         if not db_item_category:
             return False
 
-        db_item_category.deleted_at = datetime.now()
+        db_item_category.deleted_at = datetime.now(tz=jst)
         await self.session.flush()
+        await self.session.commit()
         return True
 
     async def find_categories_by_item(self, item_id: int) -> List[CategoryEntity]:

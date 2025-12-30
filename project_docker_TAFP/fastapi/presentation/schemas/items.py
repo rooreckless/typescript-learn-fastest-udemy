@@ -12,7 +12,6 @@ class ItemCreateRequest(BaseModel):
     name: str = Field(..., min_length=1, max_length=100, description="商品名")
     description: str = Field(..., max_length=200, description="商品説明")
     price: int = Field(..., ge=0, description="価格")
-    created_by: str = Field(default="system", description="作成者")
 
 
 class ItemUpdateRequest(BaseModel):
@@ -20,7 +19,6 @@ class ItemUpdateRequest(BaseModel):
     name: Optional[str] = Field(None, min_length=1, max_length=100, description="商品名")
     description: Optional[str] = Field(None, max_length=200, description="商品説明")
     price: Optional[int] = Field(None, ge=0, description="価格")
-    updated_by: str = Field(default="system", description="更新者")
 
 
 class ItemResponse(BaseModel):
@@ -30,7 +28,10 @@ class ItemResponse(BaseModel):
     description: str
     price: int
     created_at: datetime
+    created_by: str
     updated_at: datetime
+    updated_by: str
+    deleted_at: Optional[datetime] = None
 
     @model_validator(mode='before')
     @classmethod
