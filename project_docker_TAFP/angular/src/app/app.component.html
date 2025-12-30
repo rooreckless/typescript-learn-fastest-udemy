@@ -1,6 +1,6 @@
 <h1>{{ title() }}</h1>
 
-<p>recipes() = {{recipes()}}</p>
+<!-- <p>recipes() = {{recipes()}}</p>
 <p>recipe().name = {{recipe().name}}</p>
 <p>recipe().description = {{recipe().description}}</p>
 <p>recipe().ingredients = {{recipe().ingredients}}</p><br>
@@ -22,4 +22,8 @@
 </ol>
 <hr>
 <h3>Module 7: Template Binding (Properties & Attributes) 画像のsrcがプロパティバインディング</h3>
-<img [src]="recipe().imgUrl" [alt]="recipe().name" width="300"/>
+<img [src]="recipe().imgUrl" [alt]="recipe().name" width="300"/> -->
+
+<hr>
+<!-- 今まで↑で表示していた内容は、子コンポーネント、recipe-listに移動した -->
+<app-recipe-list></app-recipe-list>
