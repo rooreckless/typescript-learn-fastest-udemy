@@ -12,26 +12,10 @@ import {MOCK_RECIPES} from './mock-recipes';
 })
 // クラス名はAppにする必要があり、↑のselectorも'app-root'にする必要がある
 export class App {
-  // Module2: Dynamic Text with Interpolationとsignalを使って状態管理を行う 参考 https://zenn.dev/rdlabo/articles/4b23117adb33aa
-  // protected readonlyをつけた変数は、コンポーネントのテンプレートから「のみ」アクセス可能にする
-  // テンプレートでは{{ count() }}のように関数呼び出しの形でアクセスする
-  protected readonly count = signal(0);
   // signalには文字列を入れることもできるし、テンプレートで{{ title() }}のように表示するのも一緒
   // (protected readonlyを使へばテンプレートからのみアクセス可能でより安全になるが、それは状況しだい)
   title = signal("My Recipe Box");
 
-  // Module3: Event Listeners ボタンがクリックされたときに呼び出されるメソッド
-  // 以下のlogInfoが、htmlでは、<button (click)= "logInfo()">と書いてあれば、それをクリックすると呼び出される
-  // protectedをつけたメソッドは、コンポーネントのテンプレートから「のみ」アクセス可能にする　= tsファイルからはアクセスできない
-  protected logInfo(): void {
-    console.log('Info button was clicked!');
-  };
-  protected logAlert(): void {
-    alert('Warning button was clicked!');
-  };
-  protected changeTitle(): void {
-    this.title.set("CHANGED--- My Recipe Box");
-  };
   // Module4: State Management with Writable Signals (Part 1: set)
   // signalで管理するオブジェクトとしてRecipeModelを使う)
   recipes = signal<RecipeModel[]>(MOCK_RECIPES);
@@ -67,5 +51,23 @@ export class App {
     if (nextRecipe) {
       this.recipe.set(nextRecipe);
     }
-  } 
+  }
+  // Module 5: State Management with Writable Signals (Part 2: update)
+  protected readonly servings = signal(1);
+
+  protected incrementCount(): void{
+    // signalの値を更新するには(protected readonlyをつけていない場合は)servings.update(...)メソッドを使う
+    // .setと.updateの違いは、.setは新しい値を直接セットするのに対し、
+    // .updateは現在の値を引数として受け取り、その現在の値を使って新しい値を返す「関数」を渡す点にある
+    this.servings.update((current_value: number) => current_value + 1);
+  }
+  protected decrementCount(): void{
+    // servings.update(...)メソッドを使って値をデクリメントするが、1未満にはならないようにする
+    this.servings.update((current_value: number) => {
+      if (current_value <= 1){
+        return 1;
+      }
+      return current_value - 1
+    });
+  }
 }
