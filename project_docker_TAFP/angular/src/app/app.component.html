@@ -1,6 +1,22 @@
 <h1>{{ title() }}</h1>
-<p>The count is: {{ count() }}</p>
+
+<p>recipes() = {{recipes()}}</p>
+<p>recipe().name = {{recipe().name}}</p>
+<p>recipe().description = {{recipe().description}}</p>
+<p>recipe().ingredients = {{recipe().ingredients}}</p><br>
+<button (click)="change_recipe_to1()">Change Recipe to 1</button><br>
+<button (click)="change_recipe_to2()">Change Recipe to 2</button><br>
+<button (click)="nextRecipe()">nextRecipe</button><br>
 <hr>
-<button (click)="logInfo()">logInfo</button><br>
-<button (click)="logAlert()">logAlert</button><br>
-<button (click)="changeTitle()">changeTitle</button>
+<p>The servings Number is: {{ servings() }}</p>
+<button (click)="incrementCount()">count Increment</button><br>
+<button (click)="decrementCount()">count Decrement</button>
+<hr>
+<p>adjustedIngredients={{adjustedIngredients() }}</p>
+<hr>
+<ol>
+     {{recipe().name}}'s ingredients for {{ servings() }} servings:
+  @for(elem of adjustedIngredients(); track elem.name){
+     <li>name = {{elem.name}},quantity = {{elem.quantity}}, unit = {{elem.unit}}</li>
+  }
+</ol>
