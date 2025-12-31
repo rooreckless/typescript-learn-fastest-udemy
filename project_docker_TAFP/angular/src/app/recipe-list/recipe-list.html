@@ -16,7 +16,7 @@
   <!-- レシピリスト -->
   <div style="display: flex; flex-direction: column; gap: 1rem;">
     @for (recipe of filteredRecipes(); track recipe.id) {
-      <a 
+      <!-- <a 
         [routerLink]="['/recipes', recipe.id]"
         style="display: block; padding: 1rem; border: 1px solid #ddd; border-radius: 5px; text-decoration: none; color: inherit; transition: background-color 0.2s;"
       >
@@ -27,7 +27,13 @@
           }
         </h3>
         <p style="margin: 0.5rem 0 0 0; color: #666;">{{ recipe.description }}</p>
-      </a>
+      </a> -->
+        <mat-card  appearance="outlined" [routerLink]="['/recipes', recipe.id]" style="cursor: pointer;">
+            <mat-card-header>
+            <mat-card-title>{{ recipe.name }}</mat-card-title>
+            <mat-card-subtitle>{{ recipe.description }}</mat-card-subtitle>
+            </mat-card-header>
+        </mat-card>
     } @empty {
       <p style="color: red;">該当するレシピが見つかりません。</p>
     }

@@ -5,10 +5,13 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { RecipeService } from '../services/recipe';
 import { RecipeModel } from '../models';
+// @angular/materialをinstallしたのでインポートする
+import { MatCardModule } from '@angular/material/card';
+
 
 @Component({
   selector: 'app-recipe-list',
-  imports: [FormsModule, RouterLink],  // RecipeDetailを削除、RouterLinkを追加
+  imports: [FormsModule, RouterLink, MatCardModule],  // RecipeDetailを削除、RouterLinkを追加
   templateUrl: './recipe-list.html',
   styleUrls: ['./recipe-list.css'],
 })

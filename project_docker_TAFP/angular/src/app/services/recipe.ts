@@ -35,4 +35,20 @@ export class RecipeService {
       return recipe.name.toLowerCase().includes(lower_query)
     });
   }
+  
+  // Module 16: Introduction to Forms
+  // 新しいレシピを追加するメソッド
+  public addRecipe(recipe: RecipeModel): void {
+    // 新しいIDを生成（既存の最大ID + 1）
+    const currentRecipes = this.recipes();
+    const newId = currentRecipes.length > 0 
+      ? Math.max(...currentRecipes.map(r => r.id)) + 1 
+      : 1;
+    
+    // 新しいレシピにIDを追加
+    const newRecipe = { ...recipe, id: newId };
+    
+    // シグナルを更新（既存の配列に新しいレシピを追加）
+    this.recipes.update(recipes => [...recipes, newRecipe]);
+  }
 }

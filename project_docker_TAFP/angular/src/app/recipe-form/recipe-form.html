@@ -1,0 +1,49 @@
+<form [formGroup]="receipeForm" (ngSubmit)="onSubmit()">
+    <div>
+    <label for="name">receipe name:</label>
+    <input id="name" type="text" formControlName="name" />
+    
+    @if (receipeForm.get('name')?.touched && receipeForm.get('name')?.value.length < 3) {
+        <span style="color: red;">3文字以上で入力してください</span>
+    }
+
+    @if (receipeForm.get('name')?.invalid && receipeForm.get('name')?.touched) {
+        <span style="color: red;">必須項目です</span>
+    }
+    </div>
+    
+    <div>
+    <label for="description">receipe description:</label>
+    <input id="description" type="text" formControlName="description" />
+    @if (receipeForm.get('description')?.invalid && receipeForm.get('description')?.touched) {
+        <span style="color: red;">必須項目です</span>
+    }
+    </div>
+
+    <div formArrayName="ingredients">
+        <h3>材料:</h3>
+        @for (ingredient of ingredients.controls; track $index) {
+          <div [formGroupName]="$index" style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem;">
+            <input type="text" formControlName="name" placeholder="材料名" />
+            <input type="number" formControlName="quantity" placeholder="量" />
+            <input type="text" formControlName="unit" placeholder="単位" />
+            <button type="button" (click)="removeIngredient($index)">削除</button>
+          </div>
+        }
+        <button matButton="outlined" type="button" (click)="addIngredient()">材料を追加</button>
+    </div>
+
+    <div>
+    <label for="imgUrl">receipe imgUrl:</label>
+    <input id="imgUrl" type="text" formControlName="imgUrl" />
+    @if (receipeForm.get('imgUrl')?.invalid && receipeForm.get('imgUrl')?.touched) {
+        <span style="color: red;">URLの形式で入力してください</span>
+    }
+    </div>
+    <div>
+    <label for="isFavorite">receipe isFavorite:</label>
+    <input id="isFavorite" type="checkbox" formControlName="isFavorite" />
+    
+    </div>
+    <button matButton="outlined" type="submit" [disabled]="receipeForm.invalid">登録</button>
+</form>
