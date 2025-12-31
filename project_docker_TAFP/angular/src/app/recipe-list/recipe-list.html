@@ -1,37 +1,36 @@
-<section class="container" style="border: 2px solid blue"><h2>Recipe List Component</h2>
-    <p>recipes() = {{recipes()}}</p>
-    <p>
-        recipe().name = {{recipe().name}}
-        <!-- Module 12: @ifを使って条件付きレンダリング -->
-        @if (recipe().isFavorite) {
-            <span style="color: gold; font-size: 20px;">★ お気に入り</span>
-        }
-    </p>
-    <p>recipe().description = {{recipe().description}}</p>
-    
-    <button (click)="change_recipe_to1()">Change Recipe to 1</button><br>
-    <button (click)="change_recipe_to2()">Change Recipe to 2</button><br>
-    <button (click)="nextRecipe()">nextRecipe</button><br>
-    <hr>
-    <!-- 子コンポーネントにrecipe signalの値を渡す -->
-    <app-recipe-detail [recipe]="recipe()"></app-recipe-detail>
+<section class="container" style="border: 2px solid blue; padding: 2rem;">
+  <h2>Recipe List Component</h2>
+  
+  <!-- 検索フィールド -->
+  <div style="margin-bottom: 2rem;">
+    <label for="search_text_for_recipe">レシピを検索:</label>
+    <input 
+      id="search_text_for_recipe" 
+      type="text" 
+      [(ngModel)]="search_text_for_recipe"
+      style="width: 100%; padding: 0.5rem; margin-top: 0.5rem;"
+      placeholder="レシピ名を入力..."
+    />
+  </div>
 
-    <!-- 双方向バインディング用の入力フィールド -->
-    <label for="search_text_for_recipe">search_text_for_recipe : [ngModel] & (ngModelChange)</label>
-    <input id ="search_text_for_recipe" type="text" [ngModel]="search_text_for_recipe()" (ngModelChange)="search_text_for_recipe.set($event)"/> 
-    
-    <br/>
-    <label for="search_text_for_recipe">search_text_for_recipe : [(ngModel)]</label>
-    <input id ="search_text_for_recipe" type="text" [(ngModel)]="search_text_for_recipe"/>
-    <br/>
-    search_text_for_recipe => {{search_text_for_recipe()}}<br>
-    <!-- 検索結果の表示1 -->
-    search_result_recipe()={{search_result_recipe()?.name}}<br>
-    <!-- 検索結果の表示2 -->
-    @if (search_result_recipe(); as result) {
-        <span style="color: green; font-size: 20px;">{{result.name}}</span>
-    }@else{
-        <span style="color: red; font-size: 20px;">該当するレシピが見つかりません。</span>
+  <!-- レシピリスト -->
+  <div style="display: flex; flex-direction: column; gap: 1rem;">
+    @for (recipe of filteredRecipes(); track recipe.id) {
+      <a 
+        [routerLink]="['/recipes', recipe.id]"
+        style="display: block; padding: 1rem; border: 1px solid #ddd; border-radius: 5px; text-decoration: none; color: inherit; transition: background-color 0.2s;"
+      >
+        <h3 style="margin: 0;">
+          {{ recipe.name }}
+          @if (recipe.isFavorite) {
+            <span style="color: gold; font-size: 20px;">★</span>
+          }
+        </h3>
+        <p style="margin: 0.5rem 0 0 0; color: #666;">{{ recipe.description }}</p>
+      </a>
+    } @empty {
+      <p style="color: red;">該当するレシピが見つかりません。</p>
     }
+  </div>
 </section>
 
