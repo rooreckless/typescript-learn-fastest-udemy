@@ -1,29 +1,8 @@
-<h1>{{ title() }}</h1>
+<!-- ナビゲーションバー -->
+<nav style="background-color: #333; padding: 1rem;">
+  <a routerLink="/" style="color: white; margin-right: 1rem;">Home</a>
+  <a routerLink="/recipes" style="color: white;">Recipes</a>
+</nav>
 
-<!-- <p>recipes() = {{recipes()}}</p>
-<p>recipe().name = {{recipe().name}}</p>
-<p>recipe().description = {{recipe().description}}</p>
-<p>recipe().ingredients = {{recipe().ingredients}}</p><br>
-<button (click)="change_recipe_to1()">Change Recipe to 1</button><br>
-<button (click)="change_recipe_to2()">Change Recipe to 2</button><br>
-<button (click)="nextRecipe()">nextRecipe</button><br>
-<hr>
-<p>The servings Number is: {{ servings() }}</p>
-<button (click)="incrementCount()">count Increment</button><br>
-<button (click)="decrementCount()">count Decrement</button>
-<hr>
-<p>adjustedIngredients={{adjustedIngredients() }}</p>
-<hr>
-<ol>
-     {{recipe().name}}'s ingredients for {{ servings() }} servings:
-  @for(elem of adjustedIngredients(); track elem.name){
-     <li>name = {{elem.name}},<span [style.color]="'red'">quantity = {{elem.quantity}}</span>, unit = {{elem.unit}}</li>
-  }
-</ol>
-<hr>
-<h3>Module 7: Template Binding (Properties & Attributes) 画像のsrcがプロパティバインディング</h3>
-<img [src]="recipe().imgUrl" [alt]="recipe().name" width="300"/> -->
-
-<hr>
-<!-- 今まで↑で表示していた内容は、子コンポーネント、recipe-listに移動した -->
-<app-recipe-list></app-recipe-list>
+<!-- ここに現在のURLに対応するコンポーネントが表示される -->
+<router-outlet></router-outlet>

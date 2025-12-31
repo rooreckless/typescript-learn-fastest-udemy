@@ -1,24 +1,49 @@
-<section class="container" style="border: 2px solid red">
-    <h2>Recipe Detail Component</h2>
-    <div class="recipe_selected">
-        <p>recipe().name = <span class="name">{{recipe().name}}</span><span>@if(recipe().isFavorite){ ★ }@else{ ☆}</span></p>
-        <p>recipe().description = <span class="description">{{recipe().description}}</span></p>
-        <p>recipe().ingredients = {{recipe().ingredients}}</p><br>
+@if (recipe(); as currentRecipe) {
+  <div class="recipe-detail-container" style="padding: 2rem; max-width: 800px; margin: 0 auto;">
+    <!-- レシピ名とお気に入りマーク -->
+    <h1 style="margin-bottom: 1rem;">
+      {{ currentRecipe.name }}
+      @if (currentRecipe.isFavorite) {
+        <span style="color: gold; font-size: 24px;">★</span>
+      }
+    </h1>
+    
+    <!-- レシピ画像 -->
+    <img 
+      [src]="currentRecipe.imgUrl" 
+      [alt]="currentRecipe.name" 
+      style="max-width: 100%; border-radius: 8px; margin-bottom: 1rem;"
+    />
+    
+    <!-- レシピ説明 -->
+    <p style="color: #666; margin-bottom: 2rem;">{{ currentRecipe.description }}</p>
+    
+    <!-- 人数調整コントロール -->
+    <div class="servings-control" style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;">
+      <button 
+        (click)="decrementCount()" 
+        style="padding: 0.5rem 1rem; font-size: 18px; cursor: pointer;"
+      >-</button>
+      <span style="font-size: 18px; font-weight: bold;">人数: {{ servings() }}</span>
+      <button 
+        (click)="incrementCount()" 
+        style="padding: 0.5rem 1rem; font-size: 18px; cursor: pointer;"
+      >+</button>
     </div>
-    <h3>Module 9: Component Inputs with Signals & Module 10: Styling Components</h3>
-    <p>The servings Number is: {{ servings() }}</p>
-    <button (click)="incrementCount()">count Increment</button><br>
-    <button (click)="decrementCount()">count Decrement</button>
-    <hr>
-    <p>adjustedIngredients={{adjustedIngredients() }}</p>
-    <hr>
-    <ol>
-        {{recipe().name}}'s ingredients for {{ servings() }} servings:
-    @for(elem of adjustedIngredients(); track elem.name){
-        <li>name = {{elem.name}},<span [style.color]="'red'">quantity = {{elem.quantity}}</span>, unit = {{elem.unit}}</li>
-    }
-    </ol>
-    <hr>
-    <h3>Module 7: Template Binding (Properties & Attributes) 画像のsrcがプロパティバインディング</h3>
-    <img [src]="recipe().imgUrl" [alt]="recipe().name" width="300"/>
-</section>
+    
+    <!-- 材料リスト -->
+    <h3 style="margin-bottom: 1rem;">材料 ({{ servings() }}人分):</h3>
+    <ul style="list-style: none; padding: 0;">
+      @for (ingredient of adjustedIngredients(); track ingredient.name) {
+        <li style="padding: 0.5rem; border-bottom: 1px solid #eee;">
+          <strong>{{ ingredient.name }}</strong>: 
+          <span style="color: #007bff;">{{ ingredient.quantity }}</span> {{ ingredient.unit }}
+        </li>
+      }
+    </ul>
+  </div>
+} @else {
+  <div style="padding: 2rem; text-align: center;">
+    <p>レシピを読み込んでいます...</p>
+  </div>
+}
