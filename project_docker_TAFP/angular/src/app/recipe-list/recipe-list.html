@@ -1,0 +1,19 @@
+<section class="container" style="border: 2px solid blue"><h2>Recipe List Component</h2>
+    <p>recipes() = {{recipes()}}</p>
+    <p>
+        recipe().name = {{recipe().name}}
+        <!-- Module 12: @ifを使って条件付きレンダリング -->
+        @if (recipe().isFavorite) {
+            <span style="color: gold; font-size: 20px;">★ お気に入り</span>
+        }
+    </p>
+    <p>recipe().description = {{recipe().description}}</p>
+    
+    <button (click)="change_recipe_to1()">Change Recipe to 1</button><br>
+    <button (click)="change_recipe_to2()">Change Recipe to 2</button><br>
+    <button (click)="nextRecipe()">nextRecipe</button><br>
+    <hr>
+    <!-- 子コンポーネントにrecipe signalの値を渡す -->
+    <app-recipe-detail [recipe]="recipe()"></app-recipe-detail>
+</section>
+

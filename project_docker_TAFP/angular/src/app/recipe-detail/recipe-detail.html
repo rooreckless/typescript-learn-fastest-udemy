@@ -1,0 +1,24 @@
+<section class="container" style="border: 2px solid red">
+    <h2>Recipe Detail Component</h2>
+    <div class="recipe_selected">
+        <p>recipe().name = <span class="name">{{recipe().name}}</span><span>@if(recipe().isFavorite){ ★ }@else{ ☆}</span></p>
+        <p>recipe().description = <span class="description">{{recipe().description}}</span></p>
+        <p>recipe().ingredients = {{recipe().ingredients}}</p><br>
+    </div>
+    <h3>Module 9: Component Inputs with Signals & Module 10: Styling Components</h3>
+    <p>The servings Number is: {{ servings() }}</p>
+    <button (click)="incrementCount()">count Increment</button><br>
+    <button (click)="decrementCount()">count Decrement</button>
+    <hr>
+    <p>adjustedIngredients={{adjustedIngredients() }}</p>
+    <hr>
+    <ol>
+        {{recipe().name}}'s ingredients for {{ servings() }} servings:
+    @for(elem of adjustedIngredients(); track elem.name){
+        <li>name = {{elem.name}},<span [style.color]="'red'">quantity = {{elem.quantity}}</span>, unit = {{elem.unit}}</li>
+    }
+    </ol>
+    <hr>
+    <h3>Module 7: Template Binding (Properties & Attributes) 画像のsrcがプロパティバインディング</h3>
+    <img [src]="recipe().imgUrl" [alt]="recipe().name" width="300"/>
+</section>
