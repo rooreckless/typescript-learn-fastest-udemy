@@ -7,19 +7,7 @@
     <button (click)="change_recipe_to2()">Change Recipe to 2</button><br>
     <button (click)="nextRecipe()">nextRecipe</button><br>
     <hr>
-    <p>The servings Number is: {{ servings() }}</p>
-    <button (click)="incrementCount()">count Increment</button><br>
-    <button (click)="decrementCount()">count Decrement</button>
-    <hr>
-    <p>adjustedIngredients={{adjustedIngredients() }}</p>
-    <hr>
-    <ol>
-        {{recipe().name}}'s ingredients for {{ servings() }} servings:
-    @for(elem of adjustedIngredients(); track elem.name){
-        <li>name = {{elem.name}},<span [style.color]="'red'">quantity = {{elem.quantity}}</span>, unit = {{elem.unit}}</li>
-    }
-    </ol>
-    <hr>
-    <h3>Module 7: Template Binding (Properties & Attributes) 画像のsrcがプロパティバインディング</h3>
-    <img [src]="recipe().imgUrl" [alt]="recipe().name" width="300"/>
+    <!-- 子コンポーネントにrecipe signalの値を渡す -->
+    <app-recipe-detail [recipe]="recipe()"></app-recipe-detail>
 </section>
+
