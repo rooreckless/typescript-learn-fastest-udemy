@@ -1,10 +1,12 @@
 import { Component,signal,computed} from '@angular/core';
+// 双方向バインディングのためにインポート
+import { FormsModule } from '@angular/forms';
 import {RecipeModel,Ingredient} from '../models';
 import {RecipeDetail} from '../recipe-detail/recipe-detail';
 import {MOCK_RECIPES} from '../mock-recipes';
 @Component({
   selector: 'app-recipe-list',
-  imports: [RecipeDetail],
+  imports: [RecipeDetail, FormsModule],
   templateUrl: './recipe-list.html',
   styleUrl: './recipe-list.css',
 })
@@ -46,5 +48,22 @@ export class RecipeList {
     }
   }
   
-  
+  // Module 13: Two-Way Binding (双方向バインディング)
+  // 検索用の文字列格納signal(双方向バインディングはts側は普通)
+  search_text_for_recipe = signal<string>('');
+  // インクリメンタルサーチの結果用のcomputed signalのsearch_result_recipe : htmlでは{{search_result_recipe()}}で表示できる。
+  search_result_recipe = computed(()=>{
+    const inputed_text = this.search_text_for_recipe();
+    // signalのrecipes配列にフィルターをかけて、新しいオブジェクトを返す
+    // 配列内オブジェクトのnameプロパティにinputed_textが含まれているかどうかでフィルターをかける
+    const filtered_recipes = this.recipes().filter((recipe : RecipeModel)=>{
+      return recipe.name.includes(inputed_text);  
+    })
+    if (filtered_recipes.length !== 1){
+      // 1件に特定できなかった場合は表示しないようにnullを返す
+      return null;
+    }
+    console.log('Filtered Recipes[0]:', filtered_recipes[0]);
+    return filtered_recipes[0];
+  });
 }

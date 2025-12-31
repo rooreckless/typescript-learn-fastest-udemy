@@ -15,5 +15,23 @@
     <hr>
     <!-- 子コンポーネントにrecipe signalの値を渡す -->
     <app-recipe-detail [recipe]="recipe()"></app-recipe-detail>
+
+    <!-- 双方向バインディング用の入力フィールド -->
+    <label for="search_text_for_recipe">search_text_for_recipe : [ngModel] & (ngModelChange)</label>
+    <input id ="search_text_for_recipe" type="text" [ngModel]="search_text_for_recipe()" (ngModelChange)="search_text_for_recipe.set($event)"/> 
+    
+    <br/>
+    <label for="search_text_for_recipe">search_text_for_recipe : [(ngModel)]</label>
+    <input id ="search_text_for_recipe" type="text" [(ngModel)]="search_text_for_recipe"/>
+    <br/>
+    search_text_for_recipe => {{search_text_for_recipe()}}<br>
+    <!-- 検索結果の表示1 -->
+    search_result_recipe()={{search_result_recipe()?.name}}<br>
+    <!-- 検索結果の表示2 -->
+    @if (search_result_recipe(); as result) {
+        <span style="color: green; font-size: 20px;">{{result.name}}</span>
+    }@else{
+        <span style="color: red; font-size: 20px;">該当するレシピが見つかりません。</span>
+    }
 </section>
 
