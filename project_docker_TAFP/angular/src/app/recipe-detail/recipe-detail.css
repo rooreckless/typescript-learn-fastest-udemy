@@ -1,0 +1,20 @@
+.container {
+  display: flex;
+  flex-direction: column;  /* 縦に並べる */
+  gap: 16px;  /* flexboxの子要素間の間隔　=縦に16px */
+  padding: 20px;
+  img {
+    max-width: 300px;
+    border-radius: 8px;
+  }
+}
+
+.recipe_selected {
+    .name{
+    font-weight: bold;
+    font-size: 28px;
+    }
+    .description{
+        font-size:16px
+    }
+}

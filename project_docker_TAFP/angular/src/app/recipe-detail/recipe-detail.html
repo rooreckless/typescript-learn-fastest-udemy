@@ -1,5 +1,11 @@
-<section style="border: 2px solid red"><h2>Recipe Detail Component</h2>
-    <h3></h3>
+<section class="container" style="border: 2px solid red">
+    <h2>Recipe Detail Component</h2>
+    <div class="recipe_selected">
+        <p>recipe().name = <span class="name">{{recipe().name}}</span></p>
+        <p>recipe().description = <span class="description">{{recipe().description}}</span></p>
+        <p>recipe().ingredients = {{recipe().ingredients}}</p><br>
+    </div>
+    <h3>Module 9: Component Inputs with Signals & Module 10: Styling Components</h3>
     <p>The servings Number is: {{ servings() }}</p>
     <button (click)="incrementCount()">count Increment</button><br>
     <button (click)="decrementCount()">count Decrement</button>
