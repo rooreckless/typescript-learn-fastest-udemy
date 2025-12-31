@@ -1,7 +1,7 @@
 <section class="container" style="border: 2px solid red">
     <h2>Recipe Detail Component</h2>
     <div class="recipe_selected">
-        <p>recipe().name = <span class="name">{{recipe().name}}</span></p>
+        <p>recipe().name = <span class="name">{{recipe().name}}</span><span>@if(recipe().isFavorite){ ★ }@else{ ☆}</span></p>
         <p>recipe().description = <span class="description">{{recipe().description}}</span></p>
         <p>recipe().ingredients = {{recipe().ingredients}}</p><br>
     </div>
