@@ -3,10 +3,13 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormArray } fr
 import { Router } from '@angular/router';
 import { RecipeService } from '../services/recipe';
 import { RecipeModel } from '../models';
-
+// @angular/materialをinstallしたのでインポートする
+import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
 @Component({
   selector: 'app-recipe-form',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, MatButtonModule, MatInputModule, MatFormFieldModule],
   templateUrl: './recipe-form.html',
   styleUrl: './recipe-form.css',
 })
