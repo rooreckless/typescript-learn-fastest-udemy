@@ -24,6 +24,7 @@ class UserRepository(AbstractUserRepository):
             name=user.name.value,
             password_hash=user.password_hash.value,
             email=user.email.value,
+            admin=user.admin,
             created_at=datetime.now(tz=jst),
             created_by=user.created_by.value,
             updated_by=user.updated_by.value,
