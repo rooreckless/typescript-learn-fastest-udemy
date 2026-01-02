@@ -11,6 +11,8 @@ import { RecipeDetail } from './recipe-detail/recipe-detail';
 import { RecipeForm } from './recipe-form/recipe-form';
 import { UserList } from './user-list/user-list';
 import { UserForm } from './user-form/user-form';
+import { CategoryList } from './category-list/category-list';
+import { CategoryForm } from './category-form/category-form';
 import { AuthLogin } from './auth-login/auth-login';
 
 export const routes: Routes = [
@@ -22,6 +24,8 @@ export const routes: Routes = [
   { path: 'recipes/:id', component: RecipeDetail },  // 動的ルート
   { path: "users", component: UserList },
   { path: "user/new", component: UserForm },
+  { path: "categories", component: CategoryList },
+  { path: "category/new", component: CategoryForm },
   { path: "login", component: AuthLogin },
   { path: '**', redirectTo: '' }
 ];

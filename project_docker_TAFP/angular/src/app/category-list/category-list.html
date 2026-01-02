@@ -1,0 +1,10 @@
+<p>Category List</p>
+<ul>
+  @for(category of categories(); track category.id) {
+    <li>
+      <strong>ID:</strong> {{ category.id }} |
+      <strong>Name:</strong> {{ category.name }} |
+      <strong>Created:</strong> {{ category.created_at }}
+    </li>
+  }
+</ul>
