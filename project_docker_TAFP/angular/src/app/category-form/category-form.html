@@ -6,8 +6,25 @@
 </form>
 
 <!-- 👇 ここで async が購読する -->
-@if (result$ | async; as result) {
+<!-- @if (result$ | async; as result) {
   <div>
     ✅ 登録完了！
   </div>
+} -->
+
+@if (state$ | async; as s) {
+  @switch (s.status) {
+    @case ('idle') {
+      <!-- 何も表示しない -->
+    }
+    @case ('loading') {
+      <p>送信中...</p>
+    }
+    @case ('success') {
+      <p>✅ 登録完了</p>
+    }
+    @case ('error') {
+      <p>❌ {{ s.message }}</p>
+    }
+  }
 }
