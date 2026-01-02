@@ -1,1 +1,13 @@
 <p>category-form works!</p>
+<form #f="ngForm" (ngSubmit)="onSubmit(f.value)">
+  <label for="name">Category Name</label><input name="name" ngModel />
+  <label for="description">Category Description</label><input name="description" ngModel />
+  <button type="submit">保存</button>
+</form>
+
+<!-- 👇 ここで async が購読する -->
+@if (result$ | async; as result) {
+  <div>
+    ✅ 登録完了！
+  </div>
+}
