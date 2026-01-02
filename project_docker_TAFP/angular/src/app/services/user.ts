@@ -13,7 +13,6 @@ export class UserService {
     }
 
     createUser(data: any) {
-        // return this.http.post(`${this.API}/users`, data);
-        return this.http.post('http://localhost/api/users', data);
+        return this.http.post(`${this.API}/users`, data);
     }
 }
