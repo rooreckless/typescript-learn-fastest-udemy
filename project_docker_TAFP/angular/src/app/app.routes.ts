@@ -9,6 +9,7 @@ import { Home } from './home/home';
 import { RecipeList } from './recipe-list/recipe-list';
 import { RecipeDetail } from './recipe-detail/recipe-detail';
 import { RecipeForm } from './recipe-form/recipe-form';
+import { UserList } from './user-list/user-list';
 
 export const routes: Routes = [
   // ここにルートを追加
@@ -17,5 +18,6 @@ export const routes: Routes = [
   { path: 'recipes', component: RecipeList },
   { path: 'recipe/new', component: RecipeForm },  // 新規作成用ルート（動的ルートより前に配置）
   { path: 'recipes/:id', component: RecipeDetail },  // 動的ルート
+  { path: "users", component: UserList },
   { path: '**', redirectTo: '' }
 ];

@@ -1,0 +1,13 @@
+<h2>User List</h2>
+
+<ul>
+  @for(user of users(); track user.id) {
+    <li>
+      <strong>ID:</strong> {{ user.id }} |
+      <strong>Name:</strong> {{ user.name }} |
+      <strong>Email:</strong> {{ user.email }} |
+      <strong>Admin:</strong> {{ user.admin ? 'Yes' : 'No' }} |
+      <strong>Created:</strong> {{ user.created_at }}
+    </li>
+  }
+</ul>
