@@ -3,7 +3,10 @@ import { HttpClient } from '@angular/common/http';
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
-    private readonly API = 'http://localhost/api';
+    // private readonly API = 'http://localhost/api';
+    // https化に伴い、https://localhost/api に変更してもうまくいくことは確認したが、
+    // 実際の運用では、nginxなどのリバースプロキシ経由や、dockercomposeネットワークでアクセスすることになるので、相対パスに変更した。
+    private readonly API = '/api';
     constructor(private http: HttpClient) { // HttpClientをコンストラクタで注入
     }
     // private http = inject(HttpClient);

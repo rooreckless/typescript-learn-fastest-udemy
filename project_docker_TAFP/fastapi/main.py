@@ -49,7 +49,10 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:4200",  # Angular開発サーバー
         "http://localhost:80",     # Nginx
-        "http://localhost",
+        "http://localhost"
+        # "https://localhost:4200",  # Angular開発サーバー
+        # "https://localhost:80",     # Nginx
+        # "https://localhost",
     ],
     allow_credentials=True,
     allow_methods=["*"],  # すべてのHTTPメソッドを許可
