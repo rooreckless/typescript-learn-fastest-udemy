@@ -160,6 +160,7 @@ services:
     build:
       context: ..
       dockerfile: dockerfiles/nginx/stg/Dockerfile
+    profiles: ["stg"]
     container_name: tafp_nginx
     # ボリュームマウント設定
     volumes:
@@ -167,16 +168,29 @@ services:
       - ../nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ../nginx/conf.d/stg:/etc/nginx/conf.d:ro
     # ポートマッピング（メインのエントリーポイント）
-    ports:
-      - "80:80"
-      - "443:443"
+    # ports:
+    #   - "80:80"
+    #   - "443:443"
+    # stg環境でもtraefikを使ってtls終端にするのでportsを廃止
+    expose:
+      - "80"
+      - "8000"
     # 依存関係の設定（全サービスが起動してから起動）
     depends_on:
       - fastapi
     # ネットワーク設定
     networks:
       - tafp_network
-    profiles: ["stg"]
+    labels:
+    # Traefik に「/ は Nginx に流す」と教える設定（labels）
+    # つまり、labelsのみで Traefik との連携を実現 
+    - traefik.enable=true
+    - traefik.http.routers.front.rule=PathPrefix("/")
+    - traefik.http.routers.front.entrypoints=websecure
+    - traefik.http.routers.front.tls=true
+    - traefik.http.routers.front.priority=1
+    - traefik.http.services.front.loadbalancer.server.port=80
+    
 
     # labels:
     #   - traefik.enable=true
@@ -189,6 +203,7 @@ services:
   # =========================================
   traefik:
     image: traefik:v3.6.2 # Docker 29.x との相性問題を避けるため v3.6+ を推奨
+    profiles: ["dev","stg"] # dev,stg両方でtraefikを使う
     container_name: tafp_traefik
     
     # ホストに公開するのは原則 Traefik のみ = portsを使うのはdevプロファイルだとTraefikサービスだけ
@@ -225,11 +240,10 @@ services:
       # ダッシュボード（開発用）を有効化 http://localhost:8880 でアクセス可能にする
       - --api.dashboard=true
       - --api.insecure=true
-      # デバッグしたいときだけ（普段は INFO でもOK）
-      - --log.level=DEBUG
-      - --accesslog=true
-      - --accesslog.format=json
-    profiles: ["dev"]   # dev のときだけ Traefik を起動する（stg では nginx を入口にするため）
+      # # デバッグしたいときだけ（普段は INFO でもOK）
+      # - --log.level=DEBUG
+      # - --accesslog=true
+      # - --accesslog.format=json
 # =========================================
 # ネットワーク定義
 # =========================================
