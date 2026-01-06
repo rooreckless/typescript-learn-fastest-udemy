@@ -335,7 +335,7 @@ pyrightconfig.json
 
 # --バックアップ--
 
-project_docker_TAFP_backup
-
+project_docker_TAFP_backup01_backendonly
+project_docker_TAFP_backup02_http_angular_to_backend
 # --docs--
 docs
